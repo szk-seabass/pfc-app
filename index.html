@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>PFC Pro Tracker v4</title>
+    <title>PFC Pro Tracker</title>
     <style>
         :root { --primary: #007AFF; --accent: #deff9a; --bg: #f2f2f7; --card-bg: #ffffff; --text: #1c1c1e; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: env(safe-area-inset-top) 15px 100px 15px; max-width: 500px; margin: 0 auto; }
@@ -21,7 +21,6 @@
         .calorie-big { font-size: 28px; font-weight: 800; text-align: center; color: var(--primary); }
         .progress-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center; margin-top: 10px; font-size: 13px; }
         
-        /* カレンダー用スタイル */
         .date-control { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; gap: 10px; }
         .date-btn { background: #eee; width: auto; padding: 10px 15px; font-size: 14px; margin: 0; color: #333; }
         .date-input { margin: 0; text-align: center; font-weight: bold; }
@@ -31,7 +30,7 @@
 </head>
 <body>
 
-    <h2 style="text-align: center; margin: 20px 0;">💪 PFC Tracker v4</h2>
+    <h2 style="text-align: center; margin: 20px 0;">💪 PFC Pro Tracker</h2>
 
     <div class="card">
         <div class="date-control">
@@ -42,7 +41,7 @@
     </div>
 
     <div class="card target-card">
-        <h3 style="margin-bottom:10px;">🎯 目標設定 (共通)</h3>
+        <h3 style="margin-bottom:10px;">🎯 目標設定</h3>
         <div style="display:flex; gap:10px;">
             <input type="number" id="weightInput" placeholder="体重(kg)" style="margin:0;">
             <select id="modeSelect" style="margin:0;">
@@ -90,6 +89,7 @@
     </div>
 
     <script>
+        // 【辞書】定番の食材のみにリセット
         const foodDict = {
             "protein": { name: "プロテイン", p: 70.1, f: 6.4, c: 14.6 },
             "chicken": { name: "鶏もも肉", p: 18.8, f: 3.9, c: 0.0 },
@@ -98,16 +98,13 @@
             "egg":     { name: "卵", p: 12.3, f: 10.3, c: 0.3 }
         };
 
-        // カレンダー対応データ構造（JavaのMap<String, List>のような形）
-        // 構造: { "2026-06-30": [{items:[]}], "2026-07-01": [{items:[]}] }
         let diaryData = JSON.parse(localStorage.getItem('pfcDiaryData')) || {};
         let goals = JSON.parse(localStorage.getItem('pfcGoals')) || { p:0, f:0, c:0, cal:0 };
         
-        let currentDateStr = ""; // 現在選択中の日付(YYYY-MM-DD)
+        let currentDateStr = "";
         let activeMealIndex = null;
 
         window.onload = () => {
-            // 初期状態として今日の日付を設定
             const today = new Date();
             currentDateStr = formatDate(today);
             document.getElementById('datePicker').value = currentDateStr;
@@ -122,7 +119,6 @@
             render();
         };
 
-        // 日付を YYYY-MM-DD 形式の文字列に変換するヘルパー
         function formatDate(date) {
             const y = date.getFullYear();
             const m = String(date.getMonth() + 1).padStart(2, '0');
@@ -130,7 +126,6 @@
             return `${y}-${m}-${d}`;
         }
 
-        // ◀前日 / 翌日▶ ボタンが押されたとき
         function changeDate(days) {
             const current = new Date(currentDateStr);
             current.setDate(current.getDate() + days);
@@ -139,16 +134,14 @@
             render();
         }
 
-        // カレンダーで直接日付が変更されたとき
         function onDateChanged() {
             currentDateStr = document.getElementById('datePicker').value;
             render();
         }
 
-        // 現在選択されている日の食事配列を取得（なければ初期化）
         function getCurrentDayMeals() {
             if (!diaryData[currentDateStr]) {
-                diaryData[currentDateStr] = [{ items: [] }]; // 初期状態は1食分の空枠
+                diaryData[currentDateStr] = [{ items: [] }];
             }
             return diaryData[currentDateStr];
         }
