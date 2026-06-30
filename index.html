@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>PFC Pro Tracker</title>
+    <style>
+        :root {
+            --primary: #007AFF;
+            --accent: #deff9a;
+            --bg: #f2f2f7;
+            --card-bg: #ffffff;
+            --text: #1c1c1e;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: env(safe-area-inset-top) 15px 40px 15px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        h2, h3 { margin-top: 0; margin-bottom: 15px; }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .target-card { background: #1c1c1e; color: #fff; }
+        .total-card { border: 2px solid var(--primary); }
+
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 5px; opacity: 0.8; }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            box-sizing: border-box;
+            background: #f9f9f9;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-calc { background: #444; color: white; }
+        .btn-add { background: var(--primary); color: white; margin-top: 10px; display: none; }
+        .btn-set { background: var(--accent); color: #000; }
+        .btn-reset { background: #ff3b30; color: white; margin-top: 15px; font-size: 14px; padding: 8px; }
+
+        .result-area {
+            text-align: center;
+            padding: 15px;
+            background: #f0f0f5;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .progress-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .prog-item div:first-child { font-size: 12px; opacity: 0.7; }
+        .prog-item div:last-child { font-size: 18px; font-weight: 700; }
+
+        .calorie-big {
+            font-size: 32px;
+            font-weight: 800;
+            text-align: center;
+            margin: 10px 0;
+            color: var(--primary);
+        }
+
+        .remaining { font-size: 14px; opacity: 0.6; text-align: center; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1 style="text-align: center; margin: 20px 0;">💪 PFC Pro Tracker</h1>
+
+    <div class="card target-card">
+        <h3>🎯 1日の目標設定</h3>
+        <div class="input-group">
+            <label>体重 (kg)</label>
+            <input type="number" id="weightInput" placeholder="例: 70">
+        </div>
+        <div class="input-group">
+            <label>モード</label>
+            <select id="modeSelect">
+                <option value="31">減量 (体重×31)</option>
+                <option value="35">維持 (体重×35)</option>
+                <option value="40">増量 (体重×40)</option>
+            </select>
+        </div>
+        <button class="btn-set" onclick="setGoals()">目標を計算して保存</button>
+    </div>
+
+    <div class="card total-card">
+        <h3 style="margin-bottom:5px;">🏆 今日の合計 / 目標</h3>
+        <div class="remaining">残りカロリー: <span id="remCal">0</span> kcal</div>
+        <div class="calorie-big"><span id="dailyCal">0</span> / <span id="goalCal">0</span> <small style="font-size:14px">kcal</small></div>
+        
+        <div class="progress-grid">
+            <div class="prog-item">
+                <div>P (g)</div>
+                <div id="pSummary">0 / 0</div>
+            </div>
+            <div class="prog-item">
+                <div>F (g)</div>
+                <div id="fSummary">0 / 0</div>
+            </div>
+            <div class="prog-item">
+                <div>C (g)</div>
+                <div id="cSummary">0 / 0</div>
+            </div>
+        </div>
+        <button class="btn-reset" onclick="resetAll()">記録をリセット</button>
+    </div>
+
+    <div class="card">
+        <h3>🍳 食材から計算</h3>
+        <div class="input-group">
+            <label>食材名</label>
+            <select id="foodSelect">
+                <option value="protein">プロテイン (エクスプロージョン)</option>
+                <option value="chicken">鶏もも肉皮なし</option>
+                <option value="potato">じゃがいも (生)</option>
+                <option value="rice">白米</option>
+                <option value="egg">卵 (全卵)</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>グラム数 (g)</label>
+            <input type="number" id="gramInput" placeholder="例: 200">
+        </div>
+        <button class="btn-calc" onclick="calculateFood()">計算する</button>
+    </div>
+
+    <div class="card">
+        <h3>🏪 手動入力 (コンビニ食など)</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+            <div class="input-group">
+                <label>P</label>
+                <input type="number" id="pManual" placeholder="g" step="0.1">
+            </div>
+            <div class="input-group">
+                <label>F</label>
+                <input type="number" id="fManual" placeholder="g" step="0.1">
+            </div>
+            <div class="input-group">
+                <label>C</label>
+                <input type="number" id="cManual" placeholder="g" step="0.1">
+            </div>
+        </div>
+        <button class="btn-calc" onclick="calculateManual()">計算する</button>
+    </div>
+
+    <div class="card" id="resultCard" style="display:none;">
+        <h3>📊 計算結果</h3>
+        <div class="result-area" id="resultDisplay"></div>
+        <button id="addButton" class="btn-add" onclick="saveToTotal()">今日の合計に追加</button>
+    </div>
+
+    <script>
+        // 食材データ (100gあたり)
+        const foodDict = {
+            "protein": { p: 70.1, f: 6.4, c: 14.6 },
+            "chicken": { p: 18.8, f: 3.9, c: 0.0 },
+            "potato":  { p: 1.8, f: 0.1, c: 15.9 },
+            "rice":    { p: 2.5, f: 0.3, c: 37.1 },
+            "egg":     { p: 12.3, f: 10.3, c: 0.3 }
+        };
+
+        // 状態変数
+        let daily = { p: 0, f: 0, c: 0, cal: 0 };
+        let goals = { p: 0, f: 0, c: 0, cal: 0 };
+        let temp = { p: 0, f: 0, c: 0, cal: 0 };
+
+        // 起動時にロード
+        window.onload = () => {
+            const savedDaily = localStorage.getItem('pfcDaily');
+            const savedGoals = localStorage.getItem('pfcGoals');
+            const savedWeight = localStorage.getItem('pfcWeight');
+            
+            if(savedDaily) daily = JSON.parse(savedDaily);
+            if(savedGoals) goals = JSON.parse(savedGoals);
+            if(savedWeight) document.getElementById('weightInput').value = savedWeight;
+            
+            updateUI();
+        };
+
+        function setGoals() {
+            const weight = parseFloat(document.getElementById('weightInput').value);
+            const multiplier = parseFloat(document.getElementById('modeSelect').value);
+            
+            if(!weight) return alert("体重を入力してください");
+
+            goals.cal = Math.round(weight * multiplier);
+            goals.p = Math.round(weight * 2.0 * 10) / 10;
+            goals.f = Math.round(weight * 0.8 * 10) / 10;
+            
+            // 残りを炭水化物
+            const pfCal = (goals.p * 4) + (goals.f * 9);
+            goals.c = Math.round(((goals.cal - pfCal) / 4) * 10) / 10;
+
+            localStorage.setItem('pfcGoals', JSON.stringify(goals));
+            localStorage.setItem('pfcWeight', weight);
+            updateUI();
+            alert("目標を更新しました！");
+        }
+
+        function calculateFood() {
+            const food = foodDict[document.getElementById('foodSelect').value];
+            const grams = parseFloat(document.getElementById('gramInput').value);
+            if(!grams) return alert("グラム数を入力してください");
+
+            const ratio = grams / 100.0;
+            displayTemp(food.p * ratio, food.f * ratio, food.c * ratio);
+        }
+
+        function calculateManual() {
+            const p = parseFloat(document.getElementById('pManual').value) || 0;
+            const f = parseFloat(document.getElementById('fManual').value) || 0;
+            const c = parseFloat(document.getElementById('cManual').value) || 0;
+            displayTemp(p, f, c);
+        }
+
+        function displayTemp(p, f, c) {
+            temp.p = p; temp.f = f; temp.c = c;
+            temp.cal = Math.round((p * 4) + (f * 9) + (c * 4));
+
+            document.getElementById('resultCard').style.display = 'block';
+            document.getElementById('resultDisplay').innerHTML = `P: ${p.toFixed(1)}g | F: ${f.toFixed(1)}g | C: ${c.toFixed(1)}g<br><b>${temp.cal} kcal</b>`;
+            document.getElementById('addButton').style.display = 'block';
+            
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+
+        function saveToTotal() {
+            daily.p += temp.p; daily.f += temp.f; daily.c += temp.c; daily.cal += temp.cal;
+            localStorage.setItem('pfcDaily', JSON.stringify(daily));
+            updateUI();
+            
+            document.getElementById('resultCard').style.display = 'none';
+            document.getElementById('gramInput').value = "";
+            document.getElementById('pManual').value = "";
+            document.getElementById('fManual').value = "";
+            document.getElementById('cManual').value = "";
+        }
+
+        function updateUI() {
+            document.getElementById('dailyCal').innerText = daily.cal;
+            document.getElementById('goalCal').innerText = goals.cal;
+            document.getElementById('remCal').innerText = goals.cal - daily.cal;
+            
+            document.getElementById('pSummary').innerText = `${daily.p.toFixed(1)} / ${goals.p}`;
+            document.getElementById('fSummary').innerText = `${daily.f.toFixed(1)} / ${goals.f}`;
+            document.getElementById('cSummary').innerText = `${daily.c.toFixed(1)} / ${goals.c}`;
+        }
+
+        function resetAll() {
+            if(confirm("今日の合計をリセットしますか？")) {
+                daily = { p: 0, f: 0, c: 0, cal: 0 };
+                localStorage.setItem('pfcDaily', JSON.stringify(daily));
+                updateUI();
+            }
+        }
+    </script>
+</body>
+</html>
