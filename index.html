@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>PFC Pro Tracker</title>
+    <title>PFC Pro Tracker v6</title>
     <style>
         :root { --primary: #007AFF; --accent: #deff9a; --bg: #f2f2f7; --card-bg: #ffffff; --text: #1c1c1e; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: env(safe-area-inset-top) 15px 100px 15px; max-width: 500px; margin: 0 auto; }
@@ -24,24 +24,37 @@
         .date-control { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; gap: 10px; }
         .date-btn { background: #eee; width: auto; padding: 10px 15px; font-size: 14px; margin: 0; color: #333; }
         .date-input { margin: 0; text-align: center; font-weight: bold; }
-        .meal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .btn-delete-meal { color: #ff3b30; background: #ffebee; padding: 5px 10px; font-size: 12px; border-radius: 5px; }
+        
+        /* PFC入力欄を強調 */
+        #manualInputs { background: #f0f0f5; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #ccc; }
+        #manualInputs label { font-size: 12px; font-weight: bold; color: #666; margin-bottom: 2px; }
+
+        /* マンスリーカレンダー用 */
+        #monthlyOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:2000; padding:20px; box-sizing:border-box; overflow-y:auto; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 20px; }
+        .calendar-header-day { text-align: center; font-size: 12px; font-weight: bold; padding: 5px 0; color: #888; }
+        .calendar-cell { height: 70px; border: 1px solid #eee; border-radius: 5px; padding: 5px; font-size: 11px; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+        .calendar-cell.other-month { opacity: 0.3; }
+        .cal-cal-val { color: var(--primary); font-weight: 800; text-align: right; }
+        .btn-view-cal { background: #e3f2fd; color: var(--primary); font-size: 14px; padding: 10px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
-    <h2 style="text-align: center; margin: 20px 0;">💪 PFC Pro Tracker</h2>
+    <h2 style="text-align: center; margin: 20px 0;">💪 PFC Tracker v6</h2>
+
+    <button class="btn-view-cal" onclick="showMonthlyView()">📅 1ヶ月の摂取履歴を見る</button>
 
     <div class="card">
         <div class="date-control">
-            <button class="date-btn" onclick="changeDate(-1)">◀ 前日</button>
+            <button class="date-btn" onclick="changeDate(-1)">◀</button>
             <input type="date" id="datePicker" class="date-input" onchange="onDateChanged()">
-            <button class="date-btn" onclick="changeDate(1)">翌日 ▶</button>
+            <button class="date-btn" onclick="changeDate(1)">▶</button>
         </div>
     </div>
 
     <div class="card target-card">
-        <h3 style="margin-bottom:10px;">🎯 目標設定</h3>
+        <h3>🎯 目標設定</h3>
         <div style="display:flex; gap:10px;">
             <input type="number" id="weightInput" placeholder="体重(kg)" style="margin:0;">
             <select id="modeSelect" style="margin:0;">
@@ -50,7 +63,7 @@
                 <option value="40">増量</option>
             </select>
         </div>
-        <button onclick="setGoals()" style="background:var(--accent); color:#000; margin-top:10px;">目標を更新</button>
+        <button onclick="setGoals()" style="background:var(--accent); color:#000; margin-top:10px;">目標を保存</button>
     </div>
 
     <div class="card total-card">
@@ -61,35 +74,50 @@
             <div>F: <span id="fSum">0</span>g</div>
             <div>C: <span id="cSum">0</span>g</div>
         </div>
-        <button onclick="resetDayAll()" style="background:#ff3b30; color:white; padding:5px; font-size:12px; margin-top:10px;">この日の記録をリセット</button>
+        <button onclick="resetDayAll()" style="background:#ff3b30; color:white; padding:5px; font-size:12px; margin-top:10px;">この日をリセット</button>
     </div>
 
     <div id="mealContainer"></div>
 
-    <button class="btn-add-meal" onclick="addNewMeal()">＋ 新しい食事を追加</button>
+    <button class="btn-add-meal" onclick="addNewMeal()">＋ 新しい食事枠を追加</button>
 
-    <div id="inputModal" class="card" style="display:none; position:fixed; top:10%; left:5%; width:90%; z-index:1000; border:2px solid #000;">
+    <div id="inputModal" class="card" style="display:none; position:fixed; top:5%; left:5%; width:90%; z-index:1000; border:3px solid #000; max-height: 90vh; overflow-y: auto;">
         <h3 id="modalTitle">食材を追加</h3>
+        <label>1. 食材を選択</label>
         <select id="foodSelect">
-            <option value="protein">プロテイン</option>
+            <option value="protein">プロテイン(粉末)</option>
             <option value="chicken">鶏もも肉皮なし</option>
             <option value="potato">じゃがいも</option>
             <option value="rice">白米</option>
             <option value="egg">卵</option>
-            <option value="manual">手動入力</option>
+            <option value="manual" style="background:#ffeb3b; font-weight:bold;">★ 手動入力(PFC直接入力) ★</option>
         </select>
-        <div id="manualInputs" style="display:none; grid-template-columns:1fr 1fr 1fr; gap:5px;">
-            <input type="number" id="pManual" placeholder="P">
-            <input type="number" id="fManual" placeholder="F">
-            <input type="number" id="cManual" placeholder="C">
+
+        <div id="manualInputs" style="display:none;">
+            <p style="margin:0 0 10px 0; font-size:14px; font-weight:bold; color:red;">パッケージ裏の数値を入力してください</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                <div><label>P</label><input type="number" id="pManual" placeholder="g" step="0.1"></div>
+                <div><label>F</label><input type="number" id="fManual" placeholder="g" step="0.1"></div>
+                <div><label>C</label><input type="number" id="cManual" placeholder="g" step="0.1"></div>
+            </div>
         </div>
-        <input type="number" id="gramInput" placeholder="グラム数">
+
+        <label id="gramLabel">2. グラム数(g)</label>
+        <input type="number" id="gramInput" placeholder="例: 100">
+        
         <button onclick="commitItem()" style="background:var(--primary); color:white;">追加を確定</button>
-        <button onclick="closeModal()" style="background:#ccc; margin-top:5px;">キャンセル</button>
+        <button onclick="closeModal()" style="background:#ccc; margin-top:10px;">キャンセル</button>
+    </div>
+
+    <div id="monthlyOverlay">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2 id="monthlyTitle">摂取履歴</h2>
+            <button onclick="hideMonthlyView()" style="width:auto; padding:5px 15px; background:#555; color:white;">閉じる</button>
+        </div>
+        <div class="calendar-grid" id="calendarGrid"></div>
     </div>
 
     <script>
-        // 【辞書】定番の食材のみにリセット
         const foodDict = {
             "protein": { name: "プロテイン", p: 70.1, f: 6.4, c: 14.6 },
             "chicken": { name: "鶏もも肉", p: 18.8, f: 3.9, c: 0.0 },
@@ -100,7 +128,6 @@
 
         let diaryData = JSON.parse(localStorage.getItem('pfcDiaryData')) || {};
         let goals = JSON.parse(localStorage.getItem('pfcGoals')) || { p:0, f:0, c:0, cal:0 };
-        
         let currentDateStr = "";
         let activeMealIndex = null;
 
@@ -108,14 +135,15 @@
             const today = new Date();
             currentDateStr = formatDate(today);
             document.getElementById('datePicker').value = currentDateStr;
-
             const w = localStorage.getItem('pfcWeight');
             if(w) document.getElementById('weightInput').value = w;
             
             document.getElementById('foodSelect').onchange = (e) => {
-                document.getElementById('manualInputs').style.display = e.target.value === 'manual' ? 'grid' : 'none';
+                const isManual = e.target.value === 'manual';
+                document.getElementById('manualInputs').style.display = isManual ? 'block' : 'none';
+                document.getElementById('gramLabel').innerText = isManual ? "2. 何個・何食分ですか？(通常は1)" : "2. グラム数(g)";
+                if(isManual) document.getElementById('gramInput').value = 1;
             };
-
             render();
         };
 
@@ -139,13 +167,6 @@
             render();
         }
 
-        function getCurrentDayMeals() {
-            if (!diaryData[currentDateStr]) {
-                diaryData[currentDateStr] = [{ items: [] }];
-            }
-            return diaryData[currentDateStr];
-        }
-
         function setGoals() {
             const w = parseFloat(document.getElementById('weightInput').value);
             const m = parseFloat(document.getElementById('modeSelect').value);
@@ -157,11 +178,12 @@
             localStorage.setItem('pfcGoals', JSON.stringify(goals));
             localStorage.setItem('pfcWeight', w);
             render();
+            alert("目標設定を保存しました。");
         }
 
         function addNewMeal() {
-            const meals = getCurrentDayMeals();
-            meals.push({ items: [] });
+            if (!diaryData[currentDateStr]) diaryData[currentDateStr] = [{ items: [] }];
+            diaryData[currentDateStr].push({ items: [] });
             save(); render();
         }
 
@@ -175,79 +197,58 @@
 
         function commitItem() {
             const foodKey = document.getElementById('foodSelect').value;
-            const grams = parseFloat(document.getElementById('gramInput').value) || 0;
+            const multiplier = parseFloat(document.getElementById('gramInput').value) || 0;
             let p, f, c, name;
 
             if(foodKey === 'manual') {
-                p = parseFloat(document.getElementById('pManual').value) || 0;
-                f = parseFloat(document.getElementById('fManual').value) || 0;
-                c = parseFloat(document.getElementById('cManual').value) || 0;
+                p = (parseFloat(document.getElementById('pManual').value) || 0) * multiplier;
+                f = (parseFloat(document.getElementById('fManual').value) || 0) * multiplier;
+                c = (parseFloat(document.getElementById('cManual').value) || 0) * multiplier;
                 name = "手動入力";
             } else {
                 const food = foodDict[foodKey];
-                p = food.p * (grams/100);
-                f = food.f * (grams/100);
-                c = food.c * (grams/100);
+                p = food.p * (multiplier/100);
+                f = food.f * (multiplier/100);
+                c = food.c * (multiplier/100);
                 name = food.name;
             }
 
             const cal = Math.round(p*4 + f*9 + c*4);
-            const meals = getCurrentDayMeals();
-            meals[activeMealIndex].items.push({ name, p, f, c, cal, grams });
+            if (!diaryData[currentDateStr]) diaryData[currentDateStr] = [{ items: [] }];
+            diaryData[currentDateStr][activeMealIndex].items.push({ name, p, f, c, cal, grams: multiplier });
             
             save(); render(); closeModal();
-            document.getElementById('gramInput').value = "";
-            document.getElementById('pManual').value = "";
-            document.getElementById('fManual').value = "";
-            document.getElementById('cManual').value = "";
         }
 
         function removeItem(mIdx, iIdx) {
-            const meals = getCurrentDayMeals();
-            meals[mIdx].items.splice(iIdx, 1);
+            diaryData[currentDateStr][mIdx].items.splice(iIdx, 1);
             save(); render();
         }
 
         function removeMeal(mIdx) {
-            if(confirm("この食事枠を削除しますか？")) {
-                const meals = getCurrentDayMeals();
-                meals.splice(mIdx, 1);
+            if(confirm("食事枠を削除しますか？")) {
+                diaryData[currentDateStr].splice(mIdx, 1);
                 save(); render();
             }
         }
 
-        function save() { 
-            localStorage.setItem('pfcDiaryData', JSON.stringify(diaryData)); 
-        }
+        function save() { localStorage.setItem('pfcDiaryData', JSON.stringify(diaryData)); }
 
         function render() {
             document.getElementById('selectedDateLabel').innerText = `${currentDateStr} の記録`;
-            
             const container = document.getElementById('mealContainer');
             container.innerHTML = '';
             let total = { p:0, f:0, c:0, cal:0 };
 
-            const meals = getCurrentDayMeals();
-
+            const meals = diaryData[currentDateStr] || [{ items: [] }];
             meals.forEach((meal, mIdx) => {
                 const mealCard = document.createElement('div');
                 mealCard.className = 'card meal-section';
-                
-                let mealHtml = `
-                    <div class="meal-header">
-                        <b>${mIdx+1}食目</b> 
-                        <span class="btn-delete-meal" onclick="removeMeal(${mIdx})">削除</span>
-                    </div>
-                    <hr>`;
-                
+                let mealHtml = `<div class="meal-header"><b>${mIdx+1}食目</b> <span onclick="removeMeal(${mIdx})" style="color:red; font-size:12px;">枠を削除</span></div><hr>`;
                 meal.items.forEach((item, iIdx) => {
-                    mealHtml += `<div class="item-row">
-                        <span>${item.name} (${item.grams}g)</span>
-                        <span>${item.cal}kcal <button class="btn-small" onclick="removeItem(${mIdx}, ${iIdx})">✕</button></span>
-                    </div>`;
+                    mealHtml += `<div class="item-row"><span>${item.name}</span><span>${item.cal}kcal <button class="btn-small" onclick="removeItem(${mIdx}, ${iIdx})">✕</button></span></div>`;
                     total.p += item.p; total.f += item.f; total.c += item.c; total.cal += item.cal;
                 });
-
                 mealHtml += `<button onclick="openModal(${mIdx})" style="background:#f0f0f5; color:var(--primary); margin-top:10px; font-size:14px;">＋ 食材を追加</button>`;
                 mealCard.innerHTML = mealHtml;
                 container.appendChild(mealCard);
@@ -261,10 +262,73 @@
         }
 
         function resetDayAll() {
-            if(confirm(`${currentDateStr} の記録をすべて消去しますか？`)) {
+            if(confirm(`${currentDateStr} をリセットしますか？`)) {
                 diaryData[currentDateStr] = [{ items: [] }];
                 save(); render();
             }
+        }
+
+        /* --- マンスリーカレンダー表示ロジック --- */
+        function showMonthlyView() {
+            const overlay = document.getElementById('monthlyOverlay');
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+            
+            const now = new Date(currentDateStr);
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            document.getElementById('monthlyTitle').innerText = `${year}年${month+1}月の履歴`;
+
+            // 曜日の見出し
+            ['日','月','火','水','木','金','土'].forEach(d => {
+                const h = document.createElement('div');
+                h.className = 'calendar-header-day';
+                h.innerText = d;
+                grid.appendChild(h);
+            });
+
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            
+            // 月初の空白
+            for(let i=0; i<firstDay.getDay(); i++) {
+                const empty = document.createElement('div');
+                empty.className = 'calendar-cell other-month';
+                grid.appendChild(empty);
+            }
+
+            // 日付マス
+            for(let d=1; d<=lastDay.getDate(); d++) {
+                const cell = document.createElement('div');
+                cell.className = 'calendar-cell';
+                const dateKey = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                
+                // その日の合計カロリーを算出
+                let dayCal = 0;
+                if(diaryData[dateKey]) {
+                    diaryData[dateKey].forEach(m => {
+                        m.items.forEach(it => dayCal += it.cal);
+                    });
+                }
+
+                cell.innerHTML = `<div>${d}</div><div class="cal-cal-val">${dayCal > 0 ? dayCal : ''}</div>`;
+                
+                // クリックでその日にジャンプ
+                cell.onclick = () => {
+                    currentDateStr = dateKey;
+                    document.getElementById('datePicker').value = dateKey;
+                    render();
+                    hideMonthlyView();
+                };
+                
+                grid.appendChild(cell);
+            }
+
+            overlay.style.display = 'block';
+        }
+
+        function hideMonthlyView() {
+            document.getElementById('monthlyOverlay').style.display = 'none';
         }
     </script>
 </body>
