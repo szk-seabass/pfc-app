@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>PFC Pro Tracker v7</title>
+    <title>PFC Pro Tracker v10</title>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         :root { --primary: #007AFF; --accent: #deff9a; --bg: #f2f2f7; --card-bg: #ffffff; --text: #1c1c1e; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: env(safe-area-inset-top) 15px 100px 15px; max-width: 500px; margin: 0 auto; }
         .card { background: var(--card-bg); border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .target-card { background: #1c1c1e; color: #fff; }
         .total-card { border: 2px solid var(--primary); position: sticky; top: 10px; z-index: 100; }
-        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 16px; box-sizing: border-box; background: #f9f9f9; margin-bottom: 10px; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 16px; box-sizing: border-box; background: #f9f9f9; margin-bottom: 10px; }
         button { width: 100%; padding: 14px; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; }
         .btn-add-meal { background: var(--primary); color: white; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 30px); max-width: 470px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 90;}
         .meal-section { border-left: 4px solid var(--primary); padding-left: 15px; margin-bottom: 25px; }
@@ -25,27 +26,36 @@
         .date-btn { background: #eee; width: auto; padding: 10px 15px; font-size: 14px; margin: 0; color: #333; }
         .date-input { margin: 0; text-align: center; font-weight: bold; }
         
-        /* マンスリーカレンダー用 */
-        #monthlyOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:2000; padding:20px; box-sizing:border-box; overflow-y:auto; }
+        #monthlyOverlay, #customFoodOverlay, #backupOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:2000; padding:20px; box-sizing:border-box; overflow-y:auto; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 20px; }
         .calendar-header-day { text-align: center; font-size: 12px; font-weight: bold; padding: 5px 0; color: #888; }
         .calendar-cell { height: 70px; border: 1px solid #eee; border-radius: 5px; padding: 5px; font-size: 11px; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
-        .calendar-cell.other-month { opacity: 0.3; }
         .cal-cal-val { color: var(--primary); font-weight: 800; text-align: right; }
-        .btn-view-cal { background: #e3f2fd; color: var(--primary); font-size: 14px; padding: 10px; margin-bottom: 10px; }
+        
+        .header-menu { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .btn-header { font-size: 11px; padding: 10px 5px; border-radius: 8px; text-align: center; font-weight: bold; }
 
-        /* 入力タブ用スタイル */
         .tab-container { display: flex; border-radius: 10px; overflow: hidden; margin-bottom: 15px; border: 1px solid var(--primary); }
         .tab-btn { flex: 1; text-align: center; padding: 10px; font-size: 14px; font-weight: bold; background: white; color: var(--primary); }
         .tab-btn.active { background: var(--primary); color: white; }
         .input-label { font-size: 12px; font-weight: bold; color: #666; margin-bottom: 2px; display: block; }
+        
+        #ocrLoading { display: none; text-align: center; padding: 15px; color: var(--primary); font-weight: bold; font-size: 14px; background: #e3f2fd; border-radius: 8px; margin-bottom: 15px; }
+
+        .custom-food-item { border: 1px solid #ddd; padding: 10px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .custom-food-info { font-size: 14px; }
+        .custom-food-info span { color: #888; font-size: 12px; display: block;}
     </style>
 </head>
 <body>
 
-    <h2 style="text-align: center; margin: 20px 0;">💪 PFC Tracker v7</h2>
+    <h2 style="text-align: center; margin: 20px 0;">💪 PFC Tracker v10</h2>
 
-    <button class="btn-view-cal" onclick="showMonthlyView()">📅 1ヶ月の摂取履歴を見る</button>
+    <div class="header-menu">
+        <div class="btn-header" onclick="showMonthlyView()" style="background: #e3f2fd; color: #007AFF; border: 1px solid #90caf9;">📅 カレンダー</div>
+        <div class="btn-header" onclick="openCustomFoodModal()" style="background: #fff3e0; color: #e65100; border: 1px solid #ffcc80;">🛠 マイ食材</div>
+        <div class="btn-header" onclick="openBackupModal()" style="background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7;">⚙️ バックアップ</div>
+    </div>
 
     <div class="card">
         <div class="date-control">
@@ -86,38 +96,57 @@
     <div id="inputModal" class="card" style="display:none; position:fixed; top:5%; left:5%; width:90%; z-index:1000; border:3px solid #000; max-height: 90vh; overflow-y: auto;">
         
         <div class="tab-container">
-            <div class="tab-btn active" id="tabBtnDict" onclick="switchTab('dict')">📖 食材から選ぶ</div>
-            <div class="tab-btn" id="tabBtnManual" onclick="switchTab('manual')">✍️ PFC直接入力</div>
+            <div class="tab-btn active" id="tabBtnDict" onclick="switchTab('dict')">📖 登録リストから</div>
+            <div class="tab-btn" id="tabBtnManual" onclick="switchTab('manual')">✍️ 1回限りの手動入力</div>
         </div>
 
         <div id="areaDict">
-            <label class="input-label">1. 定番食材を選択</label>
-            <select id="foodSelect">
-                <option value="protein">プロテイン(粉末)</option>
-                <option value="chicken">鶏もも肉皮なし</option>
-                <option value="potato">じゃがいも</option>
-                <option value="rice">白米</option>
-                <option value="egg">卵(全卵)</option>
-            </select>
-            <label class="input-label">2. グラム数</label>
+            <label class="input-label">1. 食材を選択</label>
+            <select id="foodSelect"></select>
+            <label class="input-label" id="dictGramLabel" style="margin-top:10px;">2. 食べる量</label>
             <input type="number" id="gramInput" placeholder="例: 100">
         </div>
 
         <div id="areaManual" style="display:none;">
+            <button type="button" onclick="document.getElementById('ocrInput').click()" style="background:#e3f2fd; color:var(--primary); margin-bottom:15px; font-size:14px; padding:10px;">📷 パッケージ写真から自動読取</button>
+            <input type="file" id="ocrInput" accept="image/*" style="display:none;" onchange="runOCR(event)">
+            <div id="ocrLoading">🔍 写真を解析中...</div>
             <label class="input-label">1. 品名 (任意)</label>
-            <input type="text" id="manualNameInput" placeholder="例: コンビニの鮭おにぎり">
-            
-            <label class="input-label" style="margin-top:10px;">2. パッケージのPFC (g)</label>
+            <input type="text" id="manualNameInput" placeholder="例: 外食の定食">
+            <label class="input-label" style="margin-top:10px;">2. PFC</label>
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
                 <input type="number" id="pManual" placeholder="P">
                 <input type="number" id="fManual" placeholder="F">
                 <input type="number" id="cManual" placeholder="C">
             </div>
-            <p style="font-size:11px; color:#888; margin-top:5px;">※成分表に書かれている数値をそのまま入力してください</p>
         </div>
 
         <button onclick="commitItem()" style="background:var(--primary); color:white; margin-top:15px;">追加を確定</button>
         <button onclick="closeModal()" style="background:#ccc; margin-top:10px;">キャンセル</button>
+    </div>
+
+    <div id="customFoodOverlay">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+            <h2 style="margin:0;">🛠 マイ食材リスト</h2>
+            <button onclick="closeCustomFoodModal()" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button>
+        </div>
+        <div class="card" style="background:#fff3e0; border: 1px solid #ffcc80;">
+            <h3 style="margin-top:0; color:#e65100; font-size:16px;">➕ 新しい食材を登録</h3>
+            <label class="input-label">品名</label>
+            <input type="text" id="regName" placeholder="例: セブンの鮭おにぎり">
+            <label class="input-label">PFC</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                <input type="number" id="regP" placeholder="P"><input type="number" id="regF" placeholder="F"><input type="number" id="regC" placeholder="C">
+            </div>
+            <label class="input-label" style="margin-top:10px;">基準</label>
+            <select id="regBase">
+                <option value="1">1個(1食) あたりの数値</option>
+                <option value="100">100g あたりの数値</option>
+            </select>
+            <button onclick="saveCustomFood()" style="background:#e65100; color:white; margin-top:10px;">リストに登録</button>
+        </div>
+        <h3 style="font-size:16px;">登録済みのマイ食材</h3>
+        <div id="customFoodListContainer"></div>
     </div>
 
     <div id="monthlyOverlay">
@@ -128,20 +157,44 @@
         <div class="calendar-grid" id="calendarGrid"></div>
     </div>
 
+    <div id="backupOverlay">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+            <h2 style="margin:0;">⚙️ バックアップ</h2>
+            <button onclick="closeBackupModal()" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button>
+        </div>
+        
+        <div class="card" style="background:#e8f5e9; border: 1px solid #a5d6a7;">
+            <h3 style="margin-top:0; color:#2e7d32; font-size:16px;">📤 データを書き出す</h3>
+            <p style="font-size:13px; color:#555;">下のテキストをすべてコピーして、LINEの自分用メモやメモ帳アプリに保存してください。これがデータの「バックアップ」になります。</p>
+            <textarea id="exportText" rows="6" readonly style="font-size:12px; word-break:break-all;"></textarea>
+            <button onclick="copyBackup()" style="background:#2e7d32; color:white;">コピーする</button>
+        </div>
+
+        <div class="card" style="background:#fff8e1; border: 1px solid #ffe082;">
+            <h3 style="margin-top:0; color:#f57f17; font-size:16px;">📥 データを復元する</h3>
+            <p style="font-size:13px; color:#555;">コピーしておいたバックアップテキストを下に貼り付けて「復元」を押すと、データが元に戻ります。</p>
+            <textarea id="importText" rows="6" placeholder="ここにバックアップテキストを貼り付け"></textarea>
+            <button onclick="restoreBackup()" style="background:#f57f17; color:white;">復元する</button>
+        </div>
+    </div>
+
     <script>
-        const foodDict = {
-            "protein": { name: "プロテイン", p: 70.1, f: 6.4, c: 14.6 },
-            "chicken": { name: "鶏もも肉", p: 18.8, f: 3.9, c: 0.0 },
-            "potato":  { name: "じゃがいも", p: 1.8, f: 0.1, c: 15.9 },
-            "rice":    { name: "白米", p: 2.5, f: 0.3, c: 37.1 },
-            "egg":     { name: "卵", p: 12.3, f: 10.3, c: 0.3 }
+        const defaultFoodDict = {
+            "protein": { name: "プロテイン(粉末)", p: 70.1, f: 6.4, c: 14.6, base: 100 },
+            "chicken": { name: "鶏もも肉", p: 18.8, f: 3.9, c: 0.0, base: 100 },
+            "potato":  { name: "じゃがいも", p: 1.8, f: 0.1, c: 15.9, base: 100 },
+            "rice":    { name: "白米", p: 2.5, f: 0.3, c: 37.1, base: 100 },
+            "egg":     { name: "卵", p: 12.3, f: 10.3, c: 0.3, base: 100 }
         };
 
         let diaryData = JSON.parse(localStorage.getItem('pfcDiaryData')) || {};
         let goals = JSON.parse(localStorage.getItem('pfcGoals')) || { p:0, f:0, c:0, cal:0 };
+        let customFoodDict = JSON.parse(localStorage.getItem('pfcCustomFoods')) || {};
         let currentDateStr = "";
         let activeMealIndex = null;
         let currentTabMode = 'dict';
+
+        function getCombinedDict() { return { ...defaultFoodDict, ...customFoodDict }; }
 
         window.onload = () => {
             const today = new Date();
@@ -149,8 +202,36 @@
             document.getElementById('datePicker').value = currentDateStr;
             const w = localStorage.getItem('pfcWeight');
             if(w) document.getElementById('weightInput').value = w;
+            renderFoodSelect();
             render();
         };
+
+        async function runOCR(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            document.getElementById('ocrLoading').style.display = 'block';
+            try {
+                const result = await Tesseract.recognize(file, 'jpn');
+                parseOCR(result.data.text);
+            } catch (error) {
+                alert("読み取りに失敗しました。");
+            } finally {
+                document.getElementById('ocrLoading').style.display = 'none';
+                event.target.value = ''; 
+            }
+        }
+
+        function parseOCR(text) {
+            const toHalfWidth = (str) => str.replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
+            const normalizedText = toHalfWidth(text).replace(/\s+/g, '');
+            const pMatch = normalizedText.match(/(?:たんぱく質|蛋白質|タンパク質|たんばく質|たんぱく)[^0-9]*([0-9]+\.?[0-9]*)/);
+            const fMatch = normalizedText.match(/(?:脂質)[^0-9]*([0-9]+\.?[0-9]*)/);
+            const cMatch = normalizedText.match(/(?:炭水化物|糖質)[^0-9]*([0-9]+\.?[0-9]*)/);
+            if(pMatch) document.getElementById('pManual').value = parseFloat(pMatch[1]);
+            if(fMatch) document.getElementById('fManual').value = parseFloat(fMatch[1]);
+            if(cMatch) document.getElementById('cManual').value = parseFloat(cMatch[1]);
+            alert("読み取りが完了しました。必ず手動で数値が合っているか確認してください！");
+        }
 
         function formatDate(date) {
             const y = date.getFullYear();
@@ -192,17 +273,14 @@
             save(); render();
         }
 
-        // 入力モーダルの制御
         function openModal(index) {
             activeMealIndex = index;
             document.getElementById('inputModal').style.display = 'block';
+            updateGramLabel();
         }
 
-        function closeModal() { 
-            document.getElementById('inputModal').style.display = 'none'; 
-        }
+        function closeModal() { document.getElementById('inputModal').style.display = 'none'; }
 
-        // タブ切り替え制御
         function switchTab(mode) {
             currentTabMode = mode;
             if(mode === 'dict') {
@@ -218,56 +296,41 @@
             }
         }
 
-        // データ確定処理
         function commitItem() {
             let p, f, c, name, cal, displayGrams;
+            const combinedDict = getCombinedDict();
 
             if(currentTabMode === 'manual') {
-                // 手動入力の場合
                 p = parseFloat(document.getElementById('pManual').value) || 0;
                 f = parseFloat(document.getElementById('fManual').value) || 0;
                 c = parseFloat(document.getElementById('cManual').value) || 0;
                 name = document.getElementById('manualNameInput').value || "手動入力";
                 cal = Math.round(p*4 + f*9 + c*4);
-                displayGrams = null; // グラム数は記録しない
+                displayGrams = null; 
             } else {
-                // 辞書から選ぶ場合
                 const foodKey = document.getElementById('foodSelect').value;
-                const grams = parseFloat(document.getElementById('gramInput').value) || 0;
-                const food = foodDict[foodKey];
-                p = food.p * (grams/100);
-                f = food.f * (grams/100);
-                c = food.c * (grams/100);
+                const multiplier = parseFloat(document.getElementById('gramInput').value) || 0;
+                const food = combinedDict[foodKey];
+                const ratio = multiplier / (food.base || 100);
+                p = food.p * ratio; f = food.f * ratio; c = food.c * ratio;
                 name = food.name;
                 cal = Math.round(p*4 + f*9 + c*4);
-                displayGrams = grams;
+                displayGrams = food.base === 1 ? `${multiplier}個(食)` : `${multiplier}g`;
             }
 
             if (!diaryData[currentDateStr]) diaryData[currentDateStr] = [{ items: [] }];
-            diaryData[currentDateStr][activeMealIndex].items.push({ name, p, f, c, cal, grams: displayGrams });
+            diaryData[currentDateStr][activeMealIndex].items.push({ name, p, f, c, cal, displayGrams });
             
-            // 入力欄をクリア
             document.getElementById('gramInput').value = "";
             document.getElementById('manualNameInput').value = "";
             document.getElementById('pManual').value = "";
             document.getElementById('fManual').value = "";
             document.getElementById('cManual').value = "";
-
             save(); render(); closeModal();
         }
 
-        function removeItem(mIdx, iIdx) {
-            diaryData[currentDateStr][mIdx].items.splice(iIdx, 1);
-            save(); render();
-        }
-
-        function removeMeal(mIdx) {
-            if(confirm("食事枠を削除しますか？")) {
-                diaryData[currentDateStr].splice(mIdx, 1);
-                save(); render();
-            }
-        }
-
+        function removeItem(mIdx, iIdx) { diaryData[currentDateStr][mIdx].items.splice(iIdx, 1); save(); render(); }
+        function removeMeal(mIdx) { if(confirm("食事枠を削除しますか？")) { diaryData[currentDateStr].splice(mIdx, 1); save(); render(); } }
         function save() { localStorage.setItem('pfcDiaryData', JSON.stringify(diaryData)); }
 
         function render() {
@@ -281,16 +344,14 @@
                 const mealCard = document.createElement('div');
                 mealCard.className = 'card meal-section';
                 let mealHtml = `<div class="meal-header"><b>${mIdx+1}食目</b> <span onclick="removeMeal(${mIdx})" style="color:red; font-size:12px; cursor:pointer;">枠を削除</span></div><hr>`;
-                
                 meal.items.forEach((item, iIdx) => {
-                    const gramText = item.grams ? ` (${item.grams}g)` : '';
+                    const gramText = item.displayGrams ? ` (${item.displayGrams})` : '';
                     mealHtml += `<div class="item-row">
                         <span>${item.name}${gramText}</span>
                         <span>${item.cal}kcal <button class="btn-small" onclick="removeItem(${mIdx}, ${iIdx})">✕</button></span>
                     </div>`;
                     total.p += item.p; total.f += item.f; total.c += item.c; total.cal += item.cal;
                 });
-                
                 mealHtml += `<button onclick="openModal(${mIdx})" style="background:#f0f0f5; color:var(--primary); margin-top:10px; font-size:14px;">＋ 食材を追加</button>`;
                 mealCard.innerHTML = mealHtml;
                 container.appendChild(mealCard);
@@ -304,68 +365,129 @@
         }
 
         function resetDayAll() {
-            if(confirm(`${currentDateStr} をリセットしますか？`)) {
-                diaryData[currentDateStr] = [{ items: [] }];
-                save(); render();
+            if(confirm(`${currentDateStr} をリセットしますか？`)) { diaryData[currentDateStr] = [{ items: [] }]; save(); render(); }
+        }
+
+        function openCustomFoodModal() { document.getElementById('customFoodOverlay').style.display = 'block'; renderCustomFoodList(); }
+        function closeCustomFoodModal() { document.getElementById('customFoodOverlay').style.display = 'none'; }
+        
+        function saveCustomFood() {
+            const name = document.getElementById('regName').value;
+            const p = parseFloat(document.getElementById('regP').value) || 0;
+            const f = parseFloat(document.getElementById('regF').value) || 0;
+            const c = parseFloat(document.getElementById('regC').value) || 0;
+            const base = parseInt(document.getElementById('regBase').value);
+            if(!name) return alert("品名を入力してください");
+            const key = 'custom_' + Date.now();
+            customFoodDict[key] = { name, p, f, c, base };
+            localStorage.setItem('pfcCustomFoods', JSON.stringify(customFoodDict));
+            document.getElementById('regName').value = ""; document.getElementById('regP').value = ""; document.getElementById('regF').value = ""; document.getElementById('regC').value = "";
+            renderFoodSelect(); renderCustomFoodList();
+        }
+
+        function deleteCustomFood(key) {
+            if(confirm("この食材を削除しますか？")) { delete customFoodDict[key]; localStorage.setItem('pfcCustomFoods', JSON.stringify(customFoodDict)); renderFoodSelect(); renderCustomFoodList(); }
+        }
+
+        function renderCustomFoodList() {
+            const container = document.getElementById('customFoodListContainer');
+            container.innerHTML = '';
+            if(Object.keys(customFoodDict).length === 0) { container.innerHTML = '<p style="color:#888; font-size:14px;">まだ登録されていません。</p>'; return; }
+            for(let key in customFoodDict) {
+                const food = customFoodDict[key];
+                const baseText = food.base === 1 ? "1個(食)あたり" : "100gあたり";
+                container.innerHTML += `<div class="custom-food-item"><div class="custom-food-info"><b>${food.name}</b><span>${baseText} / P:${food.p} F:${food.f} C:${food.c}</span></div><button onclick="deleteCustomFood('${key}')" style="width:auto; padding:5px 10px; background:#ff3b30; color:white; font-size:12px;">削除</button></div>`;
             }
         }
 
-        /* --- マンスリーカレンダー表示 --- */
+        function renderFoodSelect() {
+            const select = document.getElementById('foodSelect');
+            select.innerHTML = '';
+            const groupDef = document.createElement('optgroup'); groupDef.label = "デフォルト食材";
+            for(let key in defaultFoodDict) { let opt = document.createElement('option'); opt.value = key; opt.text = defaultFoodDict[key].name; groupDef.appendChild(opt); }
+            select.appendChild(groupDef);
+            if(Object.keys(customFoodDict).length > 0) {
+                const groupCustom = document.createElement('optgroup'); groupCustom.label = "マイ食材";
+                for(let key in customFoodDict) { let opt = document.createElement('option'); opt.value = key; opt.text = customFoodDict[key].name; groupCustom.appendChild(opt); }
+                select.appendChild(groupCustom);
+            }
+            select.onchange = updateGramLabel;
+        }
+
+        function updateGramLabel() {
+            const select = document.getElementById('foodSelect');
+            if(!select.value) return;
+            const combinedDict = getCombinedDict();
+            const food = combinedDict[select.value];
+            const label = document.getElementById('dictGramLabel');
+            if(food.base === 1) { label.innerText = "2. 食べる個数・杯数 (例: 1)"; document.getElementById('gramInput').placeholder = "例: 1"; } 
+            else { label.innerText = "2. グラム数(g)"; document.getElementById('gramInput').placeholder = "例: 100"; }
+        }
+
         function showMonthlyView() {
             const overlay = document.getElementById('monthlyOverlay');
             const grid = document.getElementById('calendarGrid');
             grid.innerHTML = '';
-            
             const now = new Date(currentDateStr);
-            const year = now.getFullYear();
-            const month = now.getMonth();
+            const year = now.getFullYear(); const month = now.getMonth();
             document.getElementById('monthlyTitle').innerText = `${year}年${month+1}月の履歴`;
-
-            ['日','月','火','水','木','金','土'].forEach(d => {
-                const h = document.createElement('div');
-                h.className = 'calendar-header-day';
-                h.innerText = d;
-                grid.appendChild(h);
-            });
-
-            const firstDay = new Date(year, month, 1);
-            const lastDay = new Date(year, month + 1, 0);
-            
-            for(let i=0; i<firstDay.getDay(); i++) {
-                const empty = document.createElement('div');
-                empty.className = 'calendar-cell other-month';
-                grid.appendChild(empty);
-            }
-
+            ['日','月','火','水','木','金','土'].forEach(d => { const h = document.createElement('div'); h.className = 'calendar-header-day'; h.innerText = d; grid.appendChild(h); });
+            const firstDay = new Date(year, month, 1); const lastDay = new Date(year, month + 1, 0);
+            for(let i=0; i<firstDay.getDay(); i++) { const empty = document.createElement('div'); empty.className = 'calendar-cell other-month'; grid.appendChild(empty); }
             for(let d=1; d<=lastDay.getDate(); d++) {
-                const cell = document.createElement('div');
-                cell.className = 'calendar-cell';
+                const cell = document.createElement('div'); cell.className = 'calendar-cell';
                 const dateKey = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                
                 let dayCal = 0;
-                if(diaryData[dateKey]) {
-                    diaryData[dateKey].forEach(m => {
-                        m.items.forEach(it => dayCal += it.cal);
-                    });
-                }
-
+                if(diaryData[dateKey]) { diaryData[dateKey].forEach(m => { m.items.forEach(it => dayCal += it.cal); }); }
                 cell.innerHTML = `<div>${d}</div><div class="cal-cal-val">${dayCal > 0 ? dayCal : ''}</div>`;
-                
-                cell.onclick = () => {
-                    currentDateStr = dateKey;
-                    document.getElementById('datePicker').value = dateKey;
-                    render();
-                    hideMonthlyView();
-                };
-                
+                cell.onclick = () => { currentDateStr = dateKey; document.getElementById('datePicker').value = dateKey; render(); hideMonthlyView(); };
                 grid.appendChild(cell);
             }
-
             overlay.style.display = 'block';
         }
+        function hideMonthlyView() { document.getElementById('monthlyOverlay').style.display = 'none'; }
 
-        function hideMonthlyView() {
-            document.getElementById('monthlyOverlay').style.display = 'none';
+        /* --- バックアップ処理 --- */
+        function openBackupModal() {
+            document.getElementById('backupOverlay').style.display = 'block';
+            // 現在のすべてのデータをJSON文字列化してテキストエリアに入れる
+            const backupData = {
+                diary: diaryData,
+                goals: goals,
+                foods: customFoodDict,
+                weight: localStorage.getItem('pfcWeight') || ''
+            };
+            document.getElementById('exportText').value = JSON.stringify(backupData);
+        }
+        
+        function closeBackupModal() { document.getElementById('backupOverlay').style.display = 'none'; }
+
+        function copyBackup() {
+            const copyText = document.getElementById("exportText");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+            alert("バックアップテキストをコピーしました！LINEやメモ帳に貼り付けて保管してください。");
+        }
+
+        function restoreBackup() {
+            const importText = document.getElementById('importText').value;
+            if(!importText) return alert("テキストが入力されていません。");
+            
+            try {
+                const parsedData = JSON.parse(importText);
+                if(confirm("現在のデータは上書きされます。復元してもよろしいですか？")) {
+                    if(parsedData.diary) localStorage.setItem('pfcDiaryData', JSON.stringify(parsedData.diary));
+                    if(parsedData.goals) localStorage.setItem('pfcGoals', JSON.stringify(parsedData.goals));
+                    if(parsedData.foods) localStorage.setItem('pfcCustomFoods', JSON.stringify(parsedData.foods));
+                    if(parsedData.weight) localStorage.setItem('pfcWeight', parsedData.weight);
+                    
+                    alert("データの復元に成功しました！アプリを再読み込みします。");
+                    location.reload();
+                }
+            } catch(e) {
+                alert("正しいバックアップデータではありません。コピー漏れがないか確認してください。");
+            }
         }
     </script>
 </body>
