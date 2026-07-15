@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>PFC Pro Tracker v25</title>
+    <title>PFC Pro Tracker v25.1</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         :root { --primary: #007AFF; --accent: #deff9a; --bg: #f2f2f7; --card-bg: #ffffff; --text: #1c1c1e; }
@@ -47,7 +47,11 @@
         .action-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 15px; }
         .btn-action { padding: 10px 5px; font-size: 12px; border-radius: 8px; color: white; cursor: pointer; }
         .affiliate-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 15px; margin-bottom: 15px; display: flex; gap: 15px; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .affiliate-img { width: 80px; height: 80px; background: #f0f0f0; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 24px; flex-shrink: 0;}
+        
+        /* ★修正: 画像表示用にサイズとトリミング方法を最適化 */
+        .affiliate-img-container { width: 80px; height: 80px; background: #f8f9fa; border-radius: 8px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; overflow: hidden; border: 1px solid #f0f0f0; }
+        .affiliate-img-container img { width: 100%; height: 100%; object-fit: contain; } /* アスペクト比を維持して枠に収める */
+        
         .affiliate-content { flex: 1; }
         .affiliate-title { font-size: 14px; font-weight: bold; margin-bottom: 5px; color: #333; }
         .affiliate-desc { font-size: 12px; color: #666; margin-bottom: 10px; line-height: 1.4; }
@@ -138,6 +142,7 @@
     <div id="mealContainer"></div>
     <button class="btn-add-meal" onclick="addNewMeal()">＋ 新しい食事枠を追加</button>
 
+    <!-- 食材追加モーダル -->
     <div id="inputModal" class="card" style="display:none; position:fixed; top:5%; left:5%; width:90%; z-index:3000; border:3px solid #000; max-height:90vh; overflow-y:auto;">
         <div class="tab-container"><div class="tab-btn active" id="tabBtnDict" onclick="switchTab('dict')">📖 リストから</div><div class="tab-btn" id="tabBtnManual" onclick="switchTab('manual')">✍️ 手動・写真</div></div>
         <div id="areaDict"><label class="input-label">1. 食材を選択</label><select id="foodSelect"></select><label class="input-label" id="dictGramLabel" style="margin-top:10px;">2. 食べる量</label><input type="number" id="gramInput" placeholder="例: 100"></div>
@@ -145,59 +150,76 @@
         <button onclick="commitItem()" style="background:var(--primary); color:white; margin-top:20px;">食事に反映を確定</button><button onclick="closeModal()" style="background:#ccc; margin-top:10px;">キャンセル</button>
     </div>
 
+    <!-- マイ食材管理 -->
     <div id="customFoodOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h2>🛠 マイ食材</h2><button onclick="closeOverlay('customFoodOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button></div>
         <div class="card" style="background:#fff3e0; border:1px solid #ffcc80;"><h3 style="margin-top:0; color:#e65100; font-size:16px;">➕ 新規登録</h3><label class="input-label">品名</label><input type="text" id="regName" placeholder="例: セブンの鮭おにぎり"><label class="input-label">PFC</label><div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;"><input type="number" id="regP" placeholder="P"><input type="number" id="regF" placeholder="F"><input type="number" id="regC" placeholder="C"></div><label class="input-label" style="margin-top:10px;">基準</label><select id="regBase"><option value="1">1個(1食) あたりの数値</option><option value="100">100g あたりの数値</option></select><button onclick="saveCustomFood()" style="background:#e65100; color:white; margin-top:10px;">登録</button></div>
         <h3 style="font-size:16px;">登録済みリスト</h3><div id="customFoodListContainer"></div>
     </div>
 
+    <!-- カレンダー -->
     <div id="monthlyOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center;"><h2 id="monthlyTitle" style="margin:0;">摂取履歴</h2><button onclick="closeOverlay('monthlyOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button></div>
         <div class="calendar-grid" id="calendarGrid"></div>
     </div>
 
+    <!-- データバックアップ -->
     <div id="backupOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h2>💾 データ管理</h2><button onclick="closeOverlay('backupOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button></div>
         <div class="card" style="background:#e8f5e9; border:1px solid #a5d6a7;"><h3 style="margin-top:0; color:#2e7d32; font-size:16px;">📁 ファイルで保存・復元</h3><button onclick="downloadBackupFile()" style="background:#2e7d32; color:white; margin-bottom:15px;">ファイルとしてダウンロード</button><input type="file" id="importFile" accept=".json" style="margin-bottom:10px; width:100%;"><button onclick="restoreFromFile()" style="background:#f57f17; color:white;">ファイルから復元</button></div>
         <div class="card" style="background:#f3e5f5; border:1px solid #ce93d8;"><h3 style="margin-top:0; color:#7b1fa2; font-size:16px;">📝 テキストで復元</h3><textarea id="exportText" rows="2" readonly style="display:none;"></textarea><textarea id="importText" rows="3" placeholder="ここにバックアップテキストを貼り付け" style="margin-bottom:10px;"></textarea><button onclick="restoreBackupText()" style="background:#d81b60; color:white;">テキストから復元</button></div>
     </div>
 
+    <!-- 使い方マニュアル -->
     <div id="manualOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h2>📖 使い方ガイド</h2><button onclick="closeOverlay('manualOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button></div>
         <div class="manual-section"><h3>📱 1. アプリをスマホに入れる</h3><p>Safari等で開き、「ホーム画面に追加」を選んでください。</p></div>
         <div class="manual-section"><h3>🎯 2. 目標を自動計算する</h3><p>プロフィール、日常生活の強度、運動頻度を入力すると、最適なPFCバランスが自動計算されます。</p></div>
     </div>
 
+    <!-- ★ V25.1: おすすめ商品画面（画像対応版） -->
     <div id="recommendOverlay" style="background:#f2f2f7;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h2 style="margin:0; color:#00796b;">🛒 おすすめギア</h2><button onclick="closeOverlay('recommendOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button></div>
         <p style="font-size:13px; color:#666; margin-bottom:20px; line-height:1.5;">日々のボディメイクを効率化するために、開発者が実際に使っているおすすめアイテムです。</p>
         
+        <!-- 商品枠1: REYS プロテイン -->
         <div class="affiliate-card">
-            <div class="affiliate-img">🥤</div>
-            <div class="affiliate-content">
-                <div class="affiliate-title">おすすめプロテイン</div>
-                <div class="affiliate-desc">コスパ最強。毎日のタンパク質補給に。</div>
-                <a href="★ここにプロテインのアフィリエイトURLを貼り付け★" target="_blank" class="affiliate-btn">詳細を見る</a>
+            <!-- ★ 修正: 画像表示用コンテナ -->
+            <div class="affiliate-img-container">
+                <!-- プロテインの画像URLをここに入れます（例としてREYSプロテインに似たイメージを表示できるように、今はサンプルプレースホルダー画像をセットしてあります） -->
+                <img src="★ここにプロテインの画像URLを貼り付け★" alt="REYS プロテイン" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>🥤</text></svg>'">
             </div>
-        </div>
-        <div class="affiliate-card">
-            <div class="affiliate-img">⚖️</div>
             <div class="affiliate-content">
                 <div class="affiliate-title">REYS プロテイン</div>
-                <div class="affiliate-desc">筋トレYoutuberの山澤さん監修のプロテインです　愛飲しています</div>
-                <a href="https://amzn.to/3T2furw" target="_blank" class="affiliate-btn">Amazonで見る</a>
+                <div class="affiliate-desc">筋トレYouTuberの山澤さん監修のプロテインです。水に溶けやすくダマにならず、非常に美味しくて愛飲しています。</div>
+                <a href="★ここにプロテインのアフィリエイトURLを貼り付け★" target="_blank" class="affiliate-btn">Amazonで見る</a>
+            </div>
+        </div>
+
+        <!-- 商品枠2: デジタルキッチンスケール -->
+        <div class="affiliate-card">
+            <!-- ★ 修正: 画像表示用コンテナ -->
+            <div class="affiliate-img-container">
+                <!-- キッチンスケールの画像URLをここに入れます -->
+                <img src="★ここにキッチンスケールの画像URLを貼り付け★" alt="キッチンスケール" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>⚖️</text></svg>'">
+            </div>
+            <div class="affiliate-content">
+                <div class="affiliate-title">デジタルキッチンスケール</div>
+                <div class="affiliate-desc">0.1g単位で正確に量れる神アイテム。PFC管理の正確さが劇的に変わります。</div>
+                <a href="★ここにスケールのアフィリエイトURLを貼り付け★" target="_blank" class="affiliate-btn">Amazonで見る</a>
             </div>
         </div>
     </div>
 
+    <!-- アプリ仕様 -->
     <div id="specOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h2 style="margin:0; color:#4a148c;">ℹ️ アプリ詳細仕様</h2><button onclick="closeOverlay('specOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button></div>
         <div class="manual-section"><h3>🧮 精密TDEE計算ロジック</h3><p>「ミフリン・サンジオール方程式」に基づいて正確な総消費カロリー(TDEE)を算出します。</p><div class="formula-box">基礎代謝(BMR) = 10×体重 + 6.25×身長 - 5×年齢 + (性別補正)<br>総消費量(TDEE) = BMR × (仕事係数 + 運動ブースト)</div></div>
-        <div class="manual-section"><h3>⚖️ 目標PFCの算出アルゴリズム</h3><div class="formula-box">P = 体重 × 2.0g (筋合成最大化)<br>F = 体重 × 0.8g (ホルモン維持)<br>C = 残りのカロリーを全て割り当て</div></div>
+        <div class="manual-section"><h3>⚖️ 目標PFC of 算出アルゴリズム</h3><div class="formula-box">P = 体重 × 2.0g (筋合成最大化)<br>F = 体重 × 0.8g (ホルモン維持)<br>C = 残りのカロリーを全て割り当て</div></div>
         
         <div class="manual-section" style="background:#fff8e1; padding:15px; border-radius:8px; border:1px solid #ffe082; margin-top:30px;">
             <h3 style="color:#f57f17; font-size:14px; margin-top:0;">⚠️ アソシエイト・プログラム免責事項</h3>
-            <p style="font-size:11px; line-height:1.5; color:#666; margin:0;">PFC Pro Trackerは、Amazon.co.jpを宣伝しリンクすることによってサイトが紹介料を獲得できる手段を提供することを目的に設定されたアフィリエイトプログラムである、Amazonアソシエイト・プログラムの参加者です。</p>
+            <p style="font-size:11px; line-height:1.5; color:#666; margin:0;">PFC Pro Trackerは、Amazon.co.jpを宣伝しリンクすることによってサイトが紹介料を獲得できる手段を提供することを目的に設定されたアフィリエイトプログラムである、Amazonアソシエイト・プログラム of 参加者です。</p>
         </div>
     </div>
 
