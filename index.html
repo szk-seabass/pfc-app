@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>PFC Pro Tracker v25.1</title>
+    <title>PFC Pro Tracker v29</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         :root { --primary: #007AFF; --accent: #deff9a; --bg: #f2f2f7; --card-bg: #ffffff; --text: #1c1c1e; }
@@ -46,16 +46,16 @@
         .manual-section ul { font-size: 14px; color: #444; padding-left: 20px; margin: 0; line-height: 1.6; }
         .action-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 15px; }
         .btn-action { padding: 10px 5px; font-size: 12px; border-radius: 8px; color: white; cursor: pointer; }
+        
+        .genre-title { font-size: 15px; color: #00796b; border-bottom: 2px solid #b2dfdb; padding-bottom: 5px; margin: 20px 0 10px 0; }
         .affiliate-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 15px; margin-bottom: 15px; display: flex; gap: 15px; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        
-        /* ★修正: 画像表示用にサイズとトリミング方法を最適化 */
         .affiliate-img-container { width: 80px; height: 80px; background: #f8f9fa; border-radius: 8px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; overflow: hidden; border: 1px solid #f0f0f0; }
-        .affiliate-img-container img { width: 100%; height: 100%; object-fit: contain; } /* アスペクト比を維持して枠に収める */
-        
+        .affiliate-img-container img { width: 100%; height: 100%; object-fit: contain; }
         .affiliate-content { flex: 1; }
         .affiliate-title { font-size: 14px; font-weight: bold; margin-bottom: 5px; color: #333; }
         .affiliate-desc { font-size: 12px; color: #666; margin-bottom: 10px; line-height: 1.4; }
-        .affiliate-btn { display: inline-block; background: #ff9500; color: white; padding: 8px 15px; font-size: 12px; font-weight: bold; border-radius: 6px; text-decoration: none; text-align: center; }
+        .affiliate-btn { display: inline-block; color: white; padding: 8px 0; font-size: 12px; font-weight: bold; border-radius: 6px; text-decoration: none; text-align: center; }
+        
         .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         .profile-grid input, .profile-grid select { margin-bottom: 0; }
         .formula-box { background: #f8f9fa; border-radius: 8px; padding: 12px; border-left: 4px solid var(--primary); margin: 10px 0; font-family: monospace; font-size: 13px; color: #333; line-height: 1.5; }
@@ -144,82 +144,181 @@
 
     <!-- 食材追加モーダル -->
     <div id="inputModal" class="card" style="display:none; position:fixed; top:5%; left:5%; width:90%; z-index:3000; border:3px solid #000; max-height:90vh; overflow-y:auto;">
-        <div class="tab-container"><div class="tab-btn active" id="tabBtnDict" onclick="switchTab('dict')">📖 リストから</div><div class="tab-btn" id="tabBtnManual" onclick="switchTab('manual')">✍️ 手動・写真</div></div>
-        <div id="areaDict"><label class="input-label">1. 食材を選択</label><select id="foodSelect"></select><label class="input-label" id="dictGramLabel" style="margin-top:10px;">2. 食べる量</label><input type="number" id="gramInput" placeholder="例: 100"></div>
-        <div id="areaManual" style="display:none;"><button type="button" onclick="document.getElementById('ocrInput').click()" style="background:#e3f2fd; color:var(--primary); margin-bottom:15px; font-size:14px; padding:10px;">📷 写真から自動読取</button><input type="file" id="ocrInput" accept="image/*" style="display:none;" onchange="runOCR(event)"><div id="ocrLoading">🔍 解析中...</div><label class="input-label">1. 品名 (任意)</label><input type="text" id="manualNameInput" placeholder="例: 外食の定食"><label class="input-label" style="margin-top:10px;">2. PFC</label><div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;"><input type="number" id="pManual" placeholder="P" step="0.1" value="0.0"><input type="number" id="fManual" placeholder="F" step="0.1" value="0.0"><input type="number" id="cManual" placeholder="C" step="0.1" value="0.0"></div><button type="button" onclick="regCustomFromManual()" style="background:#fff3e0; color:#e65100; margin-top:15px; font-size:14px; padding:10px; border:1px solid #ffcc80;">✨ この内容をマイ食材に登録</button></div>
-        <button onclick="commitItem()" style="background:var(--primary); color:white; margin-top:20px;">食事に反映を確定</button><button onclick="closeModal()" style="background:#ccc; margin-top:10px;">キャンセル</button>
+        <div class="tab-container">
+            <div class="tab-btn active" id="tabBtnDict" onclick="switchTab('dict')">📖 リストから</div>
+            <div class="tab-btn" id="tabBtnManual" onclick="switchTab('manual')">✍️ 手動・写真</div>
+        </div>
+        <div id="areaDict">
+            <label class="input-label">1. 食材を選択</label>
+            <select id="foodSelect"></select>
+            <label class="input-label" id="dictGramLabel" style="margin-top:10px;">2. 食べる量</label>
+            <input type="number" id="gramInput" placeholder="例: 100">
+        </div>
+        <div id="areaManual" style="display:none;">
+            <button type="button" onclick="document.getElementById('ocrInput').click()" style="background:#e3f2fd; color:var(--primary); margin-bottom:15px; font-size:14px; padding:10px;">📷 写真から自動読取</button>
+            <input type="file" id="ocrInput" accept="image/*" style="display:none;" onchange="runOCR(event)">
+            <div id="ocrLoading">🔍 解析中...</div>
+            <label class="input-label">1. 品名 (任意)</label>
+            <input type="text" id="manualNameInput" placeholder="例: 外食の定食">
+            <label class="input-label" style="margin-top:10px;">2. PFC</label>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+                <input type="number" id="pManual" placeholder="P" step="0.1" value="0.0">
+                <input type="number" id="fManual" placeholder="F" step="0.1" value="0.0">
+                <input type="number" id="cManual" placeholder="C" step="0.1" value="0.0">
+            </div>
+            <button type="button" onclick="regCustomFromManual()" style="background:#fff3e0; color:#e65100; margin-top:15px; font-size:14px; padding:10px; border:1px solid #ffcc80;">✨ この内容をマイ食材に登録</button>
+        </div>
+        <button onclick="commitItem()" style="background:var(--primary); color:white; margin-top:20px;">食事に反映を確定</button>
+        <button onclick="closeModal()" style="background:#ccc; margin-top:10px;">キャンセル</button>
     </div>
 
     <!-- マイ食材管理 -->
     <div id="customFoodOverlay">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h2>🛠 マイ食材</h2><button onclick="closeOverlay('customFoodOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button></div>
-        <div class="card" style="background:#fff3e0; border:1px solid #ffcc80;"><h3 style="margin-top:0; color:#e65100; font-size:16px;">➕ 新規登録</h3><label class="input-label">品名</label><input type="text" id="regName" placeholder="例: セブンの鮭おにぎり"><label class="input-label">PFC</label><div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;"><input type="number" id="regP" placeholder="P"><input type="number" id="regF" placeholder="F"><input type="number" id="regC" placeholder="C"></div><label class="input-label" style="margin-top:10px;">基準</label><select id="regBase"><option value="1">1個(1食) あたりの数値</option><option value="100">100g あたりの数値</option></select><button onclick="saveCustomFood()" style="background:#e65100; color:white; margin-top:10px;">登録</button></div>
-        <h3 style="font-size:16px;">登録済みリスト</h3><div id="customFoodListContainer"></div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2>🛠 マイ食材</h2>
+            <button onclick="closeOverlay('customFoodOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button>
+        </div>
+        <div class="card" style="background:#fff3e0; border:1px solid #ffcc80;">
+            <h3 style="margin-top:0; color:#e65100; font-size:16px;">➕ 新規登録</h3>
+            <label class="input-label">品名</label>
+            <input type="text" id="regName" placeholder="例: セブンの鮭おにぎり">
+            <label class="input-label">PFC</label>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+                <input type="number" id="regP" placeholder="P">
+                <input type="number" id="regF" placeholder="F">
+                <input type="number" id="regC" placeholder="C">
+            </div>
+            <label class="input-label" style="margin-top:10px;">基準</label>
+            <select id="regBase">
+                <option value="1">1個(1食) あたりの数値</option>
+                <option value="100">100g あたりの数値</option>
+            </select>
+            <button onclick="saveCustomFood()" style="background:#e65100; color:white; margin-top:10px;">登録</button>
+        </div>
+        <h3 style="font-size:16px;">登録済みリスト</h3>
+        <div id="customFoodListContainer"></div>
     </div>
 
     <!-- カレンダー -->
     <div id="monthlyOverlay">
-        <div style="display:flex; justify-content:space-between; align-items:center;"><h2 id="monthlyTitle" style="margin:0;">摂取履歴</h2><button onclick="closeOverlay('monthlyOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button></div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2 id="monthlyTitle" style="margin:0;">摂取履歴</h2>
+            <button onclick="closeOverlay('monthlyOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button>
+        </div>
         <div class="calendar-grid" id="calendarGrid"></div>
     </div>
 
     <!-- データバックアップ -->
     <div id="backupOverlay">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h2>💾 データ管理</h2><button onclick="closeOverlay('backupOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button></div>
-        <div class="card" style="background:#e8f5e9; border:1px solid #a5d6a7;"><h3 style="margin-top:0; color:#2e7d32; font-size:16px;">📁 ファイルで保存・復元</h3><button onclick="downloadBackupFile()" style="background:#2e7d32; color:white; margin-bottom:15px;">ファイルとしてダウンロード</button><input type="file" id="importFile" accept=".json" style="margin-bottom:10px; width:100%;"><button onclick="restoreFromFile()" style="background:#f57f17; color:white;">ファイルから復元</button></div>
-        <div class="card" style="background:#f3e5f5; border:1px solid #ce93d8;"><h3 style="margin-top:0; color:#7b1fa2; font-size:16px;">📝 テキストで復元</h3><textarea id="exportText" rows="2" readonly style="display:none;"></textarea><textarea id="importText" rows="3" placeholder="ここにバックアップテキストを貼り付け" style="margin-bottom:10px;"></textarea><button onclick="restoreBackupText()" style="background:#d81b60; color:white;">テキストから復元</button></div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2>💾 データ管理</h2>
+            <button onclick="closeOverlay('backupOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button>
+        </div>
+        <div class="card" style="background:#e8f5e9; border:1px solid #a5d6a7;">
+            <h3 style="margin-top:0; color:#2e7d32; font-size:16px;">📁 ファイルで保存・復元</h3>
+            <button onclick="downloadBackupFile()" style="background:#2e7d32; color:white; margin-bottom:15px;">ファイルとしてダウンロード</button>
+            <input type="file" id="importFile" accept=".json" style="margin-bottom:10px; width:100%;">
+            <button onclick="restoreFromFile()" style="background:#f57f17; color:white;">ファイルから復元</button>
+        </div>
+        <div class="card" style="background:#f3e5f5; border:1px solid #ce93d8;">
+            <h3 style="margin-top:0; color:#7b1fa2; font-size:16px;">📝 テキストで復元</h3>
+            <textarea id="exportText" rows="2" readonly style="display:none;"></textarea>
+            <textarea id="importText" rows="3" placeholder="ここにバックアップテキストを貼り付け" style="margin-bottom:10px;"></textarea>
+            <button onclick="restoreBackupText()" style="background:#d81b60; color:white;">テキストから復元</button>
+        </div>
     </div>
 
     <!-- 使い方マニュアル -->
     <div id="manualOverlay">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h2>📖 使い方ガイド</h2><button onclick="closeOverlay('manualOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button></div>
-        <div class="manual-section"><h3>📱 1. アプリをスマホに入れる</h3><p>Safari等で開き、「ホーム画面に追加」を選んでください。</p></div>
-        <div class="manual-section"><h3>🎯 2. 目標を自動計算する</h3><p>プロフィール、日常生活の強度、運動頻度を入力すると、最適なPFCバランスが自動計算されます。</p></div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2>📖 使い方ガイド</h2>
+            <button onclick="closeOverlay('manualOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button>
+        </div>
+        <div class="manual-section">
+            <h3>📱 1. アプリをスマホに入れる</h3>
+            <p>Safari等で開き、「ホーム画面に追加」を選んでください。</p>
+        </div>
+        <div class="manual-section">
+            <h3>🎯 2. 目標を自動計算する</h3>
+            <p>プロフィール、日常生活の強度、運動頻度を入力すると、最適なPFCバランスが自動計算されます。</p>
+        </div>
     </div>
 
-    <!-- ★ V25.1: おすすめ商品画面（画像対応版） -->
+    <!-- ★ V29: おすすめ商品画面（Amazon＆楽天ダブルリンク仕様・データ復活版） -->
     <div id="recommendOverlay" style="background:#f2f2f7;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h2 style="margin:0; color:#00796b;">🛒 おすすめギア</h2><button onclick="closeOverlay('recommendOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button></div>
-        <p style="font-size:13px; color:#666; margin-bottom:20px; line-height:1.5;">日々のボディメイクを効率化するために、開発者が実際に使っているおすすめアイテムです。</p>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h2 style="margin:0; color:#00796b;">🛒 おすすめギア</h2>
+            <button onclick="closeOverlay('recommendOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button>
+        </div>
+        <p style="font-size:13px; color:#666; margin-bottom:10px; line-height:1.5;">日々のボディメイクを効率化するために、開発者が実際に使っているおすすめアイテムです。</p>
         
-        <!-- 商品枠1: REYS プロテイン -->
+        <!-- ジャンル1: サプリメント -->
+        <h3 class="genre-title">💊 サプリメント</h3>
         <div class="affiliate-card">
-            <!-- ★ 修正: 画像表示用コンテナ -->
             <div class="affiliate-img-container">
-                <!-- プロテインの画像URLをここに入れます（例としてREYSプロテインに似たイメージを表示できるように、今はサンプルプレースホルダー画像をセットしてあります） -->
-                <img src="★ここにプロテインの画像URLを貼り付け★" alt="REYS プロテイン" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>🥤</text></svg>'">
+                <img src="" alt="REYS プロテイン" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>🥤</text></svg>'">
             </div>
             <div class="affiliate-content">
                 <div class="affiliate-title">REYS プロテイン</div>
-                <div class="affiliate-desc">筋トレYouTuberの山澤さん監修のプロテインです。水に溶けやすくダマにならず、非常に美味しくて愛飲しています。</div>
-                <a href="★ここにプロテインのアフィリエイトURLを貼り付け★" target="_blank" class="affiliate-btn">Amazonで見る</a>
+                <div class="affiliate-desc">筋トレYouTuberの山澤さん監修。水に溶けやすくダマにならず、非常に美味しくて愛飲しています。</div>
+                <div style="display: flex; gap: 8px;">
+                    <a href="https://amzn.to/4fiO5Jt" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a>
+                    <a href="<table border="0" cellpadding="0" cellspacing="0"><tr><td><div style="border:1px solid #95A5A6;border-radius:.75rem;background-color:#FFFFFF;width:504px;margin:0px;padding:5px;text-align:center;overflow:hidden;"><table><tr><td style="width:240px"><a href="https://hb.afl.rakuten.co.jp/ichiba/55c965be.f3d0e614.55c965bf.651c7a1f/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fmk-mart2%2Freys-protein02%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;"><img src="https://hbb.afl.rakuten.co.jp/hgb/55c965be.f3d0e614.55c965bf.651c7a1f/?me_id=1417207&item_id=10000536&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fmk-mart2%2Fcabinet%2Fimgrc0128427156.jpg%3F_ex%3D240x240&s=240x240&t=picttext" border="0" style="margin:2px" alt="[商品価格に関しましては、リンクが作成された時点と現時点で情報が変更されている場合がございます。]" title="[商品価格に関しましては、リンクが作成された時点と現時点で情報が変更されている場合がございます。]"></a></td><td style="vertical-align:top;width:248px;display: block;"><p style="font-size:12px;line-height:1.4em;text-align:left;margin:0px;padding:2px 6px;word-wrap:break-word"><a href="https://hb.afl.rakuten.co.jp/ichiba/55c965be.f3d0e614.55c965bf.651c7a1f/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fmk-mart2%2Freys-protein02%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;">REYS レイズ ホエイ プロテイン 1kg ミルクティー フルーツオレ 700g チョコレート カフェオレ ソイプロテイン 塩キャラメル 安納芋 安納芋味 粉末 山澤 礼明 監修 国内製造 ビタミン7種配合 WPCプロテイン ぷろていん ホエイプロテイン パウダー ダイエット 送料無料 ■</a><br><span >価格：3,950円～（税込、送料無料)</span> <span style="color:#BBB">(2026/7/15時点)</span></p><div style="margin:10px;"><a href="https://hb.afl.rakuten.co.jp/ichiba/55c965be.f3d0e614.55c965bf.651c7a1f/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fmk-mart2%2Freys-protein02%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;"><img src="https://static.affiliate.rakuten.co.jp/makelink/rl.svg" style="float:left;max-height:27px;width:auto;margin-top:0" ></a><a href="https://hb.afl.rakuten.co.jp/ichiba/55c965be.f3d0e614.55c965bf.651c7a1f/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fmk-mart2%2Freys-protein02%2F%3Fscid%3Daf_pc_bbtn&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ==" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;"><div style="float:right;width:41%;height:27px;background-color:#bf0000;color:#fff!important;font-size:12px;font-weight:500;line-height:27px;margin-left:1px;padding: 0 12px;border-radius:16px;cursor:pointer;text-align:center;"> 楽天で購入 </div></a></div></td></tr></table></div><br><p style="color:#000000;font-size:12px;line-height:1.4em;margin:5px;word-wrap:break-word"></p></td></tr></table>" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a>
+                </div>
             </div>
         </div>
 
-        <!-- 商品枠2: デジタルキッチンスケール -->
+        <!-- ジャンル2: トレーニングギア -->
+        <h3 class="genre-title">🏋️ トレーニングギア</h3>
         <div class="affiliate-card">
-            <!-- ★ 修正: 画像表示用コンテナ -->
             <div class="affiliate-img-container">
-                <!-- キッチンスケールの画像URLをここに入れます -->
-                <img src="★ここにキッチンスケールの画像URLを貼り付け★" alt="キッチンスケール" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>⚖️</text></svg>'">
+                <img src="" alt="キッチンスケール" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>⚖️</text></svg>'">
             </div>
             <div class="affiliate-content">
                 <div class="affiliate-title">デジタルキッチンスケール</div>
                 <div class="affiliate-desc">0.1g単位で正確に量れる神アイテム。PFC管理の正確さが劇的に変わります。</div>
-                <a href="★ここにスケールのアフィリエイトURLを貼り付け★" target="_blank" class="affiliate-btn">Amazonで見る</a>
+                <div style="display: flex; gap: 8px;">
+                    <a href="★AmazonのURL（amzn.to/〜）をここに貼る★" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a>
+                    <a href="★楽天のURL（hb.afl...等）をここに貼る★" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ジャンル3: 食材 -->
+        <h3 class="genre-title">🥦 食材</h3>
+        <div class="affiliate-card">
+            <div class="affiliate-img-container">
+                <img src="" alt="おすすめ食材" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>🍽️</text></svg>'">
+            </div>
+            <div class="affiliate-content">
+                <div class="affiliate-title">おすすめオートミール</div>
+                <div class="affiliate-desc">減量期の主食に最適。食物繊維が豊富で腹持ち抜群です。</div>
+                <div style="display: flex; gap: 8px;">
+                    <a href="★AmazonのURL（amzn.to/〜）をここに貼る★" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a>
+                    <a href="★楽天のURL（hb.afl...等）をここに貼る★" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- アプリ仕様 -->
     <div id="specOverlay">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h2 style="margin:0; color:#4a148c;">ℹ️ アプリ詳細仕様</h2><button onclick="closeOverlay('specOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button></div>
-        <div class="manual-section"><h3>🧮 精密TDEE計算ロジック</h3><p>「ミフリン・サンジオール方程式」に基づいて正確な総消費カロリー(TDEE)を算出します。</p><div class="formula-box">基礎代謝(BMR) = 10×体重 + 6.25×身長 - 5×年齢 + (性別補正)<br>総消費量(TDEE) = BMR × (仕事係数 + 運動ブースト)</div></div>
-        <div class="manual-section"><h3>⚖️ 目標PFC of 算出アルゴリズム</h3><div class="formula-box">P = 体重 × 2.0g (筋合成最大化)<br>F = 体重 × 0.8g (ホルモン維持)<br>C = 残りのカロリーを全て割り当て</div></div>
-        
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 style="margin:0; color:#4a148c;">ℹ️ アプリ詳細仕様</h2>
+            <button onclick="closeOverlay('specOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button>
+        </div>
+        <div class="manual-section">
+            <h3>🧮 精密TDEE計算ロジック</h3>
+            <p>「ミフリン・サンジオール方程式」に基づいて正確な総消費カロリー(TDEE)を算出します。</p>
+            <div class="formula-box">基礎代謝(BMR) = 10×体重 + 6.25×身長 - 5×年齢 + (性別補正)<br>総消費量(TDEE) = BMR × (仕事係数 + 運動ブースト)</div>
+        </div>
+        <div class="manual-section">
+            <h3>⚖️ 目標PFC of 算出アルゴリズム</h3>
+            <div class="formula-box">P = 体重 × 2.0g (筋合成最大化)<br>F = 体重 × 0.8g (ホルモン維持)<br>C = 残りのカロリーを全て割り当て</div>
+        </div>
         <div class="manual-section" style="background:#fff8e1; padding:15px; border-radius:8px; border:1px solid #ffe082; margin-top:30px;">
             <h3 style="color:#f57f17; font-size:14px; margin-top:0;">⚠️ アソシエイト・プログラム免責事項</h3>
-            <p style="font-size:11px; line-height:1.5; color:#666; margin:0;">PFC Pro Trackerは、Amazon.co.jpを宣伝しリンクすることによってサイトが紹介料を獲得できる手段を提供することを目的に設定されたアフィリエイトプログラムである、Amazonアソシエイト・プログラム of 参加者です。</p>
+            <p style="font-size:11px; line-height:1.5; color:#666; margin:0;">PFC Pro Trackerは、Amazon.co.jpを宣伝しリンクすることによってサイトが紹介料を獲得できる手段を提供することを目的に設定されたアフィリエイトプログラムである、Amazonアソシエイト・プログラムの参加者です。</p>
         </div>
     </div>
 
@@ -231,15 +330,24 @@
             "rice":    { name: "白米", p: 2.5, f: 0.3, c: 37.1, base: 100 },
             "egg":     { name: "卵(1個)", p: 6.2, f: 5.2, c: 0.2, base: 1 } 
         };
+        
         let diaryData = JSON.parse(localStorage.getItem('pfcDiaryData')) || {};
         let goals = JSON.parse(localStorage.getItem('pfcGoals')) || { p:0, f:0, c:0, cal:0 };
         let customFoodDict = JSON.parse(localStorage.getItem('pfcCustomFoods')) || {};
         let userProfile = JSON.parse(localStorage.getItem('pfcProfile')) || {};
-        let currentDateStr = ""; let activeMealIndex = null; let currentTabMode = 'dict';
-        function getCombinedDict() { return { ...defaultFoodDict, ...customFoodDict }; }
+        let currentDateStr = ""; 
+        let activeMealIndex = null; 
+        let currentTabMode = 'dict';
+
+        function getCombinedDict() { 
+            return { ...defaultFoodDict, ...customFoodDict }; 
+        }
 
         window.onload = () => {
-            const today = new Date(); currentDateStr = formatDate(today); document.getElementById('datePicker').value = currentDateStr;
+            const today = new Date(); 
+            currentDateStr = formatDate(today); 
+            document.getElementById('datePicker').value = currentDateStr;
+            
             if(userProfile.weight) {
                 document.getElementById('genderSelect').value = userProfile.gender || 'male';
                 if(userProfile.age) document.getElementById('ageInput').value = userProfile.age;
@@ -249,105 +357,221 @@
                 if(userProfile.exerciseFrequency) document.getElementById('exerciseFrequency').value = userProfile.exerciseFrequency;
                 if(userProfile.goalOffset !== undefined) document.getElementById('goalSelect').value = userProfile.goalOffset;
             }
-            renderFoodSelect(); render();
+            renderFoodSelect(); 
+            render();
         };
 
         function calculatePrecisionTDEE() {
-            const gender = document.getElementById('genderSelect').value; const age = parseFloat(document.getElementById('ageInput').value);
-            const height = parseFloat(document.getElementById('heightInput').value); const weight = parseFloat(document.getElementById('weightInput').value);
-            const jobIntensity = parseFloat(document.getElementById('jobIntensity').value); const exerciseFrequency = parseFloat(document.getElementById('exerciseFrequency').value);
+            const gender = document.getElementById('genderSelect').value; 
+            const age = parseFloat(document.getElementById('ageInput').value);
+            const height = parseFloat(document.getElementById('heightInput').value); 
+            const weight = parseFloat(document.getElementById('weightInput').value);
+            const jobIntensity = parseFloat(document.getElementById('jobIntensity').value); 
+            const exerciseFrequency = parseFloat(document.getElementById('exerciseFrequency').value);
             const goalOffset = parseFloat(document.getElementById('goalSelect').value);
+            
             if(!age || !height || !weight) return alert("プロフィールを入力してください");
+            
             let bmr = (10 * weight) + (6.25 * height) - (5 * age) + (gender === 'male' ? 5 : -161);
-            const activityFactor = jobIntensity + exerciseFrequency; const tdee = bmr * activityFactor; const targetCal = Math.round(tdee + goalOffset);
-            goals.cal = targetCal; goals.p = Math.round(weight * 2.0); goals.f = Math.round(weight * 0.8);
+            const activityFactor = jobIntensity + exerciseFrequency; 
+            const tdee = bmr * activityFactor; 
+            const targetCal = Math.round(tdee + goalOffset);
+            
+            goals.cal = targetCal; 
+            goals.p = Math.round(weight * 2.0); 
+            goals.f = Math.round(weight * 0.8);
             goals.c = Math.max(0, Math.round((goals.cal - (goals.p * 4 + goals.f * 9)) / 4));
+            
             userProfile = { gender, age, height, weight, jobIntensity, exerciseFrequency, goalOffset, bmr, tdee, activityFactor };
-            localStorage.setItem('pfcProfile', JSON.stringify(userProfile)); localStorage.setItem('pfcGoals', JSON.stringify(goals));
-            render(); alert(`目標を ${targetCal} kcal に更新しました！`);
+            localStorage.setItem('pfcProfile', JSON.stringify(userProfile)); 
+            localStorage.setItem('pfcGoals', JSON.stringify(goals));
+            
+            render(); 
+            alert(`目標を ${targetCal} kcal に更新しました！`);
         }
 
         async function runOCR(event) {
-            const file = event.target.files[0]; if (!file) return;
+            const file = event.target.files[0]; 
+            if (!file) return;
             document.getElementById('ocrLoading').style.display = 'block';
             try {
                 const img = new Image();
                 img.onload = async () => {
-                    const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
-                    canvas.width = img.width * 2; canvas.height = img.height * 2; ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    const canvas = document.createElement('canvas'); 
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = img.width * 2; 
+                    canvas.height = img.height * 2; 
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     const result = await Tesseract.recognize(canvas.toDataURL('image/jpeg'), 'jpn');
+                    
                     let clean = result.data.text.replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0)).replace(/[oOＯｏ]/g, '0').replace(/[lIｌＩ|]/g, '1').replace(/,/g, '.').replace(/\s+/g, '');
                     const p = clean.match(/(?:たんぱく質|蛋白質|タンパク質|たんばく質|たんぱく|ﾀﾝﾊﾟｸ|タンパク)[^0-9]*?([0-9]+\.?[0-9]*)/);
                     const f = clean.match(/(?:脂質|脂)[^0-9]*?([0-9]+\.?[0-9]*)/);
                     const c = clean.match(/(?:炭水化物|糖質|炭水)[^0-9]*?([0-9]+\.?[0-9]*)/);
+                    
                     if(p) document.getElementById('pManual').value = parseFloat(p[1]).toFixed(1);
                     if(f) document.getElementById('fManual').value = parseFloat(f[1]).toFixed(1);
                     if(c) document.getElementById('cManual').value = parseFloat(c[1]).toFixed(1);
                     document.getElementById('ocrLoading').style.display = 'none';
-                }; img.src = URL.createObjectURL(file);
-            } catch (e) { alert("失敗しました"); document.getElementById('ocrLoading').style.display = 'none'; }
+                }; 
+                img.src = URL.createObjectURL(file);
+            } catch (e) { 
+                alert("失敗しました"); 
+                document.getElementById('ocrLoading').style.display = 'none'; 
+            }
         }
 
         function regCustomFromManual() {
             const name = document.getElementById('manualNameInput').value;
-            const p = parseFloat(document.getElementById('pManual').value) || 0; const f = parseFloat(document.getElementById('fManual').value) || 0; const c = parseFloat(document.getElementById('cManual').value) || 0;
+            const p = parseFloat(document.getElementById('pManual').value) || 0; 
+            const f = parseFloat(document.getElementById('fManual').value) || 0; 
+            const c = parseFloat(document.getElementById('cManual').value) || 0;
             if(!name) return alert("品名を入力してください");
             customFoodDict['custom_' + Date.now()] = { name, p, f, c, base: 1 };
-            localStorage.setItem('pfcCustomFoods', JSON.stringify(customFoodDict)); renderFoodSelect(); alert("マイ食材に登録しました！");
+            localStorage.setItem('pfcCustomFoods', JSON.stringify(customFoodDict)); 
+            renderFoodSelect(); 
+            alert("マイ食材に登録しました！");
         }
 
-        function formatDate(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
-        function changeDate(n) { const c = new Date(currentDateStr); c.setDate(c.getDate()+n); currentDateStr = formatDate(c); document.getElementById('datePicker').value = currentDateStr; render(); }
-        function onDateChanged() { currentDateStr = document.getElementById('datePicker').value; render(); }
-        function addNewMeal() { if (!diaryData[currentDateStr]) diaryData[currentDateStr] = [{ items: [] }]; diaryData[currentDateStr].push({ items: [] }); save(); render(); }
-        function openModal(idx) { activeMealIndex = idx; document.getElementById('inputModal').style.display = 'block'; updateGramLabel(); }
-        function closeModal() { document.getElementById('inputModal').style.display = 'none'; }
-        function switchTab(m) { currentTabMode = m; document.getElementById('tabBtnDict').classList.toggle('active', m==='dict'); document.getElementById('tabBtnManual').classList.toggle('active', m==='manual'); document.getElementById('areaDict').style.display = m==='dict' ? 'block' : 'none'; document.getElementById('areaManual').style.display = m==='manual' ? 'block' : 'none'; }
+        function formatDate(d) { 
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; 
+        }
+        function changeDate(n) { 
+            const c = new Date(currentDateStr); 
+            c.setDate(c.getDate()+n); 
+            currentDateStr = formatDate(c); 
+            document.getElementById('datePicker').value = currentDateStr; 
+            render(); 
+        }
+        function onDateChanged() { 
+            currentDateStr = document.getElementById('datePicker').value; 
+            render(); 
+        }
+        function addNewMeal() { 
+            if (!diaryData[currentDateStr]) diaryData[currentDateStr] = [{ items: [] }]; 
+            diaryData[currentDateStr].push({ items: [] }); 
+            save(); 
+            render(); 
+        }
+        function openModal(idx) { 
+            activeMealIndex = idx; 
+            document.getElementById('inputModal').style.display = 'block'; 
+            updateGramLabel(); 
+        }
+        function closeModal() { 
+            document.getElementById('inputModal').style.display = 'none'; 
+        }
+        function switchTab(m) { 
+            currentTabMode = m; 
+            document.getElementById('tabBtnDict').classList.toggle('active', m==='dict'); 
+            document.getElementById('tabBtnManual').classList.toggle('active', m==='manual'); 
+            document.getElementById('areaDict').style.display = m==='dict' ? 'block' : 'none'; 
+            document.getElementById('areaManual').style.display = m==='manual' ? 'block' : 'none'; 
+        }
 
         function commitItem() {
-            let p, f, c, name, cal, displayGrams; const combined = getCombinedDict();
+            let p, f, c, name, cal, displayGrams; 
+            const combined = getCombinedDict();
+            
             if(currentTabMode === 'manual') {
-                p = parseFloat(document.getElementById('pManual').value) || 0; f = parseFloat(document.getElementById('fManual').value) || 0; c = parseFloat(document.getElementById('cManual').value) || 0;
-                name = document.getElementById('manualNameInput').value || "手動入力"; cal = Math.round(p*4 + f*9 + c*4); displayGrams = null;
+                p = parseFloat(document.getElementById('pManual').value) || 0; 
+                f = parseFloat(document.getElementById('fManual').value) || 0; 
+                c = parseFloat(document.getElementById('cManual').value) || 0;
+                name = document.getElementById('manualNameInput').value || "手動入力"; 
+                cal = Math.round(p*4 + f*9 + c*4); 
+                displayGrams = null;
             } else {
-                const key = document.getElementById('foodSelect').value; const mul = parseFloat(document.getElementById('gramInput').value) || 0;
-                const food = combined[key]; const ratio = mul / (food.base || 100);
-                p = food.p * ratio; f = food.f * ratio; c = food.c * ratio; name = food.name; cal = Math.round(p*4 + f*9 + c*4); displayGrams = food.base === 1 ? `${mul}個(食)` : `${mul}g`;
+                const key = document.getElementById('foodSelect').value; 
+                const mul = parseFloat(document.getElementById('gramInput').value) || 0;
+                const food = combined[key]; 
+                const ratio = mul / (food.base || 100);
+                p = food.p * ratio; 
+                f = food.f * ratio; 
+                c = food.c * ratio; 
+                name = food.name; 
+                cal = Math.round(p*4 + f*9 + c*4); 
+                displayGrams = food.base === 1 ? `${mul}個(食)` : `${mul}g`;
             }
             if (!diaryData[currentDateStr]) diaryData[currentDateStr] = [{ items: [] }];
             diaryData[currentDateStr][activeMealIndex].items.push({ name, p, f, c, cal, displayGrams });
-            save(); render(); closeModal();
+            save(); 
+            render(); 
+            closeModal();
         }
 
-        function removeItem(m, i) { diaryData[currentDateStr][m].items.splice(i, 1); save(); render(); }
-        function removeMeal(m) { if(confirm("削除しますか？")) { diaryData[currentDateStr].splice(m, 1); save(); render(); } }
+        function removeItem(m, i) { 
+            diaryData[currentDateStr][m].items.splice(i, 1); 
+            save(); 
+            render(); 
+        }
+        function removeMeal(m) { 
+            if(confirm("削除しますか？")) { 
+                diaryData[currentDateStr].splice(m, 1); 
+                save(); 
+                render(); 
+            } 
+        }
 
         function shareDay() {
             let text = `【${currentDateStr} のPFC記録】\nカロリー: ${document.getElementById('dailyCal').innerText} / ${goals.cal} kcal\nP:${document.getElementById('pSum').innerText}g F:${document.getElementById('fSum').innerText}g C:${document.getElementById('cSum').innerText}g\n\n#PFC_Tracker`;
-            if (navigator.share) { navigator.share({ text: text }).catch(console.error); } else { navigator.clipboard.writeText(text); alert("コピーしました！"); }
+            if (navigator.share) { 
+                navigator.share({ text: text }).catch(console.error); 
+            } else { 
+                navigator.clipboard.writeText(text); 
+                alert("コピーしました！"); 
+            }
         }
-        function copyDay() { localStorage.setItem('pfcClipboard', JSON.stringify(diaryData[currentDateStr])); alert("コピーしました"); render(); }
-        function pasteDay() { if(confirm("上書き貼付しますか？")) { diaryData[currentDateStr] = JSON.parse(localStorage.getItem('pfcClipboard')); save(); render(); } }
+        
+        function copyDay() { 
+            localStorage.setItem('pfcClipboard', JSON.stringify(diaryData[currentDateStr])); 
+            alert("コピーしました"); 
+            render(); 
+        }
+        
+        function pasteDay() { 
+            if(confirm("上書き貼付しますか？")) { 
+                diaryData[currentDateStr] = JSON.parse(localStorage.getItem('pfcClipboard')); 
+                save(); 
+                render(); 
+            } 
+        }
 
         function render() {
             document.getElementById('selectedDateLabel').innerText = `${currentDateStr} の記録`;
-            const container = document.getElementById('mealContainer'); container.innerHTML = ''; let total = { p:0, f:0, c:0, cal:0 };
+            const container = document.getElementById('mealContainer'); 
+            container.innerHTML = ''; 
+            let total = { p:0, f:0, c:0, cal:0 };
             const meals = diaryData[currentDateStr] || [{ items: [] }];
+            
             meals.forEach((meal, mIdx) => {
-                const card = document.createElement('div'); card.className = 'card meal-section';
+                const card = document.createElement('div'); 
+                card.className = 'card meal-section';
                 let html = `<div class="meal-header"><b>${mIdx+1}食目</b> <span onclick="removeMeal(${mIdx})" style="color:red; font-size:12px;">枠削除</span></div><hr>`;
                 meal.items.forEach((item, iIdx) => {
                     html += `<div class="item-row"><span>${item.name}${item.displayGrams ? ' ('+item.displayGrams+')' : ''}</span><span>${item.cal}kcal <button class="btn-small" onclick="removeItem(${mIdx}, ${iIdx})">✕</button></span></div>`;
-                    total.p += item.p; total.f += item.f; total.c += item.c; total.cal += item.cal;
+                    total.p += item.p; 
+                    total.f += item.f; 
+                    total.c += item.c; 
+                    total.cal += item.cal;
                 });
-                html += `<button onclick="openModal(${mIdx})">＋ 食材を追加</button>`; card.innerHTML = html; container.appendChild(card);
+                html += `<button onclick="openModal(${mIdx})">＋ 食材を追加</button>`; 
+                card.innerHTML = html; 
+                container.appendChild(card);
             });
-            document.getElementById('dailyCal').innerText = total.cal; document.getElementById('goalCal').innerText = goals.cal || 0;
+            
+            document.getElementById('dailyCal').innerText = total.cal; 
+            document.getElementById('goalCal').innerText = goals.cal || 0;
+            
             const updateBar = (id, sum, goal, barId) => {
-                document.getElementById(id).innerText = sum.toFixed(1); document.getElementById(goal).innerText = goals[id.replace('Sum','')].toString();
+                document.getElementById(id).innerText = sum.toFixed(1); 
+                document.getElementById(goal).innerText = goals[id.replace('Sum','')].toString();
                 document.getElementById(barId).style.width = goals[id.replace('Sum','')] > 0 ? Math.min(100, (sum / goals[id.replace('Sum','')]) * 100) + '%' : '0%';
             };
-            updateBar('pSum', total.p, 'pGoal', 'pBar'); updateBar('fSum', total.f, 'fGoal', 'fBar'); updateBar('cSum', total.c, 'cGoal', 'cBar');
+            
+            updateBar('pSum', total.p, 'pGoal', 'pBar'); 
+            updateBar('fSum', total.f, 'fGoal', 'fBar'); 
+            updateBar('cSum', total.c, 'cGoal', 'cBar');
+            
             if(goals.cal > 0) {
                 document.getElementById('currentGoalsDisplay').style.display = 'block';
                 if(userProfile.bmr) document.getElementById('displayMetabolism').innerText = `基礎代謝: 約${Math.round(userProfile.bmr)}kcal / 活動係数: ${userProfile.activityFactor.toFixed(2)}`;
@@ -355,63 +579,171 @@
             document.getElementById('btnPaste').style.display = localStorage.getItem('pfcClipboard') ? 'block' : 'none';
         }
 
-        function resetDayAll() { if(confirm("リセットしますか？")) { diaryData[currentDateStr] = [{ items: [] }]; save(); render(); } }
-        function openOverlay(id) { document.getElementById(id).style.display = 'block'; if(id === 'customFoodOverlay') renderCustomFoodList(); }
-        function closeOverlay(id) { document.getElementById(id).style.display = 'none'; }
+        function resetDayAll() { 
+            if(confirm("リセットしますか？")) { 
+                diaryData[currentDateStr] = [{ items: [] }]; 
+                save(); 
+                render(); 
+            } 
+        }
+        
+        function openOverlay(id) { 
+            document.getElementById(id).style.display = 'block'; 
+            if(id === 'customFoodOverlay') renderCustomFoodList(); 
+        }
+        function closeOverlay(id) { 
+            document.getElementById(id).style.display = 'none'; 
+        }
 
         function saveCustomFood() {
-            const name = document.getElementById('regName').value; const p = parseFloat(document.getElementById('regP').value) || 0; const f = parseFloat(document.getElementById('regF').value) || 0; const c = parseFloat(document.getElementById('regC').value) || 0;
-            const base = parseInt(document.getElementById('regBase').value); if(!name) return alert("品名入力");
-            customFoodDict['custom_' + Date.now()] = { name, p, f, c, base }; localStorage.setItem('pfcCustomFoods', JSON.stringify(customFoodDict));
-            document.getElementById('regName').value = ""; renderFoodSelect(); renderCustomFoodList();
+            const name = document.getElementById('regName').value; 
+            const p = parseFloat(document.getElementById('regP').value) || 0; 
+            const f = parseFloat(document.getElementById('regF').value) || 0; 
+            const c = parseFloat(document.getElementById('regC').value) || 0;
+            const base = parseInt(document.getElementById('regBase').value); 
+            if(!name) return alert("品名入力");
+            
+            customFoodDict['custom_' + Date.now()] = { name, p, f, c, base }; 
+            localStorage.setItem('pfcCustomFoods', JSON.stringify(customFoodDict));
+            document.getElementById('regName').value = ""; 
+            renderFoodSelect(); 
+            renderCustomFoodList();
         }
+        
         function renderCustomFoodList() {
-            const container = document.getElementById('customFoodListContainer'); container.innerHTML = '';
-            for(let key in customFoodDict) { const food = customFoodDict[key]; container.innerHTML += `<div class="custom-food-item"><div><b>${food.name}</b><br><small>P:${food.p} F:${food.f} C:${food.c}</small></div><button onclick="deleteCustomFood('${key}')" style="background:red; color:white;">削除</button></div>`; }
+            const container = document.getElementById('customFoodListContainer'); 
+            container.innerHTML = '';
+            for(let key in customFoodDict) { 
+                const food = customFoodDict[key]; 
+                container.innerHTML += `<div class="custom-food-item"><div><b>${food.name}</b><br><small>P:${food.p} F:${food.f} C:${food.c}</small></div><button onclick="deleteCustomFood('${key}')" style="background:red; color:white;">削除</button></div>`; 
+            }
         }
-        function deleteCustomFood(k) { delete customFoodDict[k]; localStorage.setItem('pfcCustomFoods', JSON.stringify(customFoodDict)); renderCustomFoodList(); renderFoodSelect(); }
+        
+        function deleteCustomFood(k) { 
+            delete customFoodDict[k]; 
+            localStorage.setItem('pfcCustomFoods', JSON.stringify(customFoodDict)); 
+            renderCustomFoodList(); 
+            renderFoodSelect(); 
+        }
 
         function renderFoodSelect() {
-            const select = document.getElementById('foodSelect'); select.innerHTML = '';
-            const g1 = document.createElement('optgroup'); g1.label = "デフォルト食材";
-            for(let key in defaultFoodDict) { let opt = document.createElement('option'); opt.value = key; opt.text = defaultFoodDict[key].name; g1.appendChild(opt); } select.appendChild(g1);
+            const select = document.getElementById('foodSelect'); 
+            select.innerHTML = '';
+            const g1 = document.createElement('optgroup'); 
+            g1.label = "デフォルト食材";
+            for(let key in defaultFoodDict) { 
+                let opt = document.createElement('option'); 
+                opt.value = key; 
+                opt.text = defaultFoodDict[key].name; 
+                g1.appendChild(opt); 
+            } 
+            select.appendChild(g1);
+            
             if(Object.keys(customFoodDict).length > 0) {
-                const g2 = document.createElement('optgroup'); g2.label = "マイ食材";
-                for(let key in customFoodDict) { let opt = document.createElement('option'); opt.value = key; opt.text = customFoodDict[key].name; g2.appendChild(opt); } select.appendChild(g2);
+                const g2 = document.createElement('optgroup'); 
+                g2.label = "マイ食材";
+                for(let key in customFoodDict) { 
+                    let opt = document.createElement('option'); 
+                    opt.value = key; 
+                    opt.text = customFoodDict[key].name; 
+                    g2.appendChild(opt); 
+                } 
+                select.appendChild(g2);
             }
             select.onchange = updateGramLabel;
         }
-        function updateGramLabel() { const f = getCombinedDict()[document.getElementById('foodSelect').value]; document.getElementById('dictGramLabel').innerText = f.base === 1 ? "2. 食べる個数" : "2. グラム数(g)"; }
+        
+        function updateGramLabel() { 
+            const f = getCombinedDict()[document.getElementById('foodSelect').value]; 
+            document.getElementById('dictGramLabel').innerText = f.base === 1 ? "2. 食べる個数" : "2. グラム数(g)"; 
+        }
 
         function openMonthlyView() {
-            const grid = document.getElementById('calendarGrid'); grid.innerHTML = ''; const now = new Date(currentDateStr); const year = now.getFullYear(); const month = now.getMonth();
+            const grid = document.getElementById('calendarGrid'); 
+            grid.innerHTML = ''; 
+            const now = new Date(currentDateStr); 
+            const year = now.getFullYear(); 
+            const month = now.getMonth();
             document.getElementById('monthlyTitle').innerText = `${year}年${month+1}月`;
-            ['日','月','火','水','木','金','土'].forEach(d => { const h = document.createElement('div'); h.className = 'calendar-header-day'; h.innerText = d; grid.appendChild(h); });
-            const first = new Date(year, month, 1); const last = new Date(year, month + 1, 0);
-            for(let i=0; i<first.getDay(); i++) { const em = document.createElement('div'); em.className = 'calendar-cell'; em.style.opacity = "0"; grid.appendChild(em); }
+            
+            ['日','月','火','水','木','金','土'].forEach(d => { 
+                const h = document.createElement('div'); 
+                h.className = 'calendar-header-day'; 
+                h.innerText = d; 
+                grid.appendChild(h); 
+            });
+            const first = new Date(year, month, 1); 
+            const last = new Date(year, month + 1, 0);
+            for(let i=0; i<first.getDay(); i++) { 
+                const em = document.createElement('div'); 
+                em.className = 'calendar-cell'; 
+                em.style.opacity = "0"; 
+                grid.appendChild(em); 
+            }
             for(let d=1; d<=last.getDate(); d++) {
-                const cell = document.createElement('div'); cell.className = 'calendar-cell'; const dateKey = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                let cal = 0; if(diaryData[dateKey]) { diaryData[dateKey].forEach(m => { m.items.forEach(it => cal += it.cal); }); }
+                const cell = document.createElement('div'); 
+                cell.className = 'calendar-cell'; 
+                const dateKey = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                let cal = 0; 
+                if(diaryData[dateKey]) { 
+                    diaryData[dateKey].forEach(m => { m.items.forEach(it => cal += it.cal); }); 
+                }
                 cell.innerHTML = `<div>${d}</div><div class="cal-cal-val">${cal > 0 ? cal : ''}</div>`;
-                cell.onclick = () => { currentDateStr = dateKey; document.getElementById('datePicker').value = dateKey; render(); closeOverlay('monthlyOverlay'); }; grid.appendChild(cell);
+                cell.onclick = () => { 
+                    currentDateStr = dateKey; 
+                    document.getElementById('datePicker').value = dateKey; 
+                    render(); 
+                    closeOverlay('monthlyOverlay'); 
+                }; 
+                grid.appendChild(cell);
             }
             document.getElementById('monthlyOverlay').style.display = 'block';
         }
 
         function downloadBackupFile() {
             const s = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ diary: diaryData, goals, foods: customFoodDict, profile: userProfile }));
-            const a = document.createElement('a'); a.href = s; a.download = "pfc_backup_" + currentDateStr + ".json"; a.click();
+            const a = document.createElement('a'); 
+            a.href = s; 
+            a.download = "pfc_backup_" + currentDateStr + ".json"; 
+            a.click();
         }
+        
         function restoreFromFile() {
-            const f = document.getElementById('importFile').files[0]; if(!f) return; const r = new FileReader();
+            const f = document.getElementById('importFile').files[0]; 
+            if(!f) return; 
+            const r = new FileReader();
             r.onload = function(e) {
                 try {
                     const d = JSON.parse(e.target.result);
-                    if(confirm("上書き復元しますか？")) { localStorage.setItem('pfcDiaryData', JSON.stringify(d.diary)); localStorage.setItem('pfcGoals', JSON.stringify(d.goals)); localStorage.setItem('pfcCustomFoods', JSON.stringify(d.foods)); localStorage.setItem('pfcProfile', JSON.stringify(d.profile)); location.reload(); }
-                } catch(err) { alert("エラー"); }
-            }; r.readAsText(f);
+                    if(confirm("上書き復元しますか？")) { 
+                        localStorage.setItem('pfcDiaryData', JSON.stringify(d.diary)); 
+                        localStorage.setItem('pfcGoals', JSON.stringify(d.goals)); 
+                        localStorage.setItem('pfcCustomFoods', JSON.stringify(d.foods)); 
+                        localStorage.setItem('pfcProfile', JSON.stringify(d.profile)); 
+                        location.reload(); 
+                    }
+                } catch(err) { 
+                    alert("エラー"); 
+                }
+            }; 
+            r.readAsText(f);
         }
-        function restoreBackupText() { try { const d = JSON.parse(document.getElementById('importText').value); if(confirm("上書き復元？")) { localStorage.setItem('pfcDiaryData', JSON.stringify(d.diary)); location.reload(); } } catch(e) { alert("エラー"); } }
+        
+        function restoreBackupText() { 
+            try { 
+                const d = JSON.parse(document.getElementById('importText').value); 
+                if(confirm("上書き復元？")) { 
+                    localStorage.setItem('pfcDiaryData', JSON.stringify(d.diary)); 
+                    location.reload(); 
+                } 
+            } catch(e) { 
+                alert("エラー"); 
+            } 
+        }
+        
+        function save() { 
+            localStorage.setItem('pfcDiaryData', JSON.stringify(diaryData)); 
+        }
     </script>
 </body>
 </html>
