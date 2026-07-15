@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>PFC Pro Tracker v35</title>
+    <title>PFC Pro Tracker v36</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         :root { --primary: #007AFF; --accent: #deff9a; --bg: #f2f2f7; --card-bg: #ffffff; --text: #1c1c1e; }
@@ -345,9 +345,9 @@
             <div class="formula-box">基礎代謝(BMR) = 10×体重 + 6.25×身長 - 5×年齢 + (性別補正)<br>総消費量(TDEE) = BMR × (仕事係数 + 運動ブースト)</div>
         </div>
         <div class="manual-section">
-            <h3>🛡️ セーフティ機能 (女性向け)</h3>
-            <p>健康を害する無謀なダイエットを防ぐため、女性の場合は以下の制限が働きます。</p>
-            <div class="formula-box">・除脂肪目的のマイナス幅を-200kcalに緩和<br>・目標カロリーが基礎代謝(BMR)を下回る場合は選択不可<br>・目標カロリーが1500kcalを下回る場合は現実的な1500kcalプランをアドバイス<br>・P(タンパク質)は運動量に応じ体重×1.3g〜1.5gに最適化<br>・F(脂質)は最低でも総カロリーの20%を確保</div>
+            <h3>🛡️ セーフティ＆アドバイス機能</h3>
+            <p>健康を害する無謀なダイエットを防ぐため、以下の安全装置と推奨プランが稼働します。</p>
+            <div class="formula-box">・除脂肪のマイナス幅: 女性-200kcal / 男性-300kcal<br>・目標カロリーが基礎代謝(BMR)を下回る場合は選択不可<br>・女性は1500kcal未満、男性は1800kcal未満の場合、運動量を増やした現実的なプランを提示<br>・推奨PFC(女性): P=1.5g / F=30% / C=残り<br>・推奨PFC(男性): P=2.0g / F=0.8g(最低20%) / C=残り</div>
         </div>
         <div class="manual-section" style="background:#fff8e1; padding:15px; border-radius:8px; border:1px solid #ffe082; margin-top:30px;">
             <h3 style="color:#f57f17; font-size:14px; margin-top:0;">⚠️ アソシエイト・プログラム免責事項</h3>
@@ -473,12 +473,12 @@
             
             goals.c = Math.max(0, Math.round((goals.cal - (goals.p * 4 + goals.f * 9)) / 4));
 
-            // ★ V35: アドバイスメッセージの判定と表示（男女別）
+            // ★ V36: アドバイスメッセージの判定と表示（完全最適化）
             if (goalOffset < 0) {
                 if (gender === 'female' && targetCal < 1500) {
                     let advCal = 1500;
                     let advP = Math.round(weight * 1.5);
-                    let advF = Math.round(Math.max(weight * 0.8, (advCal * 0.2) / 9));
+                    let advF = Math.round((advCal * 0.30) / 9); // 女性は脂質30%推奨
                     let advC = Math.max(0, Math.round((advCal - (advP * 4 + advF * 9)) / 4));
 
                     adviceDiv.innerHTML = `💡 <b>プロからのアドバイス</b><br>
@@ -493,7 +493,7 @@
                 } else if (gender === 'male' && targetCal < 1800) {
                     let advCal = 1800;
                     let advP = Math.round(weight * 2.0);
-                    let advF = Math.round(weight * 0.8);
+                    let advF = Math.max(Math.round(weight * 0.8), Math.round((advCal * 0.20) / 9)); // 男性の最低確保20%
                     let advC = Math.max(0, Math.round((advCal - (advP * 4 + advF * 9)) / 4));
 
                     adviceDiv.innerHTML = `💡 <b>プロからのアドバイス</b><br>
