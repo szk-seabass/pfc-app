@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>PFC Pro Tracker v34</title>
+    <title>PFC Pro Tracker v35</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         :root { --primary: #007AFF; --accent: #deff9a; --bg: #f2f2f7; --card-bg: #ffffff; --text: #1c1c1e; }
@@ -111,10 +111,8 @@
         </select>
         <label class="input-label" style="color:#aaa; margin-top:10px; font-size:12px;">現在の目的</label>
         <select id="goalSelect">
-            <!-- 選択肢はJavaScriptで動的に生成されます -->
-        </select>
+            </select>
         
-        <!-- 警告メッセージ領域 -->
         <div id="warningMessage"></div>
 
         <button onclick="calculatePrecisionTDEE()" style="background:var(--accent); color:#000; margin-top:15px;">精密計算して保存</button>
@@ -129,7 +127,6 @@
             <div style="display:flex; justify-content:space-between; margin-top:5px;"><span style="color:#34c759;">C (残り全カロリー)</span><b id="displayTargetC">0 g</b></div>
         </div>
 
-        <!-- ★ V34 アドバイスメッセージ領域 -->
         <div id="adviceMessage"></div>
     </div>
 
@@ -152,7 +149,6 @@
     <div id="mealContainer"></div>
     <button class="btn-add-meal" onclick="addNewMeal()">＋ 新しい食事枠を追加</button>
 
-    <!-- 食材追加モーダル -->
     <div id="inputModal" class="card" style="display:none; position:fixed; top:5%; left:5%; width:90%; z-index:3000; border:3px solid #000; max-height:90vh; overflow-y:auto;">
         <div class="tab-container">
             <div class="tab-btn active" id="tabBtnDict" onclick="switchTab('dict')">📖 リストから</div>
@@ -182,7 +178,6 @@
         <button onclick="closeModal()" style="background:#ccc; margin-top:10px;">キャンセル</button>
     </div>
 
-    <!-- マイ食材管理 -->
     <div id="customFoodOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2>🛠 マイ食材</h2>
@@ -209,7 +204,6 @@
         <div id="customFoodListContainer"></div>
     </div>
 
-    <!-- カレンダー -->
     <div id="monthlyOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <h2 id="monthlyTitle" style="margin:0;">摂取履歴</h2>
@@ -218,7 +212,6 @@
         <div class="calendar-grid" id="calendarGrid"></div>
     </div>
 
-    <!-- データバックアップ -->
     <div id="backupOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2>💾 データ管理</h2>
@@ -238,7 +231,6 @@
         </div>
     </div>
 
-    <!-- 使い方マニュアル -->
     <div id="manualOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2>📖 使い方ガイド</h2>
@@ -254,7 +246,6 @@
         </div>
     </div>
 
-    <!-- おすすめ商品 -->
     <div id="recommendOverlay" style="background:#f2f2f7;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
             <h2 style="margin:0; color:#00796b;">🛒 おすすめギア</h2>
@@ -343,7 +334,6 @@
         </div>
     </div>
 
-    <!-- アプリ仕様 -->
     <div id="specOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2 style="margin:0; color:#4a148c;">ℹ️ アプリ詳細仕様</h2>
@@ -357,7 +347,7 @@
         <div class="manual-section">
             <h3>🛡️ セーフティ機能 (女性向け)</h3>
             <p>健康を害する無謀なダイエットを防ぐため、女性の場合は以下の制限が働きます。</p>
-            <div class="formula-box">・除脂肪目的のマイナス幅を-200kcalに緩和<br>・目標カロリーが基礎代謝(BMR)を下回る場合は選択不可<br>・目標カロリーが1400kcalを下回る場合は現実的な1500kcalプランをアドバイス<br>・P(タンパク質)は運動量に応じ体重×1.3g〜1.5gに最適化<br>・F(脂質)は最低でも総カロリーの20%を確保</div>
+            <div class="formula-box">・除脂肪目的のマイナス幅を-200kcalに緩和<br>・目標カロリーが基礎代謝(BMR)を下回る場合は選択不可<br>・目標カロリーが1500kcalを下回る場合は現実的な1500kcalプランをアドバイス<br>・P(タンパク質)は運動量に応じ体重×1.3g〜1.5gに最適化<br>・F(脂質)は最低でも総カロリーの20%を確保</div>
         </div>
         <div class="manual-section" style="background:#fff8e1; padding:15px; border-radius:8px; border:1px solid #ffe082; margin-top:30px;">
             <h3 style="color:#f57f17; font-size:14px; margin-top:0;">⚠️ アソシエイト・プログラム免責事項</h3>
@@ -445,7 +435,7 @@
             
             const warningDiv = document.getElementById('warningMessage');
             const adviceDiv = document.getElementById('adviceMessage');
-            adviceDiv.style.display = 'none'; // リセット
+            adviceDiv.style.display = 'none'; 
             
             if(!age || !height || !weight) return alert("プロフィールを入力してください");
             
@@ -454,7 +444,6 @@
             const tdee = bmr * activityFactor; 
             const targetCal = Math.round(tdee + goalOffset);
             
-            // 基礎代謝割れブロック
             if (targetCal < bmr) {
                 warningDiv.style.display = 'block';
                 warningDiv.innerHTML = `⚠️ 警告: 選択した目標ではカロリーが基礎代謝(${Math.round(bmr)}kcal)を下回ります。<br>健康上のリスクがあるため、現在の運動量でのダイエットは推奨されません。「維持」を選ぶか、運動頻度を上げてください。`;
@@ -484,22 +473,39 @@
             
             goals.c = Math.max(0, Math.round((goals.cal - (goals.p * 4 + goals.f * 9)) / 4));
 
-            // ★ V34: アドバイスメッセージの判定と表示
-            if (targetCal < 1400 && goalOffset < 0) {
-                let advCal = 1500;
-                let advP = Math.round(weight * (gender === 'female' ? 1.5 : 2.0)); // 運動を増やす想定なので高め
-                let advF = Math.round(Math.max(weight * 0.8, (advCal * 0.2) / 9));
-                let advC = Math.max(0, Math.round((advCal - (advP * 4 + advF * 9)) / 4));
+            // ★ V35: アドバイスメッセージの判定と表示（男女別）
+            if (goalOffset < 0) {
+                if (gender === 'female' && targetCal < 1500) {
+                    let advCal = 1500;
+                    let advP = Math.round(weight * 1.5);
+                    let advF = Math.round(Math.max(weight * 0.8, (advCal * 0.2) / 9));
+                    let advC = Math.max(0, Math.round((advCal - (advP * 4 + advF * 9)) / 4));
 
-                adviceDiv.innerHTML = `💡 <b>プロからのアドバイス</b><br>
-                    目標が${targetCal}kcalとなっていますが、食事だけで削るにはかなりハードな数値です。<br>
-                    無理なく綺麗に痩せるためには、運動頻度（活動量）を上げて消費カロリーを増やし、<b>1日約1500kcal</b>を食べながら除脂肪することをおすすめします。<br>
-                    <div class="adv-pfc">
-                        <span style="color:#ff9500;">P(推奨): ${advP}g</span>
-                        <span style="color:#ff3b30;">F(推奨): ${advF}g</span>
-                        <span style="color:#34c759;">C(推奨): ${advC}g</span>
-                    </div>`;
-                adviceDiv.style.display = 'block';
+                    adviceDiv.innerHTML = `💡 <b>プロからのアドバイス</b><br>
+                        目標が${targetCal}kcalとなっていますが、食事だけで削るにはかなりハードな数値です。<br>
+                        無理なく綺麗に痩せるためには、運動頻度（活動量）を上げて消費カロリーを増やし、<b>1日約${advCal}kcal</b>を食べながら除脂肪することをおすすめします。<br>
+                        <div class="adv-pfc">
+                            <span style="color:#ff9500;">P(推奨): ${advP}g</span>
+                            <span style="color:#ff3b30;">F(推奨): ${advF}g</span>
+                            <span style="color:#34c759;">C(推奨): ${advC}g</span>
+                        </div>`;
+                    adviceDiv.style.display = 'block';
+                } else if (gender === 'male' && targetCal < 1800) {
+                    let advCal = 1800;
+                    let advP = Math.round(weight * 2.0);
+                    let advF = Math.round(weight * 0.8);
+                    let advC = Math.max(0, Math.round((advCal - (advP * 4 + advF * 9)) / 4));
+
+                    adviceDiv.innerHTML = `💡 <b>プロからのアドバイス</b><br>
+                        目標が${targetCal}kcalとなっていますが、食事だけで削るにはかなりハードな数値です。<br>
+                        筋肉を落とさず健康的に絞るためには、運動頻度（活動量）を上げて消費カロリーを増やし、<b>1日約${advCal}kcal</b>を食べながら除脂肪することをおすすめします。<br>
+                        <div class="adv-pfc">
+                            <span style="color:#ff9500;">P(推奨): ${advP}g</span>
+                            <span style="color:#ff3b30;">F(推奨): ${advF}g</span>
+                            <span style="color:#34c759;">C(推奨): ${advC}g</span>
+                        </div>`;
+                    adviceDiv.style.display = 'block';
+                }
             }
             
             userProfile = { gender, age, height, weight, jobIntensity, exerciseFrequency, goalOffset, bmr, tdee, activityFactor };
