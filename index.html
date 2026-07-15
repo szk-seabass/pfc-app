@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>PFC Pro Tracker v32</title>
+    <title>PFC Pro Tracker v33</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         :root { --primary: #007AFF; --accent: #deff9a; --bg: #f2f2f7; --card-bg: #ffffff; --text: #1c1c1e; }
@@ -60,6 +60,9 @@
         .profile-grid input, .profile-grid select { margin-bottom: 0; }
         .formula-box { background: #f8f9fa; border-radius: 8px; padding: 12px; border-left: 4px solid var(--primary); margin: 10px 0; font-family: monospace; font-size: 13px; color: #333; line-height: 1.5; }
         #monthlyOverlay, #customFoodOverlay, #backupOverlay, #manualOverlay, #recommendOverlay, #specOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:2000; padding:20px; box-sizing:border-box; overflow-y:auto; }
+
+        /* 警告メッセージ用のスタイル */
+        #warningMessage { display:none; background:#ffebee; color:#c62828; padding:12px; border-radius:8px; font-size:13px; margin-top:10px; border:1px solid #ffcdd2; font-weight:bold; }
     </style>
 </head>
 <body>
@@ -86,7 +89,7 @@
     <div class="card target-card">
         <h3>🎯 目標自動計算 (精密版)</h3>
         <div class="profile-grid">
-            <select id="genderSelect"><option value="male">男性</option><option value="female">女性</option></select>
+            <select id="genderSelect" onchange="updateGoalOptions()"><option value="male">男性</option><option value="female">女性</option></select>
             <input type="number" id="ageInput" placeholder="年齢">
             <input type="number" id="heightInput" placeholder="身長(cm)">
             <input type="number" id="weightInput" placeholder="体重(kg)">
@@ -106,19 +109,18 @@
         </select>
         <label class="input-label" style="color:#aaa; margin-top:10px; font-size:12px;">現在の目的</label>
         <select id="goalSelect">
-            <option value="-500">短期集中ダイエット (-500kcal)</option>
-            <option value="-300">筋肉を残して除脂肪 (-300kcal)</option>
-            <option value="0">維持 (現状をキープ / ±0kcal)</option>
-            <option value="300">筋肉を増やす増量 (+300kcal)</option>
-        </select>
+            </select>
+        
+        <div id="warningMessage"></div>
+
         <button onclick="calculatePrecisionTDEE()" style="background:var(--accent); color:#000; margin-top:15px;">精密計算して保存</button>
         <div id="currentGoalsDisplay" style="margin-top:15px; background:rgba(255,255,255,0.1); padding:15px; border-radius:8px; font-size:14px; display:none;">
             <div style="text-align:center; font-size:12px; color:#ddd; margin-bottom:5px;" id="displayMetabolism"></div>
             <div style="text-align:center; font-weight:bold; margin-bottom:8px; color:var(--accent);">算出した1日の目標</div>
             <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>目標総カロリー</span><b id="displayTargetCal">0 kcal</b></div>
             <hr style="border-color:rgba(255,255,255,0.2);">
-            <div style="display:flex; justify-content:space-between; margin-top:5px;"><span style="color:#ff9500;">P (体重×2.0g)</span><b id="displayTargetP">0 g</b></div>
-            <div style="display:flex; justify-content:space-between; margin-top:5px;"><span style="color:#ff3b30;">F (体重×0.8g)</span><b id="displayTargetF">0 g</b></div>
+            <div style="display:flex; justify-content:space-between; margin-top:5px;"><span style="color:#ff9500;" id="displayPLabel">P</span><b id="displayTargetP">0 g</b></div>
+            <div style="display:flex; justify-content:space-between; margin-top:5px;"><span style="color:#ff3b30;" id="displayFLabel">F</span><b id="displayTargetF">0 g</b></div>
             <div style="display:flex; justify-content:space-between; margin-top:5px;"><span style="color:#34c759;">C (残り全カロリー)</span><b id="displayTargetC">0 g</b></div>
         </div>
     </div>
@@ -142,7 +144,6 @@
     <div id="mealContainer"></div>
     <button class="btn-add-meal" onclick="addNewMeal()">＋ 新しい食事枠を追加</button>
 
-    <!-- 食材追加モーダル -->
     <div id="inputModal" class="card" style="display:none; position:fixed; top:5%; left:5%; width:90%; z-index:3000; border:3px solid #000; max-height:90vh; overflow-y:auto;">
         <div class="tab-container">
             <div class="tab-btn active" id="tabBtnDict" onclick="switchTab('dict')">📖 リストから</div>
@@ -172,7 +173,6 @@
         <button onclick="closeModal()" style="background:#ccc; margin-top:10px;">キャンセル</button>
     </div>
 
-    <!-- マイ食材管理 -->
     <div id="customFoodOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2>🛠 マイ食材</h2>
@@ -199,7 +199,6 @@
         <div id="customFoodListContainer"></div>
     </div>
 
-    <!-- カレンダー -->
     <div id="monthlyOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <h2 id="monthlyTitle" style="margin:0;">摂取履歴</h2>
@@ -208,7 +207,6 @@
         <div class="calendar-grid" id="calendarGrid"></div>
     </div>
 
-    <!-- データバックアップ -->
     <div id="backupOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2>💾 データ管理</h2>
@@ -228,7 +226,6 @@
         </div>
     </div>
 
-    <!-- 使い方マニュアル -->
     <div id="manualOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2>📖 使い方ガイド</h2>
@@ -244,7 +241,6 @@
         </div>
     </div>
 
-    <!-- ★ V32: おすすめ商品画面 -->
     <div id="recommendOverlay" style="background:#f2f2f7;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
             <h2 style="margin:0; color:#00796b;">🛒 おすすめギア</h2>
@@ -252,160 +248,87 @@
         </div>
         <p style="font-size:13px; color:#666; margin-bottom:10px; line-height:1.5;">日々のボディメイクを効率化するために、開発者が実際に使っているおすすめアイテムです。</p>
         
-        <!-- ==============================
-             ジャンル1: サプリメント
-        =============================== -->
         <h3 class="genre-title">💊 サプリメント</h3>
-        
-        <!-- プロテイン1: REYS -->
         <div class="affiliate-card">
-            <div class="affiliate-img-container">
-                <img src="https://thumbnail.image.rakuten.co.jp/@0_mall/mk-mart2/cabinet/imgrc0128427156.jpg?_ex=240x240" alt="REYS プロテイン" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>🥤</text></svg>'">
-            </div>
+            <div class="affiliate-img-container"><img src="https://thumbnail.image.rakuten.co.jp/@0_mall/mk-mart2/cabinet/imgrc0128427156.jpg?_ex=240x240" alt="REYS プロテイン" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>🥤</text></svg>'"></div>
             <div class="affiliate-content">
                 <div class="affiliate-title">REYS ホエイプロテイン</div>
                 <div class="affiliate-desc">筋トレYouTuberの山澤さん監修。水に溶けやすくダマにならず、非常に美味しくて愛飲しています。</div>
-                <div style="display: flex; gap: 8px;">
-                    <a href="https://amzn.to/4fiO5Jt" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a>
-                    <a href="https://hb.afl.rakuten.co.jp/ichiba/55c965be.f3d0e614.55c965bf.651c7a1f/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fmk-mart2%2Freys-protein02%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a>
-                </div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4fiO5Jt" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://hb.afl.rakuten.co.jp/ichiba/55c965be.f3d0e614.55c965bf.651c7a1f/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fmk-mart2%2Freys-protein02%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
-
-        <!-- プロテイン2: VITAS -->
         <div class="affiliate-card">
-            <div class="affiliate-img-container">
-                <img src="https://thumbnail.image.rakuten.co.jp/@0_mall/toyomarket/cabinet/protein/imgrc0152839430.jpg?_ex=240x240" alt="VITAS プロテイン" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>🥤</text></svg>'">
-            </div>
+            <div class="affiliate-img-container"><img src="https://thumbnail.image.rakuten.co.jp/@0_mall/toyomarket/cabinet/protein/imgrc0152839430.jpg?_ex=240x240" alt="VITAS プロテイン" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>🥤</text></svg>'"></div>
             <div class="affiliate-content">
                 <div class="affiliate-title">VITAS ホエイプロテイン</div>
                 <div class="affiliate-desc">フルーツ系からラテ系まで、美味しさに徹底的にこだわったプロテイン。ダマになりにくく日々のタンパク質補給に最適です。</div>
-                <div style="display: flex; gap: 8px;">
-                    <a href="https://amzn.to/3ReubHi" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a>
-                    <a href="https://hb.afl.rakuten.co.jp/ichiba/55c98e7a.018b8aa0.55c98e7b.48957eca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Ftoyomarket%2Fvitas006%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a>
-                </div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/3ReubHi" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://hb.afl.rakuten.co.jp/ichiba/55c98e7a.018b8aa0.55c98e7b.48957eca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Ftoyomarket%2Fvitas006%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
-
-        <!-- プロテイン3: エクスプロージョン -->
         <div class="affiliate-card">
-            <div class="affiliate-img-container">
-                <img src="https://thumbnail.image.rakuten.co.jp/@0_mall/x-plosion/cabinet/yec/11362306/241227_10000019.jpg?_ex=240x240" alt="エクスプロージョン プロテイン" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>🥤</text></svg>'">
-            </div>
+            <div class="affiliate-img-container"><img src="https://thumbnail.image.rakuten.co.jp/@0_mall/x-plosion/cabinet/yec/11362306/241227_10000019.jpg?_ex=240x240" alt="エクスプロージョン プロテイン" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>🥤</text></svg>'"></div>
             <div class="affiliate-content">
                 <div class="affiliate-title">エクスプロージョン ホエイプロテイン</div>
                 <div class="affiliate-desc">大容量3kgでコスパ最強。日々のトレーニングやダイエットの置き換えなど、気兼ねなくガンガン飲めるプロテインです。</div>
-                <div style="display: flex; gap: 8px;">
-                    <a href="https://amzn.to/4yomqPK" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a>
-                    <a href="https://hb.afl.rakuten.co.jp/ichiba/55c99899.f14a8ec7.55c9989a.494ba8bf/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fx-plosion%2F10000019%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a>
-                </div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4yomqPK" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://hb.afl.rakuten.co.jp/ichiba/55c99899.f14a8ec7.55c9989a.494ba8bf/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fx-plosion%2F10000019%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
-
-        <!-- プロテイン4: アルプロン -->
         <div class="affiliate-card">
-            <div class="affiliate-img-container">
-                <img src="https://thumbnail.image.rakuten.co.jp/@0_mall/alpron/cabinet/lp/houjin/r6_wpc/imgrc0167193910.jpg?_ex=240x240" alt="アルプロン プロテイン" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>🥤</text></svg>'">
-            </div>
+            <div class="affiliate-img-container"><img src="https://thumbnail.image.rakuten.co.jp/@0_mall/alpron/cabinet/lp/houjin/r6_wpc/imgrc0167193910.jpg?_ex=240x240" alt="アルプロン プロテイン" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>🥤</text></svg>'"></div>
             <div class="affiliate-content">
                 <div class="affiliate-title">アルプロン ホエイプロテイン</div>
                 <div class="affiliate-desc">国内製造で安心の高品質。フレーバーの種類が豊富で飲みやすく、日々のタンパク質補給やダイエットのサポートにおすすめです。</div>
-                <div style="display: flex; gap: 8px;">
-                    <a href="https://amzn.to/3ThEdIo" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a>
-                    <a href="https://hb.afl.rakuten.co.jp/ichiba/55c9a49d.3253db38.55c9a49e.48910552/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Falpron%2Frakutenwhey003%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a>
-                </div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/3ThEdIo" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://hb.afl.rakuten.co.jp/ichiba/55c9a49d.3253db38.55c9a49e.48910552/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Falpron%2Frakutenwhey003%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
-
-        <!-- サプリ: VITAS マルチビタミン(ビタパワー) -->
         <div class="affiliate-card">
-            <div class="affiliate-img-container">
-                <img src="https://thumbnail.image.rakuten.co.jp/@0_mall/toyomarket/cabinet/08038187/vp.jpg?_ex=240x240" alt="VITAS ビタパワー" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>💊</text></svg>'">
-            </div>
+            <div class="affiliate-img-container"><img src="https://thumbnail.image.rakuten.co.jp/@0_mall/toyomarket/cabinet/08038187/vp.jpg?_ex=240x240" alt="VITAS ビタパワー" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>💊</text></svg>'"></div>
             <div class="affiliate-content">
                 <div class="affiliate-title">VITAS ビタパワー (マルチビタミン)</div>
                 <div class="affiliate-desc">12種類のビタミンをはじめ、マカや亜鉛など様々な栄養素をまとめて摂取できるサプリ。味が美味しくて毎日続けやすいのが特徴です。</div>
-                <div style="display: flex; gap: 8px;">
-                    <a href="https://amzn.to/4gJEFJn" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a>
-                    <a href="https://hb.afl.rakuten.co.jp/ichiba/55c98e7a.018b8aa0.55c98e7b.48957eca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Ftoyomarket%2Fvitas001%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a>
-                </div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4gJEFJn" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://hb.afl.rakuten.co.jp/ichiba/55c98e7a.018b8aa0.55c98e7b.48957eca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Ftoyomarket%2Fvitas001%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
 
-        <!-- ==============================
-             ジャンル2: トレーニングギア
-        =============================== -->
         <h3 class="genre-title">🏋️ トレーニングギア</h3>
-        
-        <!-- アイテム1: デジタルキッチンスケール -->
         <div class="affiliate-card">
-            <div class="affiliate-img-container">
-                <img src="" alt="キッチンスケール" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>⚖️</text></svg>'">
-            </div>
+            <div class="affiliate-img-container"><img src="" alt="キッチンスケール" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>⚖️</text></svg>'"></div>
             <div class="affiliate-content">
                 <div class="affiliate-title">デジタルキッチンスケール</div>
                 <div class="affiliate-desc">0.1g単位で正確に量れる神アイテム。PFC管理の正確さが劇的に変わります。</div>
-                <div style="display: flex; gap: 8px;">
-                    <a href="★AmazonのURL（amzn.to/〜）をここに貼る★" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a>
-                    <a href="★楽天のURL（hb.afl...等）をここに貼る★" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a>
-                </div>
+                <div style="display: flex; gap: 8px;"><a href="★AmazonのURL★" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="★楽天のURL★" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
-        
-        <!-- アイテム2: VITAS シェイカー -->
         <div class="affiliate-card">
-            <div class="affiliate-img-container">
-                <img src="https://thumbnail.image.rakuten.co.jp/@0_mall/toyomarket/cabinet/campaign/nail/imgrc0135859335.jpg?_ex=240x240" alt="VITAS シェイカー" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>🫙</text></svg>'">
-            </div>
+            <div class="affiliate-img-container"><img src="https://thumbnail.image.rakuten.co.jp/@0_mall/toyomarket/cabinet/campaign/nail/imgrc0135859335.jpg?_ex=240x240" alt="VITAS シェイカー" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>🫙</text></svg>'"></div>
             <div class="affiliate-content">
                 <div class="affiliate-title">VITAS プロテインシェイカー 1000ml</div>
                 <div class="affiliate-desc">ワンプッシュで開く大容量のドリンクボトル。漏れにくく持ち運びに便利で、プロテインやEAAのシェイクに最適です。</div>
-                <div style="display: flex; gap: 8px;">
-                    <a href="https://amzn.to/4pjAvKe" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a>
-                    <a href="https://hb.afl.rakuten.co.jp/ichiba/55c98e7a.018b8aa0.55c98e7b.48957eca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Ftoyomarket%2Fv-shaker1000%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a>
-                </div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4pjAvKe" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://hb.afl.rakuten.co.jp/ichiba/55c98e7a.018b8aa0.55c98e7b.48957eca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Ftoyomarket%2Fv-shaker1000%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
 
-        <!-- ==============================
-             ジャンル3: アパレル（新規追加）
-        =============================== -->
         <h3 class="genre-title">👕 アパレル</h3>
         <div class="affiliate-card">
-            <div class="affiliate-img-container">
-                <img src="https://thumbnail.image.rakuten.co.jp/@0_mall/hanamarushop/cabinet/13014128/43853483_4.jpg?_ex=240x240" alt="EVANE タンクトップ" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>👕</text></svg>'">
-            </div>
+            <div class="affiliate-img-container"><img src="https://thumbnail.image.rakuten.co.jp/@0_mall/hanamarushop/cabinet/13014128/43853483_4.jpg?_ex=240x240" alt="EVANE タンクトップ" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>👕</text></svg>'"></div>
             <div class="affiliate-content">
                 <div class="affiliate-title">[EVANE] エバン トレーニング タンクトップ</div>
                 <div class="affiliate-desc">4WAYストレッチとドライタッチ素材で快適な着心地。ハードなトレーニング時にも動きを妨げず、しっかりサポートします。</div>
-                <div style="display: flex; gap: 8px;">
-                    <a href="https://amzn.to/4aRC10h" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a>
-                    <a href="https://hb.afl.rakuten.co.jp/ichiba/55c9a01a.fceb353d.55c9a01b.76ebc6fe/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fhanamarushop%2Fhqwtsycegm5tsi7zmasykqnluu%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a>
-                </div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4aRC10h" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://hb.afl.rakuten.co.jp/ichiba/55c9a01a.fceb353d.55c9a01b.76ebc6fe/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fhanamarushop%2Fhqwtsycegm5tsi7zmasykqnluu%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
 
-        <!-- ==============================
-             ジャンル4: 食材
-        =============================== -->
         <h3 class="genre-title">🥦 食材</h3>
         <div class="affiliate-card">
-            <div class="affiliate-img-container">
-                <img src="" alt="おすすめ食材" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>🍽️</text></svg>'">
-            </div>
+            <div class="affiliate-img-container"><img src="" alt="おすすめ食材" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>🍽️</text></svg>'"></div>
             <div class="affiliate-content">
                 <div class="affiliate-title">おすすめオートミール</div>
                 <div class="affiliate-desc">減量期の主食に最適。食物繊維が豊富で腹持ち抜群です。</div>
-                <div style="display: flex; gap: 8px;">
-                    <a href="★AmazonのURL（amzn.to/〜）をここに貼る★" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a>
-                    <a href="★楽天のURL（hb.afl...等）をここに貼る★" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a>
-                </div>
+                <div style="display: flex; gap: 8px;"><a href="★AmazonのURL★" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="★楽天のURL★" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
-
     </div>
 
-    <!-- アプリ仕様 -->
     <div id="specOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2 style="margin:0; color:#4a148c;">ℹ️ アプリ詳細仕様</h2>
@@ -417,8 +340,9 @@
             <div class="formula-box">基礎代謝(BMR) = 10×体重 + 6.25×身長 - 5×年齢 + (性別補正)<br>総消費量(TDEE) = BMR × (仕事係数 + 運動ブースト)</div>
         </div>
         <div class="manual-section">
-            <h3>⚖️ 目標PFC of 算出アルゴリズム</h3>
-            <div class="formula-box">P = 体重 × 2.0g (筋合成最大化)<br>F = 体重 × 0.8g (ホルモン維持)<br>C = 残りのカロリーを全て割り当て</div>
+            <h3>🛡️ セーフティ機能 (女性向け)</h3>
+            <p>健康を害する無謀なダイエットを防ぐため、女性の場合は以下の制限が働きます。</p>
+            <div class="formula-box">・除脂肪目的のマイナス幅を-200kcalに緩和<br>・目標カロリーが基礎代謝(BMR)を下回る場合は選択不可<br>・P(タンパク質)は運動量に応じ体重×1.3g〜1.5gに最適化<br>・F(脂質)は最低でも総カロリーの20%を確保</div>
         </div>
         <div class="manual-section" style="background:#fff8e1; padding:15px; border-radius:8px; border:1px solid #ffe082; margin-top:30px;">
             <h3 style="color:#f57f17; font-size:14px; margin-top:0;">⚠️ アソシエイト・プログラム免責事項</h3>
@@ -459,11 +383,43 @@
                 document.getElementById('weightInput').value = userProfile.weight;
                 if(userProfile.jobIntensity) document.getElementById('jobIntensity').value = userProfile.jobIntensity;
                 if(userProfile.exerciseFrequency) document.getElementById('exerciseFrequency').value = userProfile.exerciseFrequency;
+                updateGoalOptions();
                 if(userProfile.goalOffset !== undefined) document.getElementById('goalSelect').value = userProfile.goalOffset;
+            } else {
+                updateGoalOptions();
             }
             renderFoodSelect(); 
             render();
         };
+
+        // ★ V33: 性別によって「現在の目的」の選択肢と数値を動的に変更する関数
+        function updateGoalOptions() {
+            const gender = document.getElementById('genderSelect').value;
+            const select = document.getElementById('goalSelect');
+            const currentVal = select.value;
+            select.innerHTML = '';
+            
+            if (gender === 'female') {
+                select.innerHTML += '<option value="-500">短期集中ダイエット (-500kcal)</option>';
+                select.innerHTML += '<option value="-200">筋肉を残して除脂肪 (-200kcal)</option>';
+                select.innerHTML += '<option value="0">維持 (現状をキープ / ±0kcal)</option>';
+                select.innerHTML += '<option value="300">筋肉を増やす増量 (+300kcal)</option>';
+            } else {
+                select.innerHTML += '<option value="-500">短期集中ダイエット (-500kcal)</option>';
+                select.innerHTML += '<option value="-300">筋肉を残して除脂肪 (-300kcal)</option>';
+                select.innerHTML += '<option value="0">維持 (現状をキープ / ±0kcal)</option>';
+                select.innerHTML += '<option value="300">筋肉を増やす増量 (+300kcal)</option>';
+            }
+            
+            // 以前の選択状態を復元（女性に変更した際に-300が存在しない場合は-200にフォールバック）
+            if (currentVal) {
+                if (gender === 'female' && currentVal === '-300') {
+                    select.value = '-200';
+                } else {
+                    select.value = currentVal;
+                }
+            }
+        }
 
         function calculatePrecisionTDEE() {
             const gender = document.getElementById('genderSelect').value; 
@@ -473,25 +429,58 @@
             const jobIntensity = parseFloat(document.getElementById('jobIntensity').value); 
             const exerciseFrequency = parseFloat(document.getElementById('exerciseFrequency').value);
             const goalOffset = parseFloat(document.getElementById('goalSelect').value);
+            const warningDiv = document.getElementById('warningMessage');
             
             if(!age || !height || !weight) return alert("プロフィールを入力してください");
             
+            // 基礎代謝(BMR)と総消費カロリー(TDEE)の計算
             let bmr = (10 * weight) + (6.25 * height) - (5 * age) + (gender === 'male' ? 5 : -161);
             const activityFactor = jobIntensity + exerciseFrequency; 
             const tdee = bmr * activityFactor; 
             const targetCal = Math.round(tdee + goalOffset);
             
+            // ★ V33: 基礎代謝割れブロック機能（セーフティ機能）
+            if (targetCal < bmr) {
+                warningDiv.style.display = 'block';
+                warningDiv.innerHTML = `⚠️ 警告: 選択した目標ではカロリーが基礎代謝(${Math.round(bmr)}kcal)を下回ります。<br>健康上のリスクがあるため、現在の運動量でのダイエットは推奨されません。「維持」を選ぶか、運動頻度を上げてください。`;
+                return; // 計算処理をここで強制終了
+            } else {
+                warningDiv.style.display = 'none'; // 問題なければ警告を消す
+            }
+
             goals.cal = targetCal; 
-            goals.p = Math.round(weight * 2.0); 
-            goals.f = Math.round(weight * 0.8);
+
+            // ★ V33: 性別と運動量に応じたPFCの最適化
+            if (gender === 'female') {
+                // 女性の場合：運動なし〜週2回は1.3g、週3回以上は1.5g
+                const proteinMultiplier = (exerciseFrequency >= 0.30) ? 1.5 : 1.3;
+                goals.p = Math.round(weight * proteinMultiplier);
+                
+                // 脂質は基本体重×0.8gだが、総カロリーの20%を下回る場合は20%に補正
+                let fatGrams = Math.round(weight * 0.8);
+                const minFatGrams = Math.round((goals.cal * 0.2) / 9);
+                goals.f = Math.max(fatGrams, minFatGrams);
+                
+                document.getElementById('displayPLabel').innerText = `P (体重×${proteinMultiplier}g)`;
+                document.getElementById('displayFLabel').innerText = (goals.f === minFatGrams) ? "F (総カロリーの20%)" : "F (体重×0.8g)";
+            } else {
+                // 男性の場合：従来のハードな計算
+                goals.p = Math.round(weight * 2.0); 
+                goals.f = Math.round(weight * 0.8);
+                document.getElementById('displayPLabel').innerText = "P (体重×2.0g)";
+                document.getElementById('displayFLabel').innerText = "F (体重×0.8g)";
+            }
+            
+            // 炭水化物は残りのカロリーすべて
             goals.c = Math.max(0, Math.round((goals.cal - (goals.p * 4 + goals.f * 9)) / 4));
             
+            // データの保存
             userProfile = { gender, age, height, weight, jobIntensity, exerciseFrequency, goalOffset, bmr, tdee, activityFactor };
             localStorage.setItem('pfcProfile', JSON.stringify(userProfile)); 
             localStorage.setItem('pfcGoals', JSON.stringify(goals));
             
             render(); 
-            alert(`目標を ${targetCal} kcal に更新しました！`);
+            alert(`安全な目標を ${targetCal} kcal に更新しました！`);
         }
 
         async function runOCR(event) {
@@ -678,7 +667,15 @@
             
             if(goals.cal > 0) {
                 document.getElementById('currentGoalsDisplay').style.display = 'block';
-                if(userProfile.bmr) document.getElementById('displayMetabolism').innerText = `基礎代謝: 約${Math.round(userProfile.bmr)}kcal / 活動係数: ${userProfile.activityFactor.toFixed(2)}`;
+                if(userProfile.bmr) {
+                    document.getElementById('displayMetabolism').innerText = `基礎代謝: 約${Math.round(userProfile.bmr)}kcal / 活動係数: ${userProfile.activityFactor.toFixed(2)}`;
+                }
+                document.getElementById('displayTargetCal').innerText = `${goals.cal} kcal`;
+                document.getElementById('displayTargetP').innerText = `${goals.p} g`;
+                document.getElementById('displayTargetF').innerText = `${goals.f} g`;
+                document.getElementById('displayTargetC').innerText = `${goals.c} g`;
+            } else {
+                document.getElementById('currentGoalsDisplay').style.display = 'none';
             }
             document.getElementById('btnPaste').style.display = localStorage.getItem('pfcClipboard') ? 'block' : 'none';
         }
