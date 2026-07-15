@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>PFC Pro Tracker v39</title>
+    <title>PFC Pro Tracker v40</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         :root { --primary: #007AFF; --accent: #deff9a; --bg: #f2f2f7; --card-bg: #ffffff; --text: #1c1c1e; }
@@ -62,7 +62,7 @@
         .formula-box { background: #f8f9fa; border-radius: 8px; padding: 12px; border-left: 4px solid var(--primary); margin: 10px 0; font-family: monospace; font-size: 13px; color: #333; line-height: 1.5; }
         #monthlyOverlay, #customFoodOverlay, #backupOverlay, #manualOverlay, #recommendOverlay, #specOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:2000; padding:20px; box-sizing:border-box; overflow-y:auto; }
 
-        /* 📅 カレンダー用CSS（UI崩れ修正版） */
+        /* 📅 カレンダー用CSS */
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 10px; }
         .calendar-header-day { text-align: center; font-size: 12px; font-weight: bold; color: #666; padding: 5px 0; border-bottom: 1px solid #ddd; }
         .calendar-cell { background: #f9f9f9; border-radius: 8px; padding: 8px 2px; text-align: center; font-size: 14px; cursor: pointer; min-height: 45px; display: flex; flex-direction: column; justify-content: flex-start; border: 1px solid #eee; }
@@ -120,7 +120,8 @@
         </select>
         <label class="input-label" style="color:#aaa; margin-top:10px; font-size:12px;">現在の目的</label>
         <select id="goalSelect">
-            </select>
+            <!-- 選択肢はJavaScriptで動的に生成されます -->
+        </select>
         
         <div id="warningMessage"></div>
 
@@ -263,6 +264,7 @@
         </div>
     </div>
 
+    <!-- おすすめ商品 -->
     <div id="recommendOverlay" style="background:#f2f2f7;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
             <h2 style="margin:0; color:#00796b;">🛒 おすすめギア</h2>
@@ -276,7 +278,7 @@
             <div class="affiliate-content">
                 <div class="affiliate-title">REYS ホエイプロテイン</div>
                 <div class="affiliate-desc">筋トレYouTuberの山澤さん監修。水に溶けやすくダマにならず、非常に美味しくて愛飲しています。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4fiO5Jt" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://hb.afl.rakuten.co.jp/ichiba/55c965be.f3d0e614.55c965bf.651c7a1f/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fmk-mart2%2Freys-protein02%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4fiO5Jt" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hkMsZU" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
         <div class="affiliate-card">
@@ -284,7 +286,7 @@
             <div class="affiliate-content">
                 <div class="affiliate-title">VITAS ホエイプロテイン</div>
                 <div class="affiliate-desc">フルーツ系からラテ系まで、美味しさに徹底的にこだわったプロテイン。ダマになりにくく日々のタンパク質補給に最適です。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/3ReubHi" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://hb.afl.rakuten.co.jp/ichiba/55c98e7a.018b8aa0.55c98e7b.48957eca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Ftoyomarket%2Fvitas006%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/3ReubHi" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hYrfs" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
         <div class="affiliate-card">
@@ -292,7 +294,7 @@
             <div class="affiliate-content">
                 <div class="affiliate-title">エクスプロージョン ホエイプロテイン</div>
                 <div class="affiliate-desc">大容量3kgでコスパ最強。日々のトレーニングやダイエットの置き換えなど、気兼ねなくガンガン飲めるプロテインです。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4yomqPK" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://hb.afl.rakuten.co.jp/ichiba/55c99899.f14a8ec7.55c9989a.494ba8bf/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fx-plosion%2F10000019%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4yomqPK" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hgtaDY" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
         <div class="affiliate-card">
@@ -300,7 +302,7 @@
             <div class="affiliate-content">
                 <div class="affiliate-title">アルプロン ホエイプロテイン</div>
                 <div class="affiliate-desc">国内製造で安心の高品質。フレーバーの種類が豊富で飲みやすく、日々のタンパク質補給やダイエットのサポートにおすすめです。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/3ThEdIo" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://hb.afl.rakuten.co.jp/ichiba/55c9a49d.3253db38.55c9a49e.48910552/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Falpron%2Frakutenwhey003%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/3ThEdIo" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hPicGh" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
         <div class="affiliate-card">
@@ -308,7 +310,7 @@
             <div class="affiliate-content">
                 <div class="affiliate-title">VITAS ビタパワー (マルチビタミン)</div>
                 <div class="affiliate-desc">12種類のビタミンをはじめ、マカや亜鉛など様々な栄養素をまとめて摂取できるサプリ。味が美味しくて毎日続けやすいのが特徴です。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4gJEFJn" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://hb.afl.rakuten.co.jp/ichiba/55c98e7a.018b8aa0.55c98e7b.48957eca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Ftoyomarket%2Fvitas001%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4gJEFJn" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/h50q7O" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
 
@@ -326,7 +328,7 @@
             <div class="affiliate-content">
                 <div class="affiliate-title">VITAS プロテインシェイカー 1000ml</div>
                 <div class="affiliate-desc">ワンプッシュで開く大容量のドリンクボトル。漏れにくく持ち運びに便利で、プロテインやEAAのシェイクに最適です。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4pjAvKe" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://hb.afl.rakuten.co.jp/ichiba/55c98e7a.018b8aa0.55c98e7b.48957eca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Ftoyomarket%2Fv-shaker1000%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4pjAvKe" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hYMsit" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
 
@@ -336,7 +338,7 @@
             <div class="affiliate-content">
                 <div class="affiliate-title">[EVANE] エバン トレーニング タンクトップ</div>
                 <div class="affiliate-desc">4WAYストレッチとドライタッチ素材で快適な着心地。ハードなトレーニング時にも動きを妨げず、しっかりサポートします。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4aRC10h" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://hb.afl.rakuten.co.jp/ichiba/55c9a01a.fceb353d.55c9a01b.76ebc6fe/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fhanamarushop%2Fhqwtsycegm5tsi7zmasykqnluu%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4aRC10h" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hRYJQ4" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
 
@@ -461,7 +463,6 @@
             const tdee = bmr * activityFactor; 
             const targetCal = Math.round(tdee + goalOffset);
             
-            // 基礎代謝割れブロック
             if (targetCal < bmr) {
                 warningDiv.style.display = 'block';
                 warningDiv.innerHTML = `⚠️ 警告: 選択した目標ではカロリーが基礎代謝(${Math.round(bmr)}kcal)を下回ります。<br>健康上のリスクがあるため、現在の運動量でのダイエットは推奨されません。「維持」を選ぶか、運動頻度を上げてください。`;
