@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>PFC Pro Tracker v29</title>
+    <title>PFC Pro Tracker v30</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         :root { --primary: #007AFF; --accent: #deff9a; --bg: #f2f2f7; --card-bg: #ffffff; --text: #1c1c1e; }
@@ -142,7 +142,6 @@
     <div id="mealContainer"></div>
     <button class="btn-add-meal" onclick="addNewMeal()">＋ 新しい食事枠を追加</button>
 
-    <!-- 食材追加モーダル -->
     <div id="inputModal" class="card" style="display:none; position:fixed; top:5%; left:5%; width:90%; z-index:3000; border:3px solid #000; max-height:90vh; overflow-y:auto;">
         <div class="tab-container">
             <div class="tab-btn active" id="tabBtnDict" onclick="switchTab('dict')">📖 リストから</div>
@@ -172,7 +171,6 @@
         <button onclick="closeModal()" style="background:#ccc; margin-top:10px;">キャンセル</button>
     </div>
 
-    <!-- マイ食材管理 -->
     <div id="customFoodOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2>🛠 マイ食材</h2>
@@ -199,7 +197,6 @@
         <div id="customFoodListContainer"></div>
     </div>
 
-    <!-- カレンダー -->
     <div id="monthlyOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <h2 id="monthlyTitle" style="margin:0;">摂取履歴</h2>
@@ -208,7 +205,6 @@
         <div class="calendar-grid" id="calendarGrid"></div>
     </div>
 
-    <!-- データバックアップ -->
     <div id="backupOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2>💾 データ管理</h2>
@@ -228,7 +224,6 @@
         </div>
     </div>
 
-    <!-- 使い方マニュアル -->
     <div id="manualOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2>📖 使い方ガイド</h2>
@@ -244,7 +239,6 @@
         </div>
     </div>
 
-    <!-- ★ V29: おすすめ商品画面（Amazon＆楽天ダブルリンク仕様・データ復活版） -->
     <div id="recommendOverlay" style="background:#f2f2f7;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
             <h2 style="margin:0; color:#00796b;">🛒 おすすめギア</h2>
@@ -252,23 +246,22 @@
         </div>
         <p style="font-size:13px; color:#666; margin-bottom:10px; line-height:1.5;">日々のボディメイクを効率化するために、開発者が実際に使っているおすすめアイテムです。</p>
         
-        <!-- ジャンル1: サプリメント -->
         <h3 class="genre-title">💊 サプリメント</h3>
         <div class="affiliate-card">
             <div class="affiliate-img-container">
-                <img src="" alt="REYS プロテイン" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>🥤</text></svg>'">
+                <img src="https://thumbnail.image.rakuten.co.jp/@0_mall/mk-mart2/cabinet/imgrc0128427156.jpg?_ex=240x240" alt="REYS プロテイン" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22>🥤</text></svg>'">
             </div>
             <div class="affiliate-content">
                 <div class="affiliate-title">REYS プロテイン</div>
                 <div class="affiliate-desc">筋トレYouTuberの山澤さん監修。水に溶けやすくダマにならず、非常に美味しくて愛飲しています。</div>
                 <div style="display: flex; gap: 8px;">
                     <a href="https://amzn.to/4fiO5Jt" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a>
-                    <a href="<table border="0" cellpadding="0" cellspacing="0"><tr><td><div style="border:1px solid #95A5A6;border-radius:.75rem;background-color:#FFFFFF;width:504px;margin:0px;padding:5px;text-align:center;overflow:hidden;"><table><tr><td style="width:240px"><a href="https://hb.afl.rakuten.co.jp/ichiba/55c965be.f3d0e614.55c965bf.651c7a1f/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fmk-mart2%2Freys-protein02%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;"><img src="https://hbb.afl.rakuten.co.jp/hgb/55c965be.f3d0e614.55c965bf.651c7a1f/?me_id=1417207&item_id=10000536&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fmk-mart2%2Fcabinet%2Fimgrc0128427156.jpg%3F_ex%3D240x240&s=240x240&t=picttext" border="0" style="margin:2px" alt="[商品価格に関しましては、リンクが作成された時点と現時点で情報が変更されている場合がございます。]" title="[商品価格に関しましては、リンクが作成された時点と現時点で情報が変更されている場合がございます。]"></a></td><td style="vertical-align:top;width:248px;display: block;"><p style="font-size:12px;line-height:1.4em;text-align:left;margin:0px;padding:2px 6px;word-wrap:break-word"><a href="https://hb.afl.rakuten.co.jp/ichiba/55c965be.f3d0e614.55c965bf.651c7a1f/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fmk-mart2%2Freys-protein02%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;">REYS レイズ ホエイ プロテイン 1kg ミルクティー フルーツオレ 700g チョコレート カフェオレ ソイプロテイン 塩キャラメル 安納芋 安納芋味 粉末 山澤 礼明 監修 国内製造 ビタミン7種配合 WPCプロテイン ぷろていん ホエイプロテイン パウダー ダイエット 送料無料 ■</a><br><span >価格：3,950円～（税込、送料無料)</span> <span style="color:#BBB">(2026/7/15時点)</span></p><div style="margin:10px;"><a href="https://hb.afl.rakuten.co.jp/ichiba/55c965be.f3d0e614.55c965bf.651c7a1f/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fmk-mart2%2Freys-protein02%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;"><img src="https://static.affiliate.rakuten.co.jp/makelink/rl.svg" style="float:left;max-height:27px;width:auto;margin-top:0" ></a><a href="https://hb.afl.rakuten.co.jp/ichiba/55c965be.f3d0e614.55c965bf.651c7a1f/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fmk-mart2%2Freys-protein02%2F%3Fscid%3Daf_pc_bbtn&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ==" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;"><div style="float:right;width:41%;height:27px;background-color:#bf0000;color:#fff!important;font-size:12px;font-weight:500;line-height:27px;margin-left:1px;padding: 0 12px;border-radius:16px;cursor:pointer;text-align:center;"> 楽天で購入 </div></a></div></td></tr></table></div><br><p style="color:#000000;font-size:12px;line-height:1.4em;margin:5px;word-wrap:break-word"></p></td></tr></table>" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a>
+                    
+                    <a href="https://hb.afl.rakuten.co.jp/ichiba/55c965be.f3d0e614.55c965bf.651c7a1f/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fmk-mart2%2Freys-protein02%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a>
                 </div>
             </div>
         </div>
 
-        <!-- ジャンル2: トレーニングギア -->
         <h3 class="genre-title">🏋️ トレーニングギア</h3>
         <div class="affiliate-card">
             <div class="affiliate-img-container">
@@ -284,7 +277,6 @@
             </div>
         </div>
 
-        <!-- ジャンル3: 食材 -->
         <h3 class="genre-title">🥦 食材</h3>
         <div class="affiliate-card">
             <div class="affiliate-img-container">
@@ -301,7 +293,6 @@
         </div>
     </div>
 
-    <!-- アプリ仕様 -->
     <div id="specOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2 style="margin:0; color:#4a148c;">ℹ️ アプリ詳細仕様</h2>
