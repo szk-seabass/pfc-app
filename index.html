@@ -8,15 +8,15 @@
     <meta name="apple-mobile-web-app-title" content="PFCろぐ">
     <meta name="theme-color" content="#007AFF">
     
-    <!-- ★ Google検索用の説明文 (SEO対策) -->
+    <meta name="google-site-verification" content="AfwYmlpSIJny7k4j378Wzdeb3qGoxuJh5uj-fr7P2Go" />
+    
     <title>PFCろぐ - シンプルで高精度なPFCバランス管理アプリ</title>
     <meta name="description" content="PFCろぐは、登録不要・全自動クラウド同期対応の超シンプルPFC管理ツールです。精密なTDEE計算に基づいた目標設定と、パッケージ裏の手動入力・マイセット機能で、毎日のボディメイクをストレスなく記録できます。">
     
-    <!-- ★ SNS（X, LINE, インスタ等）でURLを貼った時に綺麗に見せる設定（OGP） -->
     <meta property="og:title" content="PFCろぐ - シンプルで高精度なPFCバランス管理アプリ">
     <meta property="og:description" content="登録不要ですぐに使える！全自動同期・高精度カロリー計算を搭載した、ダイエッター・トレーニーのための食事管理アプリ。">
     <meta property="og:type" content="website">
-    <meta name="twitter:card" content="summary"> <!-- Xで正方形のカードとして表示 -->
+    <meta name="twitter:card" content="summary">
 
     <script>
         (function() {
@@ -37,7 +37,7 @@
                 ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
                 ctx.lineTo(x + r, y + h);
                 ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-                ctx.lineTo(x, y + r);
+                ctx.lineTo(x + r, y + r);
                 ctx.quadraticCurveTo(x, y, x + r, y);
                 ctx.closePath();
                 ctx.fill();
@@ -61,8 +61,7 @@
             document.head.appendChild(linkApple);
 
             const manifest = {
-                name: "PFCろぐ",
-                short_name: "PFCろぐ",
+                name: "PFCろぐ", Short_name: "PFCろぐ",
                 display: "standalone",
                 background_color: "#f2f2f7",
                 theme_color: "#007AFF",
@@ -168,7 +167,7 @@
     </div>
 
     <div id="guestWarningBanner" style="display:none; background:#fff3e0; border:1px solid #ffcc80; padding:12px; margin-bottom:15px; border-radius:10px; font-size:13px; color:#e65100;">
-        <b>⚠️ データの消失にご注意ください</b><br>
+        <b>⚠️ データの消失にごご注意ください</b><br>
         現在ローカル保存モードです。ブラウザの履歴消去や機種変更でデータが消えてしまいます。<br>
         <span onclick="openOverlay('cloudOverlay')" style="color:var(--primary); text-decoration:underline; font-weight:bold; cursor:pointer;">こちらからアカウント登録（無料）</span>すると、クラウドに自動保存されます。
     </div>
@@ -461,7 +460,7 @@
             <div class="affiliate-icon-container">🫙</div>
             <div class="affiliate-content">
                 <div class="affiliate-title">VITAS プロテインシェイカー 1000ml</div>
-                <div class="affiliate-desc">ワンプッシュで開く大容量のドリンクボトル。漏れにくく持ち運びに便利で、プロテインやEAAのシェイクに最適です。</div>
+                <div class="affiliate-desc">ワンプッシュで開く大容量のドリンクボトル. 漏れにくく持ち運びに便利で、プロテインやEAAのシェイクに最適です。</div>
                 <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4pjAvKe" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hYMsit" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
@@ -493,9 +492,12 @@
     </div>
 
     <script>
-        // ==========================================
-        // 🚀 SUPABASE CONFIGURATION
-        // ==========================================
+        const diaryDataKey = 'pfcDiaryData';
+        const goalsKey = 'pfcGoals';
+        const customFoodsKey = 'pfcCustomFoods';
+        const profileKey = 'pfcProfile';
+        const mySetsKey = 'pfcMySets';
+
         const supabaseUrl = 'https://zzjzdbkntqjbgjewixqa.supabase.co';
         const supabaseKey = 'sb_publishable_Mj2IsNTX-TbK6kJ_2f-HNQ__GvUvdYG';
         
@@ -527,9 +529,6 @@
             return message;
         }
 
-        // ==========================================
-        // LOCAL STORAGE FUNCTIONS & INITIALIZATION
-        // ==========================================
         function safeJSONParse(key, defaultVal) {
             try {
                 const parsed = JSON.parse(localStorage.getItem(key));
@@ -547,19 +546,19 @@
             "egg":     { name: "卵(1個)", p: 6.2, f: 5.2, c: 0.2, base: 1 } 
         };
         
-        let diaryData = safeJSONParse('pfcDiaryData', {});
+        let diaryData = safeJSONParse(diaryDataKey, {});
         if (typeof diaryData !== 'object' || Array.isArray(diaryData)) diaryData = {};
 
-        let goals = safeJSONParse('pfcGoals', { p:0, f:0, c:0, cal:0 });
+        let goals = safeJSONParse(goalsKey, { p:0, f:0, c:0, cal:0 });
         if (typeof goals !== 'object' || Array.isArray(goals)) goals = { p:0, f:0, c:0, cal:0 };
 
-        let customFoodDict = safeJSONParse('pfcCustomFoods', {});
+        let customFoodDict = safeJSONParse(customFoodsKey, {});
         if (typeof customFoodDict !== 'object' || Array.isArray(customFoodDict)) customFoodDict = {};
 
-        let userProfile = safeJSONParse('pfcProfile', {});
+        let userProfile = safeJSONParse(profileKey, {});
         if (typeof userProfile !== 'object' || Array.isArray(userProfile)) userProfile = {};
         
-        let mySets = safeJSONParse('pfcMySets', {});
+        let mySets = safeJSONParse(mySetsKey, {});
         if (typeof mySets !== 'object' || Array.isArray(mySets)) mySets = {};
 
         let currentDateStr = ""; 
@@ -606,10 +605,6 @@
             await checkUserSession();
         };
 
-        // ==========================================
-        // ☁️ CLOUD FUNCTIONS (SUPABASE)
-        // ==========================================
-        
         async function checkUserSession() {
             try {
                 const { data, error } = await supabaseClient.auth.getSession();
@@ -681,7 +676,7 @@
             const password = document.getElementById('authPassword').value;
             const msgEl = document.getElementById('authMessage');
             
-            const hasLetter = /[a-zA-Z]/.test(password);
+            const hasLetter = /[a-zA-zA-Z]/.test(password);
             const hasNumber = /\d/.test(password);
             const hasSymbol = /[^a-zA-Z0-9\s]/.test(password);
             const typesCount = (hasLetter ? 1 : 0) + (hasNumber ? 1 : 0) + (hasSymbol ? 1 : 0);
@@ -820,11 +815,11 @@
                     mySets = data.my_sets || {};
                     userProfile = data.profile || {};
 
-                    localStorage.setItem('pfcDiaryData', JSON.stringify(diaryData));
-                    localStorage.setItem('pfcGoals', JSON.stringify(goals));
-                    localStorage.setItem('pfcCustomFoods', JSON.stringify(customFoodDict));
-                    localStorage.setItem('pfcMySets', JSON.stringify(mySets));
-                    localStorage.setItem('pfcProfile', JSON.stringify(userProfile));
+                    localStorage.setItem(diaryDataKey, JSON.stringify(diaryData));
+                    localStorage.setItem(goalsKey, JSON.stringify(goals));
+                    localStorage.setItem(customFoodsKey, JSON.stringify(customFoodDict));
+                    localStorage.setItem(mySetsKey, JSON.stringify(mySets));
+                    localStorage.setItem(profileKey, JSON.stringify(userProfile));
                     
                     renderProfileForm();
                     render();
@@ -833,10 +828,6 @@
                 console.error('Auto load error:', error);
             }
         }
-
-        // ==========================================
-        // APP LOGIC FUNCTIONS
-        // ==========================================
 
         function getCombinedDict() { 
             return { ...defaultFoodDict, ...customFoodDict }; 
@@ -956,8 +947,8 @@
             }
             
             userProfile = { gender, age, height, weight, jobIntensity, exerciseFrequency, goalOffset, bmr, tdee, activityFactor };
-            localStorage.setItem('pfcProfile', JSON.stringify(userProfile)); 
-            localStorage.setItem('pfcGoals', JSON.stringify(goals));
+            localStorage.setItem(profileKey, JSON.stringify(userProfile)); 
+            localStorage.setItem(goalsKey, JSON.stringify(goals));
             
             render(); 
             alert(`目標を ${targetCal} kcal で計算しました。`);
@@ -972,7 +963,7 @@
             document.getElementById('displayPLabel').innerText = pLabel;
             document.getElementById('displayFLabel').innerText = fLabel;
 
-            localStorage.setItem('pfcGoals', JSON.stringify(goals));
+            localStorage.setItem(goalsKey, JSON.stringify(goals));
             render();
 
             document.getElementById('adviceMessage').innerHTML = `💡 <b>推奨プラン（${cal}kcal）を適用しました！</b><br>食事はこれ以上減らさず、日常の活動量や運動頻度を増やしてこの目標を目指しましょう。`;
@@ -986,7 +977,7 @@
             const c = parseFloat(document.getElementById('cManual').value) || 0;
             if(!name) return alert("品名を入力してください");
             customFoodDict['custom_' + Date.now()] = { name, p, f, c, base: 1 };
-            localStorage.setItem('pfcCustomFoods', JSON.stringify(customFoodDict)); 
+            localStorage.setItem(customFoodsKey, JSON.stringify(customFoodDict)); 
             renderFoodSelect(); 
             alert("マイ食材に登録しました！");
             save(); 
@@ -1107,7 +1098,7 @@
                 name: setName,
                 items: JSON.parse(JSON.stringify(meal.items)) 
             };
-            localStorage.setItem('pfcMySets', JSON.stringify(mySets));
+            localStorage.setItem(mySetsKey, JSON.stringify(mySets));
             alert(`「${escapeHTML(setName)}」をマイセットに保存しました！\n次回から「＋食材を追加」→「マイセット」タブから一発で呼び出せます。`);
             save(); 
         }
@@ -1158,7 +1149,7 @@
             if(!key || !mySets[key]) return;
             if(confirm(`マイセット「${mySets[key].name}」を削除しますか？`)) {
                 delete mySets[key];
-                localStorage.setItem('pfcMySets', JSON.stringify(mySets));
+                localStorage.setItem(mySetsKey, JSON.stringify(mySets));
                 renderSetSelect();
                 renderSetPreview();
                 save(); 
@@ -1259,7 +1250,7 @@
             if(!name) return alert("品名入力");
             
             customFoodDict['custom_' + Date.now()] = { name, p, f, c, base }; 
-            localStorage.setItem('pfcCustomFoods', JSON.stringify(customFoodDict));
+            localStorage.setItem(customFoodsKey, JSON.stringify(customFoodDict));
             document.getElementById('regName').value = ""; 
             renderFoodSelect(); 
             renderCustomFoodList();
@@ -1277,7 +1268,7 @@
         
         function deleteCustomFood(k) { 
             delete customFoodDict[k]; 
-            localStorage.setItem('pfcCustomFoods', JSON.stringify(customFoodDict)); 
+            localStorage.setItem(customFoodsKey, JSON.stringify(customFoodDict)); 
             renderCustomFoodList(); 
             renderFoodSelect(); 
             save(); 
@@ -1367,11 +1358,11 @@
         }
         
         function save() { 
-            localStorage.setItem('pfcDiaryData', JSON.stringify(diaryData)); 
-            localStorage.setItem('pfcGoals', JSON.stringify(goals));
-            localStorage.setItem('pfcCustomFoods', JSON.stringify(customFoodDict));
-            localStorage.setItem('pfcMySets', JSON.stringify(mySets));
-            localStorage.setItem('pfcProfile', JSON.stringify(userProfile));
+            localStorage.setItem(diaryDataKey, JSON.stringify(diaryData)); 
+            localStorage.setItem(goalsKey, JSON.stringify(goals));
+            localStorage.setItem(customFoodsKey, JSON.stringify(customFoodDict));
+            localStorage.setItem(mySetsKey, JSON.stringify(mySets));
+            localStorage.setItem(profileKey, JSON.stringify(userProfile));
             
             saveDataToCloudSilent();
         }
