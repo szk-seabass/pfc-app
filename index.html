@@ -9,7 +9,6 @@
     <meta name="theme-color" content="#007AFF">
     
     <meta name="google-site-verification" content="AfwYmlpSIJny7k4j378Wzdeb3qGoxuJh5uj-fr7P2Go" />
-    
     <title>PFCろぐ - シンプルで高精度なPFCバランス管理アプリ</title>
     <meta name="description" content="PFCろぐは、登録不要・全自動クラウド同期対応の超シンプルPFC管理ツールです。精密なTDEE計算に基づいた目標設定と、パッケージ裏の手動入力・マイセット機能で、毎日のボディメイクをストレスなく記録できます。">
     
@@ -37,7 +36,7 @@
                 ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
                 ctx.lineTo(x + r, y + h);
                 ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-                ctx.lineTo(x + r, y + r);
+                ctx.lineTo(x, y + r);
                 ctx.quadraticCurveTo(x, y, x + r, y);
                 ctx.closePath();
                 ctx.fill();
@@ -61,7 +60,8 @@
             document.head.appendChild(linkApple);
 
             const manifest = {
-                name: "PFCろぐ", Short_name: "PFCろぐ",
+                name: "PFCろぐ",
+                short_name: "PFCろぐ",
                 display: "standalone",
                 background_color: "#f2f2f7",
                 theme_color: "#007AFF",
@@ -167,7 +167,7 @@
     </div>
 
     <div id="guestWarningBanner" style="display:none; background:#fff3e0; border:1px solid #ffcc80; padding:12px; margin-bottom:15px; border-radius:10px; font-size:13px; color:#e65100;">
-        <b>⚠️ データの消失にごご注意ください</b><br>
+        <b>⚠️ データの消失にご注意ください</b><br>
         現在ローカル保存モードです。ブラウザの履歴消去や機種変更でデータが消えてしまいます。<br>
         <span onclick="openOverlay('cloudOverlay')" style="color:var(--primary); text-decoration:underline; font-weight:bold; cursor:pointer;">こちらからアカウント登録（無料）</span>すると、クラウドに自動保存されます。
     </div>
@@ -290,7 +290,7 @@
         <div style="display:flex; flex-direction:column; gap:12px;">
             <button onclick="closeOverlay('settingsOverlay'); openOverlay('cloudOverlay')" style="background:#e8eaf6; color:#3f51b5; border:1px solid #9fa8da; padding:15px; text-align:left;">👤 アカウント・同期設定</button>
             <button onclick="closeOverlay('settingsOverlay'); openOverlay('manualOverlay')" style="background:#f3e5f5; color:#7b1fa2; border:1px solid #ce93d8; padding:15px; text-align:left;">📖 使い方ガイド</button>
-            <button onclick="closeOverlay('settingsOverlay'); openOverlay('recommendOverlay')" style="background:#e0f2f1; color:#00796b; border:1px solid #80cbc4; padding:15px; text-align:left;">🛒 おすすめギア</button>
+            <button onclick="closeOverlay('settingsOverlay'); openOverlay('recommendOverlay')" style="background:#e0f2f1; color:#00796b; border:1px solid #80cbc4; padding:15px; text-align:left;">🛒 おすすめアイテム</button>
             <button onclick="closeOverlay('settingsOverlay'); openOverlay('specOverlay')" style="background:#e1bee7; color:#4a148c; border:1px solid #ba68c8; padding:15px; text-align:left;">ℹ️ アプリ詳細仕様</button>
         </div>
     </div>
@@ -393,7 +393,7 @@
 
     <div id="recommendOverlay" style="background:#f2f2f7;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <h2 style="margin:0; color:#00796b;">🛒 おすすめギア</h2>
+            <h2 style="margin:0; color:#00796b;">🛒 おすすめアイテム</h2>
             <button onclick="closeOverlay('recommendOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button>
         </div>
         
@@ -439,11 +439,37 @@
             </div>
         </div>
         <div class="affiliate-card">
+            <div class="affiliate-icon-container">🥤</div>
+            <div class="affiliate-content">
+                <div class="affiliate-title">マイプロテイン ホエイプロテイン</div>
+                <div class="affiliate-desc">世界中で愛される定番プロテイン。フレーバーが非常に豊富で、日々のタンパク質補給のコスパも抜群です。</div>
+                <div style="display: flex; gap: 8px;"><a href="https://a.r10.to/hPDSw1" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+            </div>
+        </div>
+        <div class="affiliate-card">
+            <div class="affiliate-icon-container">🥤</div>
+            <div class="affiliate-content">
+                <div class="affiliate-title">REYS EAA</div>
+                <div class="affiliate-desc">必須アミノ酸9種類を美味しく手軽に補給できるサプリ。トレーニング中の水分・栄養補給に最適です。</div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/3TDydd3" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a></div>
+            </div>
+        </div>
+        <div class="affiliate-card">
             <div class="affiliate-icon-container">💊</div>
             <div class="affiliate-content">
                 <div class="affiliate-title">VITAS ビタパワー (マルチビタミン)</div>
                 <div class="affiliate-desc">12種類のビタミンをはじめ、マカや亜鉛など様々な栄養素をまとめて摂取できるサプリ。味が美味しくて毎日続けやすいのが特徴です。</div>
                 <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4gJEFJn" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/h50q7O" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+            </div>
+        </div>
+
+        <h3 class="genre-title">🍠 ヘルシー食品</h3>
+        <div class="affiliate-card">
+            <div class="affiliate-icon-container">🍠</div>
+            <div class="affiliate-content">
+                <div class="affiliate-title">焼き芋</div>
+                <div class="affiliate-desc">低GIで食物繊維が豊富な自然のスイーツ。美味しく手軽に良質な炭水化物（C）を補給でき、ダイエットの強い味方です。</div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/44xDPrO" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hgGI6I" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
 
@@ -460,8 +486,16 @@
             <div class="affiliate-icon-container">🫙</div>
             <div class="affiliate-content">
                 <div class="affiliate-title">VITAS プロテインシェイカー 1000ml</div>
-                <div class="affiliate-desc">ワンプッシュで開く大容量のドリンクボトル. 漏れにくく持ち運びに便利で、プロテインやEAAのシェイクに最適です。</div>
+                <div class="affiliate-desc">ワンプッシュで開く大容量のドリンクボトル。漏れにくく持ち運びに便利で、プロテインやEAAのシェイクに最適です。</div>
                 <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4pjAvKe" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hYMsit" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+            </div>
+        </div>
+        <div class="affiliate-card">
+            <div class="affiliate-icon-container">🫙</div>
+            <div class="affiliate-content">
+                <div class="affiliate-title">マイプロテイン シェイカー</div>
+                <div class="affiliate-desc">ダマになりにくいブレンダーボール付きの定番シェイカー。プロテインやEAAをしっかり溶かすことができます。</div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4wIP2lb" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a></div>
             </div>
         </div>
 
@@ -471,7 +505,7 @@
             <div class="affiliate-content">
                 <div class="affiliate-title">[EVANE] エバン トレーニング タンクトップ</div>
                 <div class="affiliate-desc">4WAYストレッチとドライタッチ素材で快適な着心地。ハードなトレーニング時にも動きを妨げず、しっかりサポートします。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4aRC10h" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hRYJQ4" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4aRC10h" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a></div>
             </div>
         </div>
     </div>
@@ -1172,8 +1206,32 @@
                 navigator.share({ text: text }).catch(console.error); 
             } else { 
                 navigator.clipboard.writeText(text); 
-                alert("コピーしました！"); 
+                alert("共有用テキストをコピーしました！"); 
             }
+        }
+
+        function copyDay() { 
+            let data = diaryData[currentDateStr];
+            if (!data || data.length === 0 || (data.length === 1 && (!data[0].items || data[0].items.length === 0))) {
+                return alert("コピーする食事記録がありません。");
+            }
+            localStorage.setItem('pfcClipboard', JSON.stringify(data)); 
+            alert("食事データをコピーしました！\nカレンダーで別の日付を開き、「貼付」ボタンを押すと複製できます。"); 
+            render(); 
+        }
+
+        function pasteDay() { 
+            let clipData = localStorage.getItem('pfcClipboard');
+            if (!clipData || clipData === "undefined") return alert("貼り付けるデータがありません。");
+            if(confirm("コピーした食事データをこの日に上書き貼付しますか？")) { 
+                try {
+                    diaryData[currentDateStr] = JSON.parse(clipData); 
+                    save(); 
+                    render(); 
+                } catch(e) {
+                    alert("貼り付けに失敗しました。");
+                }
+            } 
         }
 
         function render() {
@@ -1232,6 +1290,9 @@
                 } else {
                     document.getElementById('currentGoalsDisplay').style.display = 'none';
                 }
+
+                let clipData = localStorage.getItem('pfcClipboard');
+                document.getElementById('btnPaste').style.display = (clipData && clipData !== "undefined") ? 'block' : 'none';
             } catch (e) {
                 console.error("Render Error:", e);
             }
