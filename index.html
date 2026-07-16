@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>PFC Pro Tracker v56</title>
+    <title>PFC Pro Tracker v57</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -36,8 +36,10 @@
         .bar-f { background: #ff3b30; }
         .bar-c { background: #34c759; }
         
-        .header-menu { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 15px; }
-        .btn-header { font-size: 12px; padding: 10px 2px; border-radius: 8px; text-align: center; font-weight: bold; word-break: keep-all; box-sizing: border-box; cursor: pointer; }
+        /* ★ メニューを2列に変更しスッキリさせる */
+        .header-menu { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
+        .btn-header { font-size: 14px; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; word-break: keep-all; box-sizing: border-box; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        
         .tab-container { display: flex; border-radius: 10px; overflow: hidden; margin-bottom: 15px; border: 1px solid var(--primary); }
         .tab-btn { flex: 1; text-align: center; padding: 10px; font-size: 14px; font-weight: bold; background: white; color: var(--primary); cursor: pointer; }
         .tab-btn.active { background: var(--primary); color: white; }
@@ -62,7 +64,9 @@
         
         .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         .profile-grid input, .profile-grid select { margin-bottom: 0; }
-        #monthlyOverlay, #customFoodOverlay, #manualOverlay, #recommendOverlay, #specOverlay, #cloudOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:2000; padding:20px; box-sizing:border-box; overflow-y:auto; }
+        
+        /* ★ オーバーレイ設定 */
+        #monthlyOverlay, #customFoodOverlay, #manualOverlay, #recommendOverlay, #specOverlay, #cloudOverlay, #settingsOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:2000; padding:20px; box-sizing:border-box; overflow-y:auto; }
 
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 10px; }
         .calendar-header-day { text-align: center; font-size: 12px; font-weight: bold; color: #666; padding: 5px 0; border-bottom: 1px solid #ddd; }
@@ -86,15 +90,16 @@
 </head>
 <body>
 
-    <h2 style="text-align: center; margin: 15px 0;">💪 PFC Pro Tracker</h2>
+    <!-- ★ ヘッダー周りのデザインをハイブリッド仕様に変更 -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-top:10px;">
+        <h2 style="margin: 0;">💪 PFC Pro Tracker</h2>
+        <div onclick="openOverlay('settingsOverlay')" style="font-size:24px; cursor:pointer; background:#fff; border-radius:50%; width:44px; height:44px; display:flex; justify-content:center; align-items:center; box-shadow:0 2px 6px rgba(0,0,0,0.1);">⚙️</div>
+    </div>
 
+    <!-- メインメニューは毎日使うものだけ -->
     <div class="header-menu">
         <div class="btn-header" onclick="openMonthlyView()" style="background: #e3f2fd; color: #007AFF; border: 1px solid #90caf9;">📅 月履歴</div>
-        <div class="btn-header" onclick="openOverlay('customFoodOverlay')" style="background: #fff3e0; color: #e65100; border: 1px solid #ffcc80;">🛠 食材</div>
-        <div class="btn-header" onclick="openOverlay('cloudOverlay')" style="background: #e8eaf6; color: #3f51b5; border: 1px solid #9fa8da;">👤 アカウント</div>
-        <div class="btn-header" onclick="openOverlay('manualOverlay')" style="background: #f3e5f5; color: #7b1fa2; border: 1px solid #ce93d8;">📖 使い方</div>
-        <div class="btn-header" onclick="openOverlay('recommendOverlay')" style="background: #e0f2f1; color: #00796b; border: 1px solid #80cbc4;">🛒 おすすめ</div>
-        <div class="btn-header" onclick="openOverlay('specOverlay')" style="background: #e1bee7; color: #4a148c; border: 1px solid #ba68c8;">ℹ️ 仕様</div>
+        <div class="btn-header" onclick="openOverlay('customFoodOverlay')" style="background: #fff3e0; color: #e65100; border: 1px solid #ffcc80;">🛠 食材・セット管理</div>
     </div>
 
     <div id="guestWarningBanner" style="display:none; background:#fff3e0; border:1px solid #ffcc80; padding:12px; margin-bottom:15px; border-radius:10px; font-size:13px; color:#e65100;">
@@ -212,6 +217,21 @@
         <button type="button" onclick="closeModal()" style="background:#ccc; margin-top:10px; color:#333; padding:10px;">キャンセル</button>
     </div>
 
+    <!-- ★ 設定・その他メニュー (ハイブリッド用) -->
+    <div id="settingsOverlay">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 style="margin:0;">⚙️ 設定・その他</h2>
+            <button onclick="closeOverlay('settingsOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button>
+        </div>
+        
+        <div style="display:flex; flex-direction:column; gap:12px;">
+            <button onclick="closeOverlay('settingsOverlay'); openOverlay('cloudOverlay')" style="background:#e8eaf6; color:#3f51b5; border:1px solid #9fa8da; padding:15px; text-align:left;">👤 アカウント・同期設定</button>
+            <button onclick="closeOverlay('settingsOverlay'); openOverlay('manualOverlay')" style="background:#f3e5f5; color:#7b1fa2; border:1px solid #ce93d8; padding:15px; text-align:left;">📖 使い方ガイド</button>
+            <button onclick="closeOverlay('settingsOverlay'); openOverlay('recommendOverlay')" style="background:#e0f2f1; color:#00796b; border:1px solid #80cbc4; padding:15px; text-align:left;">🛒 おすすめギア</button>
+            <button onclick="closeOverlay('settingsOverlay'); openOverlay('specOverlay')" style="background:#e1bee7; color:#4a148c; border:1px solid #ba68c8; padding:15px; text-align:left;">ℹ️ アプリ詳細仕様</button>
+        </div>
+    </div>
+
     <div id="cloudOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2 style="margin:0;">👤 アカウント登録・同期</h2>
@@ -300,7 +320,7 @@
         </div>
         <div class="manual-section">
             <h3>🛠 マイ食材の登録</h3>
-            <p>リストにない食材は「手動入力」タブから追加するか、「マイ食材」メニューからよく使う食材として登録できます。栄養成分は商品のパッケージ裏や、インターネットで「食材名 PFC」と検索して入力してください。</p>
+            <p>リストにない食材は「手動入力」タブから追加するか、「設定」→「マイ食材」メニューからよく使う食材として登録できます。栄養成分は商品のパッケージ裏や、インターネットで検索して入力してください。</p>
         </div>
         <div class="manual-section">
             <h3>🎯 目標を自動計算する</h3>
@@ -517,7 +537,6 @@
                     currentUser = data.session.user;
                     updateCloudUI();
                     
-                    // ★ 修正: 新規登録直後などでクラウドにデータがない場合、現在のローカルデータをクラウドに自動保存する
                     const { data: cloudData, error: fetchError } = await supabaseClient
                         .from('user_data')
                         .select('id')
@@ -525,10 +544,8 @@
                         .single();
 
                     if (fetchError && fetchError.code === 'PGRST116') {
-                        // データがない場合はアップロード
                         await saveDataToCloudSilent();
                     } else {
-                        // データがある場合はダウンロード
                         await loadDataFromCloudSilent();
                     }
                 } else {
@@ -540,7 +557,6 @@
                     if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
                         currentUser = session.user;
                         updateCloudUI();
-                        // サインイン時も同様のロジック
                         const { data: cData, error: fError } = await supabaseClient.from('user_data').select('id').eq('id', currentUser.id).single();
                         if (fError && fError.code === 'PGRST116') {
                             await saveDataToCloudSilent();
@@ -1271,7 +1287,7 @@
             }
             document.getElementById('monthlyOverlay').style.display = 'block';
         }
-
+        
         function save() { 
             localStorage.setItem('pfcDiaryData', JSON.stringify(diaryData)); 
             localStorage.setItem('pfcGoals', JSON.stringify(goals));
