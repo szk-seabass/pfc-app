@@ -9,18 +9,15 @@
     <title>PFCろぐ</title>
 
     <script>
-        // ★ スマホホーム画面用のPNGアイコンを自動生成する機能
         (function() {
             const canvas = document.createElement('canvas');
             canvas.width = 192;
             canvas.height = 192;
             const ctx = canvas.getContext('2d');
             
-            // 背景（白）
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, 192, 192);
             
-            // 丸みを帯びたバーを描くための関数
             function fillRoundRect(x, y, w, h, r) {
                 ctx.beginPath();
                 ctx.moveTo(x + r, y);
@@ -36,22 +33,18 @@
                 ctx.fill();
             }
 
-            // PFCバーの描画 (P:オレンジ, F:赤, C:緑)
             ctx.fillStyle = '#ff9500'; fillRoundRect(29, 48, 115, 24, 12);
             ctx.fillStyle = '#ff3b30'; fillRoundRect(29, 86, 86, 24, 12);
             ctx.fillStyle = '#34c759'; fillRoundRect(29, 124, 134, 24, 12);
             
-            // 描画したものをPNG画像のURLに変換
             const iconUrl = canvas.toDataURL('image/png');
             
-            // Android等のタブアイコン用
             const linkIcon = document.createElement('link');
             linkIcon.rel = 'icon';
             linkIcon.type = 'image/png';
             linkIcon.href = iconUrl;
             document.head.appendChild(linkIcon);
             
-            // iOSホーム画面用 (apple-touch-icon)
             const linkApple = document.createElement('link');
             linkApple.rel = 'apple-touch-icon';
             linkApple.href = iconUrl;
@@ -549,11 +542,8 @@
             return new Date(dateString.replace(/-/g, '/'));
         }
 
-        window.onload = async () => {
-            const today = new Date(); 
-            currentDateStr = formatDate(today); 
-            document.getElementById('datePicker').value = currentDateStr;
-            
+        // ★ プロフィールフォームを更新する関数を新設
+        function renderProfileForm() {
             if(userProfile.weight) {
                 document.getElementById('genderSelect').value = userProfile.gender || 'male';
                 if(userProfile.age) document.getElementById('ageInput').value = userProfile.age;
@@ -566,6 +556,14 @@
             } else {
                 updateGoalOptions();
             }
+        }
+
+        window.onload = async () => {
+            const today = new Date(); 
+            currentDateStr = formatDate(today); 
+            document.getElementById('datePicker').value = currentDateStr;
+            
+            renderProfileForm();
             renderFoodSelect(); 
             render();
             
@@ -792,6 +790,8 @@
                     localStorage.setItem('pfcMySets', JSON.stringify(mySets));
                     localStorage.setItem('pfcProfile', JSON.stringify(userProfile));
                     
+                    // ★ ダウンロードしたプロフィールの値を画面の入力欄に再セット
+                    renderProfileForm();
                     render();
                 }
             } catch (error) {
@@ -1149,8 +1149,6 @@
                 alert("コピーしました！"); 
             }
         }
-        function copyDay() { localStorage.setItem('pfcClipboard', JSON.stringify(diaryData[currentDateStr])); alert("コピーしました"); render(); }
-        function pasteDay() { if(confirm("上書き貼付しますか？")) { diaryData[currentDateStr] = JSON.parse(localStorage.getItem('pfcClipboard')); save(); render(); } }
 
         function render() {
             try {
@@ -1208,7 +1206,6 @@
                 } else {
                     document.getElementById('currentGoalsDisplay').style.display = 'none';
                 }
-                document.getElementById('btnPaste').style.display = localStorage.getItem('pfcClipboard') ? 'block' : 'none';
             } catch (e) {
                 console.error("Render Error:", e);
             }
