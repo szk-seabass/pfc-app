@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>PFC Pro Tracker v48</title>
+    <title>PFC Pro Tracker v49</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -152,6 +152,7 @@
             <button class="btn-action" onclick="copyDay()" style="background:#5856d6;">📋 コピー</button>
             <button class="btn-action" onclick="pasteDay()" id="btnPaste" style="background:#ff9500; display:none;">📥 貼付</button>
         </div>
+        <div id="cloudStatusLabel" style="text-align:center; font-size:11px; margin-top:8px; color:#4caf50; font-weight:bold; display:none;">📳 ローカル保存モード</div>
         <button onclick="resetDayAll()" style="background:transparent; color:#ff3b30; border:1px solid #ff3b30; padding:8px; font-size:12px; margin-top:10px;">この日の記録をリセット</button>
     </div>
 
@@ -207,7 +208,7 @@
         
         <div id="cloudLoginSection" class="card" style="background:#e8eaf6; border:1px solid #9fa8da;">
             <h3 style="margin-top:0; color:#3f51b5; font-size:16px;">🔐 ログイン / 新規登録</h3>
-            <p style="font-size:13px; color:#555;">アカウントを作成すると、データをクラウドに安全に保存し、他の端末と同期できます。</p>
+            <p style="font-size:13px; color:#555;">アカウントを作成すると、データがクラウドに全自動でリアルタイム保存され、他の端末とも同期します。</p>
             <label class="input-label">メールアドレス</label>
             <input type="email" id="authEmail" placeholder="example@email.com">
             <label class="input-label">パスワード (英字と数字を含む8文字以上)</label>
@@ -220,11 +221,11 @@
         </div>
 
         <div id="cloudSyncSection" class="card" style="display:none; background:#e8eaf6; border:1px solid #9fa8da;">
-            <h3 style="margin-top:0; color:#3f51b5; font-size:16px;">🔄 同期メニュー</h3>
+            <h3 style="margin-top:0; color:#3f51b5; font-size:16px;">🔄 自動同期モード有効</h3>
             <p style="font-size:13px; font-weight:bold; color:#333;">ログイン中: <span id="currentUserEmail"></span></p>
-            
-            <button onclick="saveDataToCloud()" style="background:#3f51b5; color:white; margin-top:15px; margin-bottom:10px;">⬆️ 今のデータをアカウントに保存</button>
-            <button onclick="loadDataFromCloud()" style="background:#ff9800; color:white; margin-bottom:15px;">⬇️ 保存したデータで上書き復元</button>
+            <p style="font-size:12px; color:#4caf50; background:#e8f5e9; padding:10px; border-radius:8px; border:1px solid #c8e6c9; font-weight:bold; line-height:1.4;">
+                💡 クラウド自動保存が有効です。<br>アプリ内での食事の追加・削除・設定変更は、自動的にリアルタイムでクラウドへ保存されます。
+            </p>
             
             <hr style="border:0; border-top:1px solid #ccc; margin:20px 0;">
             <button onclick="handleLogout()" style="background:#757575; color:white;">ログアウト</button>
@@ -248,7 +249,7 @@
             </div>
             <label class="input-label" style="margin-top:10px;">基準</label>
             <select id="regBase">
-                <option value="1">1個(1食) あたりの数値</option>
+                <option value="1">1個(1食) ああたりの数値</option>
                 <option value="100">100g あたりの数値</option>
             </select>
             <button onclick="saveCustomFood()" style="background:#e65100; color:white; margin-top:10px;">登録</button>
@@ -291,7 +292,7 @@
         </div>
         <div class="manual-section">
             <h3>👤 アカウント登録・同期</h3>
-            <p>アカウントを作成することで、日々のデータを安全にクラウドに保存できるようになりました。機種変更時や他の端末を使う際も、ログインして「復元」を押すだけでデータを引き継げます。</p>
+            <p>アカウントを作成することで、日々のデータが安全にクラウドにリアルタイム保存されるようになりました。機種変更時や他の端末を使う際も、ログインするだけで自動的にデータが復元・引き継がれます。</p>
         </div>
         <div class="manual-section">
             <h3>🍱 マイセット機能</h3>
@@ -324,7 +325,8 @@
             <div class="affiliate-content">
                 <div class="affiliate-title">REYS ホエイプロテイン</div>
                 <div class="affiliate-desc">筋トレYouTuberの山澤さん監修。水に溶けやすくダマにならず、非常に美味しくて愛飲しています。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4fiO5Jt" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hkMsZU" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+                <!-- ★楽天市場へのアフィリエイトリンクを削除し、Amazonのみに修正 -->
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4fiO5Jt" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a></div>
             </div>
         </div>
         <div class="affiliate-card">
@@ -373,7 +375,7 @@
             <div class="affiliate-icon-container">🫙</div>
             <div class="affiliate-content">
                 <div class="affiliate-title">VITAS プロテインシェイカー 1000ml</div>
-                <div class="affiliate-desc">ワンプッシュで開く大容量のドリンクボトル。漏れにくく持ち運びに便利で、プロテインやEAAのシェイクに最適です。</div>
+                <div class="affiliate-desc">ワンプッシュで開く大容量のドリンクボトル。漏れにくく持ち運びに便利で、プロテイン or EAAのシェイクに最適です。</div>
                 <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4pjAvKe" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hYMsit" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
@@ -412,7 +414,6 @@
         // ==========================================
         // 🚀 SUPABASE CONFIGURATION
         // ==========================================
-        // ★修正点: エンドポイントURLの余分な「/rest/v1/」を削除しました
         const supabaseUrl = 'https://zzjzdbkntqjbgjewixqa.supabase.co';
         const supabaseKey = 'sb_publishable_Mj2IsNTX-TbK6kJ_2f-HNQ__GvUvdYG';
         
@@ -509,15 +510,20 @@
                 if (data && data.session) {
                     currentUser = data.session.user;
                     updateCloudUI();
+                    // ★全自動同期: アプリ起動時、ログイン中なら自動で最新データをダウンロードする
+                    await loadDataFromCloudSilent();
                 }
                 
-                supabaseClient.auth.onAuthStateChange((event, session) => {
+                supabaseClient.auth.onAuthStateChange(async (event, session) => {
                     if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
                         currentUser = session.user;
+                        updateCloudUI();
+                        // ★全自動同期: ログインに成功した瞬間も自動でデータを同期する
+                        await loadDataFromCloudSilent();
                     } else if (event === 'SIGNED_OUT') {
                         currentUser = null;
+                        updateCloudUI();
                     }
-                    updateCloudUI();
                 });
             } catch (e) {
                 console.error("Session Check Error:", e);
@@ -525,14 +531,21 @@
         }
 
         function updateCloudUI() {
+            const statusLabel = document.getElementById('cloudStatusLabel');
             if (currentUser) {
                 document.getElementById('cloudLoginSection').style.display = 'none';
                 document.getElementById('cloudSyncSection').style.display = 'block';
                 document.getElementById('currentUserEmail').innerText = escapeHTML(currentUser.email);
+                statusLabel.innerText = "☁️ クラウド自動同期中";
+                statusLabel.style.color = "#007AFF";
+                statusLabel.style.display = "block";
             } else {
                 document.getElementById('cloudLoginSection').style.display = 'block';
                 document.getElementById('cloudSyncSection').style.display = 'none';
                 document.getElementById('currentUserEmail').innerText = "";
+                statusLabel.innerText = "📳 ローカル保存モード";
+                statusLabel.style.color = "#757575";
+                statusLabel.style.display = "block";
             }
         }
 
@@ -541,7 +554,6 @@
             const password = document.getElementById('authPassword').value;
             const msgEl = document.getElementById('authMessage');
             
-            // ★修正点: 8文字以上、英字と数字を最低1つずつ含む正規表現バリデーションを追加
             const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).{8,}$/;
             
             if(!email || !passwordRegex.test(password)) {
@@ -594,18 +606,19 @@
 
         async function handleLogout() {
             await supabaseClient.auth.signOut();
-            alert("ログアウトしました");
+            localStorage.clear(); // ローカルストレージをクリアして初期化
+            alert("ログアウトしました。データをリセットします。");
+            location.reload();
         }
 
-        async function saveDataToCloud() {
-            if (!currentUser) return alert("ログインが必要です");
-            
+        // ★全自動クラウド保存関数（裏側で静かに動作する版）
+        async function saveDataToCloudSilent() {
+            if (!currentUser) return;
+            const statusLabel = document.getElementById('cloudStatusLabel');
             try {
-                const btn = event.target;
-                const originalText = btn.innerText;
-                btn.innerText = "🔄 保存中...";
-                btn.disabled = true;
-
+                statusLabel.innerText = "🔄 クラウドに自動保存中...";
+                statusLabel.style.color = "#ff9800";
+                
                 const { error } = await supabaseClient
                     .from('user_data')
                     .upsert({ 
@@ -619,31 +632,19 @@
                     });
 
                 if (error) throw error;
-                
-                btn.innerText = "✅ 保存完了！";
-                setTimeout(() => { btn.innerText = originalText; btn.disabled = false; }, 2000);
-                
+                statusLabel.innerText = "☁️ クラウド自動同期中";
+                statusLabel.style.color = "#007AFF";
             } catch (error) {
-                console.error('Error saving data:', error);
-                alert("保存に失敗しました: " + error.message);
-                event.target.innerText = "⬆️ 今のデータをアカウントに保存";
-                event.target.disabled = false;
+                console.error('Auto save error:', error);
+                statusLabel.innerText = "⚠️ 自動保存に失敗しました";
+                statusLabel.style.color = "#f44336";
             }
         }
 
-        async function loadDataFromCloud() {
-            if (!currentUser) return alert("ログインが必要です");
-            
-            if(!confirm("クラウドのデータで現在の端末のデータをすべて上書きしますか？（現在のローカルデータは消去されます）")) {
-                return;
-            }
-
+        // ★全自動クラウド読み込み関数（裏側で静かに動作する版）
+        async function loadDataFromCloudSilent() {
+            if (!currentUser) return;
             try {
-                const btn = event.target;
-                const originalText = btn.innerText;
-                btn.innerText = "🔄 読み込み中...";
-                btn.disabled = true;
-
                 const { data, error } = await supabaseClient
                     .from('user_data')
                     .select('*')
@@ -664,19 +665,11 @@
                     localStorage.setItem('pfcCustomFoods', JSON.stringify(customFoodDict));
                     localStorage.setItem('pfcMySets', JSON.stringify(mySets));
                     localStorage.setItem('pfcProfile', JSON.stringify(userProfile));
-
-                    alert("クラウドからデータを復元しました！");
-                    location.reload();
-                } else {
-                    alert("クラウドにデータが見つかりませんでした。先に「保存」を行ってください。");
-                    btn.innerText = originalText;
-                    btn.disabled = false;
+                    
+                    render();
                 }
             } catch (error) {
-                console.error('Error loading data:', error);
-                alert("読み込みに失敗しました: " + error.message);
-                event.target.innerText = "⬇️ 保存したデータで上書き復元";
-                event.target.disabled = false;
+                console.error('Auto load error:', error);
             }
         }
 
@@ -866,6 +859,7 @@
             localStorage.setItem('pfcCustomFoods', JSON.stringify(customFoodDict)); 
             renderFoodSelect(); 
             alert("マイ食材に登録しました！");
+            save(); // 自動セーブ発火
         }
 
         function formatDate(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
@@ -981,6 +975,7 @@
             };
             localStorage.setItem('pfcMySets', JSON.stringify(mySets));
             alert(`「${escapeHTML(setName)}」をマイセットに保存しました！\n次回から「＋食材を追加」→「マイセット」タブから一発で呼び出せます。`);
+            save(); // 自動セーブ発火
         }
 
         function renderSetSelect() {
@@ -1032,6 +1027,7 @@
                 localStorage.setItem('pfcMySets', JSON.stringify(mySets));
                 renderSetSelect();
                 renderSetPreview();
+                save(); // 自動セーブ発火
             }
         }
 
@@ -1136,6 +1132,7 @@
             document.getElementById('regName').value = ""; 
             renderFoodSelect(); 
             renderCustomFoodList();
+            save(); // 自動セーブ発火
         }
         
         function renderCustomFoodList() {
@@ -1152,6 +1149,7 @@
             localStorage.setItem('pfcCustomFoods', JSON.stringify(customFoodDict)); 
             renderCustomFoodList(); 
             renderFoodSelect(); 
+            save(); // 自動セーブ発火
         }
 
         function renderFoodSelect() {
@@ -1258,7 +1256,11 @@
                         localStorage.setItem('pfcCustomFoods', JSON.stringify(d.foods)); 
                         localStorage.setItem('pfcProfile', JSON.stringify(d.profile)); 
                         if (d.mySets) localStorage.setItem('pfcMySets', JSON.stringify(d.mySets)); 
-                        location.reload(); 
+                        
+                        diaryData = d.diary; goals = d.goals; customFoodDict = d.foods; userProfile = d.profile; mySets = d.mySets || {};
+                        render();
+                        save(); // 自動セーブ発火
+                        alert("復元が完了しました！");
                     }
                 } catch(err) { 
                     alert("エラー"); 
@@ -1272,14 +1274,27 @@
                 const d = JSON.parse(document.getElementById('importText').value); 
                 if(confirm("上書き復元？")) { 
                     localStorage.setItem('pfcDiaryData', JSON.stringify(d.diary)); 
-                    location.reload(); 
+                    diaryData = d.diary;
+                    render();
+                    save(); // 自動セーブ発火
+                    alert("復元が完了しました！");
                 } 
             } catch(e) { 
                 alert("エラー"); 
             } 
         }
         
-        function save() { localStorage.setItem('pfcDiaryData', JSON.stringify(diaryData)); }
+        // ★修正点: アプリ内の全データ保存を司るこの関数から、クラウドの自動セーブも連動させました
+        function save() { 
+            localStorage.setItem('pfcDiaryData', JSON.stringify(diaryData)); 
+            localStorage.setItem('pfcGoals', JSON.stringify(goals));
+            localStorage.setItem('pfcCustomFoods', JSON.stringify(customFoodDict));
+            localStorage.setItem('pfcMySets', JSON.stringify(mySets));
+            localStorage.setItem('pfcProfile', JSON.stringify(userProfile));
+            
+            // クラウドに自動リアルタイム保存を実行
+            saveDataToCloudSilent();
+        }
     </script>
 </body>
 </html>
