@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>PFC Pro Tracker v51</title>
+    <title>PFC Pro Tracker v52</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -200,7 +200,6 @@
         <button type="button" onclick="closeModal()" style="background:#ccc; margin-top:10px;">キャンセル</button>
     </div>
 
-    <!-- アカウント機能 -->
     <div id="cloudOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2 style="margin:0;">👤 アカウント登録・同期</h2>
@@ -212,7 +211,7 @@
             <p style="font-size:13px; color:#555;">アカウントを作成すると、データがクラウドに全自動でリアルタイム保存され、他の端末とも同期します。</p>
             <label class="input-label">メールアドレス</label>
             <input type="email" id="authEmail" placeholder="example@email.com">
-            <label class="input-label">パスワード (英字と数字を含む8文字以上)</label>
+            <label class="input-label">パスワード (英字、数字、記号から2種類以上を含む8文字以上)</label>
             <input type="password" id="authPassword" placeholder="パスワード">
             <div style="display:flex; gap:10px; margin-top:15px;">
                 <button onclick="handleLogin()" style="background:#3f51b5; color:white; flex:1;">ログイン</button>
@@ -435,7 +434,6 @@
             });
         }
 
-        // ★ エラーメッセージを日本語に翻訳する機能
         function translateAuthError(message) {
             if (!message) return "エラーが発生しました。";
             const msg = message.toLowerCase();
@@ -565,10 +563,15 @@
             const password = document.getElementById('authPassword').value;
             const msgEl = document.getElementById('authMessage');
             
-            const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).{8,}$/;
+            // ★ 文字種のカウント（英字、数字、記号）
+            const hasLetter = /[a-zA-Z]/.test(password);
+            const hasNumber = /\d/.test(password);
+            const hasSymbol = /[^a-zA-Z0-9\s]/.test(password);
+            const typesCount = (hasLetter ? 1 : 0) + (hasNumber ? 1 : 0) + (hasSymbol ? 1 : 0);
             
-            if(!email || !passwordRegex.test(password)) {
-                msgEl.innerText = "有効なメールアドレスと、英字・数字を各1文字以上含む8文字以上のパスワードを入力してください";
+            // ★ バリデーションチェック: 8文字以上かつ、2種類以上の文字種を含むか
+            if(!email || password.length < 8 || typesCount < 2) {
+                msgEl.innerText = "有効なメールアドレスと、英字・数字・記号から2種類以上を含む8文字以上のパスワードを入力してください。";
                 return;
             }
             
@@ -582,7 +585,6 @@
             
             if (error) {
                 msgEl.style.color = "red";
-                // ★ 翻訳関数を通して日本語で表示
                 msgEl.innerText = translateAuthError(error.message);
             } else {
                 msgEl.style.color = "green";
@@ -610,7 +612,6 @@
             
             if (error) {
                 msgEl.style.color = "red";
-                // ★ 翻訳関数を通して日本語で表示
                 msgEl.innerText = translateAuthError(error.message);
             } else {
                 msgEl.innerText = "";
@@ -629,7 +630,8 @@
             
             if (!confirm("⚠️ 本当にアカウントを削除しますか？\nクラウド上のすべてのデータが完全に消去され、復元できなくなります。")) return;
             
-            const emailConfirm = prompt(`確認のため、登録しているメールアドレスを入力してください:\n${currentUser.email}`);
+            // ★ 修正点: メールアドレスを画面に表示させず、ユーザー自身に入力させる
+            const emailConfirm = prompt("確認のため、登録しているメールアドレスを入力してください:");
             if (emailConfirm !== currentUser.email) {
                 return alert("メールアドレスが一致しません。削除をキャンセルしました。");
             }
