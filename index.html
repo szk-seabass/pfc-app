@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>PFC Pro Tracker v50</title>
+    <title>PFC Pro Tracker v51</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -230,7 +230,6 @@
             
             <hr style="border:0; border-top:1px solid #ccc; margin:20px 0;">
             <button onclick="handleLogout()" style="background:#757575; color:white; margin-bottom:10px;">ログアウト</button>
-            <!-- ★アカウント削除ボタンを追加 -->
             <button onclick="handleAccountDeletion()" style="background:transparent; color:#f44336; border:1px solid #f44336;">🗑️ アカウントを完全に削除</button>
         </div>
     </div>
@@ -436,6 +435,18 @@
             });
         }
 
+        // ★ エラーメッセージを日本語に翻訳する機能
+        function translateAuthError(message) {
+            if (!message) return "エラーが発生しました。";
+            const msg = message.toLowerCase();
+            if (msg.includes('invalid login credentials')) return 'メールアドレスまたはパスワードが間違っています。まだ登録されていない場合は「新規登録」を押してください。';
+            if (msg.includes('user already registered')) return 'このメールアドレスは既に登録されています。';
+            if (msg.includes('email not confirmed')) return 'メールアドレスが確認されていません。';
+            if (msg.includes('password')) return 'パスワードの要件を満たしていません。';
+            if (msg.includes('rate limit')) return 'アクセスが集中しています。しばらく待ってから再度お試しください。';
+            return message;
+        }
+
         // ==========================================
         // LOCAL STORAGE FUNCTIONS & INITIALIZATION
         // ==========================================
@@ -571,7 +582,8 @@
             
             if (error) {
                 msgEl.style.color = "red";
-                msgEl.innerText = error.message;
+                // ★ 翻訳関数を通して日本語で表示
+                msgEl.innerText = translateAuthError(error.message);
             } else {
                 msgEl.style.color = "green";
                 msgEl.innerText = "登録成功しました！(自動ログインします)";
@@ -598,7 +610,8 @@
             
             if (error) {
                 msgEl.style.color = "red";
-                msgEl.innerText = error.message;
+                // ★ 翻訳関数を通して日本語で表示
+                msgEl.innerText = translateAuthError(error.message);
             } else {
                 msgEl.innerText = "";
             }
@@ -611,7 +624,6 @@
             location.reload();
         }
 
-        // ★アカウント削除機能
         async function handleAccountDeletion() {
             if (!currentUser) return;
             
@@ -627,13 +639,9 @@
             statusLabel.style.color = "red";
 
             try {
-                // 1. user_data テーブルから自分のデータを削除
                 await supabaseClient.from('user_data').delete().eq('id', currentUser.id);
-
-                // 2. RPC関数を使ってAuthからユーザーを完全に削除
                 const { error: rpcError } = await supabaseClient.rpc('delete_user');
                 
-                // エラーの有無に関わらずローカルをクリーンアップしてログアウト
                 await supabaseClient.auth.signOut();
                 localStorage.clear();
                 
