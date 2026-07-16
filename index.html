@@ -35,7 +35,7 @@
         .bar-p { background: #ff9500; }
         .bar-f { background: #ff3b30; }
         .bar-c { background: #34c759; }
-        .header-menu { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 15px; }
+        .header-menu { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 15px; }
         .btn-header { font-size: 12px; padding: 10px 2px; border-radius: 8px; text-align: center; font-weight: bold; word-break: keep-all; box-sizing: border-box; cursor: pointer; }
         .tab-container { display: flex; border-radius: 10px; overflow: hidden; margin-bottom: 15px; border: 1px solid var(--primary); }
         .tab-btn { flex: 1; text-align: center; padding: 10px; font-size: 14px; font-weight: bold; background: white; color: var(--primary); cursor: pointer; }
@@ -80,7 +80,7 @@
 
     <h2 style="text-align: center; margin: 15px 0;">💪 PFC Pro Tracker</h2>
 
-    <div class="header-menu" style="grid-template-columns: repeat(4, 1fr);">
+    <div class="header-menu">
         <div class="btn-header" onclick="openMonthlyView()" style="background: #e3f2fd; color: #007AFF; border: 1px solid #90caf9;">📅 月履歴</div>
         <div class="btn-header" onclick="openOverlay('customFoodOverlay')" style="background: #fff3e0; color: #e65100; border: 1px solid #ffcc80;">🛠 食材</div>
         <div class="btn-header" onclick="openOverlay('cloudOverlay')" style="background: #e8eaf6; color: #3f51b5; border: 1px solid #9fa8da;">☁️ クラウド</div>
@@ -425,13 +425,13 @@
 
     <script>
         // ==========================================
-        // 🚀 SUPABASE CONFIGURATION (ここを書き換える)
+        // 🚀 SUPABASE CONFIGURATION
         // ==========================================
         const supabaseUrl = 'https://zzjzdbkntqjbgjewixqa.supabase.co/rest/v1/';
         const supabaseKey = 'sb_publishable_Mj2IsNTX-TbK6kJ_2f-HNQ__GvUvdYG';
         
-        // Supabaseクライアントの初期化
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        // ★修正点: 変数名「supabase」がCDNのグローバル変数と衝突しフリーズの原因となっていたため「supabaseClient」に変更しました
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
         let currentUser = null;
 
         // ==========================================
@@ -506,21 +506,26 @@
         // ==========================================
         
         async function checkUserSession() {
-            const { data, error } = await supabase.auth.getSession();
-            if (data.session) {
-                currentUser = data.session.user;
-                updateCloudUI();
-            }
-            
-            // 認証状態の変更をリッスン
-            supabase.auth.onAuthStateChange((event, session) => {
-                if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
-                    currentUser = session.user;
-                } else if (event === 'SIGNED_OUT') {
-                    currentUser = null;
+            try {
+                // ★修正点: すべて「supabaseClient」に変更
+                const { data, error } = await supabaseClient.auth.getSession();
+                if (data && data.session) {
+                    currentUser = data.session.user;
+                    updateCloudUI();
                 }
-                updateCloudUI();
-            });
+                
+                // 認証状態の変更をリッスン
+                supabaseClient.auth.onAuthStateChange((event, session) => {
+                    if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
+                        currentUser = session.user;
+                    } else if (event === 'SIGNED_OUT') {
+                        currentUser = null;
+                    }
+                    updateCloudUI();
+                });
+            } catch (e) {
+                console.error("Session Check Error:", e);
+            }
         }
 
         function updateCloudUI() {
@@ -548,7 +553,7 @@
             msgEl.style.color = "blue";
             msgEl.innerText = "登録処理中...";
             
-            const { data, error } = await supabase.auth.signUp({
+            const { data, error } = await supabaseClient.auth.signUp({
                 email: email,
                 password: password
             });
@@ -575,7 +580,7 @@
             msgEl.style.color = "blue";
             msgEl.innerText = "ログイン中...";
             
-            const { data, error } = await supabase.auth.signInWithPassword({
+            const { data, error } = await supabaseClient.auth.signInWithPassword({
                 email: email,
                 password: password
             });
@@ -589,7 +594,7 @@
         }
 
         async function handleLogout() {
-            await supabase.auth.signOut();
+            await supabaseClient.auth.signOut();
             alert("ログアウトしました");
         }
 
@@ -602,7 +607,7 @@
                 btn.innerText = "🔄 保存中...";
                 btn.disabled = true;
 
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('user_data')
                     .upsert({ 
                         id: currentUser.id,
@@ -640,7 +645,7 @@
                 btn.innerText = "🔄 読み込み中...";
                 btn.disabled = true;
 
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('user_data')
                     .select('*')
                     .eq('id', currentUser.id)
