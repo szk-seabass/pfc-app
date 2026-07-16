@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>PFC Pro Tracker v49</title>
+    <title>PFC Pro Tracker v50</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -200,6 +200,7 @@
         <button type="button" onclick="closeModal()" style="background:#ccc; margin-top:10px;">キャンセル</button>
     </div>
 
+    <!-- アカウント機能 -->
     <div id="cloudOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2 style="margin:0;">👤 アカウント登録・同期</h2>
@@ -228,7 +229,9 @@
             </p>
             
             <hr style="border:0; border-top:1px solid #ccc; margin:20px 0;">
-            <button onclick="handleLogout()" style="background:#757575; color:white;">ログアウト</button>
+            <button onclick="handleLogout()" style="background:#757575; color:white; margin-bottom:10px;">ログアウト</button>
+            <!-- ★アカウント削除ボタンを追加 -->
+            <button onclick="handleAccountDeletion()" style="background:transparent; color:#f44336; border:1px solid #f44336;">🗑️ アカウントを完全に削除</button>
         </div>
     </div>
 
@@ -249,7 +252,7 @@
             </div>
             <label class="input-label" style="margin-top:10px;">基準</label>
             <select id="regBase">
-                <option value="1">1個(1食) ああたりの数値</option>
+                <option value="1">1個(1食) あたりの数値</option>
                 <option value="100">100g あたりの数値</option>
             </select>
             <button onclick="saveCustomFood()" style="background:#e65100; color:white; margin-top:10px;">登録</button>
@@ -325,7 +328,6 @@
             <div class="affiliate-content">
                 <div class="affiliate-title">REYS ホエイプロテイン</div>
                 <div class="affiliate-desc">筋トレYouTuberの山澤さん監修。水に溶けやすくダマにならず、非常に美味しくて愛飲しています。</div>
-                <!-- ★楽天市場へのアフィリエイトリンクを削除し、Amazonのみに修正 -->
                 <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4fiO5Jt" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a></div>
             </div>
         </div>
@@ -375,7 +377,7 @@
             <div class="affiliate-icon-container">🫙</div>
             <div class="affiliate-content">
                 <div class="affiliate-title">VITAS プロテインシェイカー 1000ml</div>
-                <div class="affiliate-desc">ワンプッシュで開く大容量のドリンクボトル。漏れにくく持ち運びに便利で、プロテイン or EAAのシェイクに最適です。</div>
+                <div class="affiliate-desc">ワンプッシュで開く大容量のドリンクボトル。漏れにくく持ち運びに便利で、プロテインやEAAのシェイクに最適です。</div>
                 <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4pjAvKe" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hYMsit" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
@@ -510,7 +512,6 @@
                 if (data && data.session) {
                     currentUser = data.session.user;
                     updateCloudUI();
-                    // ★全自動同期: アプリ起動時、ログイン中なら自動で最新データをダウンロードする
                     await loadDataFromCloudSilent();
                 }
                 
@@ -518,7 +519,6 @@
                     if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
                         currentUser = session.user;
                         updateCloudUI();
-                        // ★全自動同期: ログインに成功した瞬間も自動でデータを同期する
                         await loadDataFromCloudSilent();
                     } else if (event === 'SIGNED_OUT') {
                         currentUser = null;
@@ -606,12 +606,46 @@
 
         async function handleLogout() {
             await supabaseClient.auth.signOut();
-            localStorage.clear(); // ローカルストレージをクリアして初期化
+            localStorage.clear();
             alert("ログアウトしました。データをリセットします。");
             location.reload();
         }
 
-        // ★全自動クラウド保存関数（裏側で静かに動作する版）
+        // ★アカウント削除機能
+        async function handleAccountDeletion() {
+            if (!currentUser) return;
+            
+            if (!confirm("⚠️ 本当にアカウントを削除しますか？\nクラウド上のすべてのデータが完全に消去され、復元できなくなります。")) return;
+            
+            const emailConfirm = prompt(`確認のため、登録しているメールアドレスを入力してください:\n${currentUser.email}`);
+            if (emailConfirm !== currentUser.email) {
+                return alert("メールアドレスが一致しません。削除をキャンセルしました。");
+            }
+
+            const statusLabel = document.getElementById('cloudStatusLabel');
+            statusLabel.innerText = "🗑️ アカウント削除中...";
+            statusLabel.style.color = "red";
+
+            try {
+                // 1. user_data テーブルから自分のデータを削除
+                await supabaseClient.from('user_data').delete().eq('id', currentUser.id);
+
+                // 2. RPC関数を使ってAuthからユーザーを完全に削除
+                const { error: rpcError } = await supabaseClient.rpc('delete_user');
+                
+                // エラーの有無に関わらずローカルをクリーンアップしてログアウト
+                await supabaseClient.auth.signOut();
+                localStorage.clear();
+                
+                alert("アカウントとデータを完全に削除しました。ご利用ありがとうございました。");
+                location.reload();
+            } catch (error) {
+                console.error('Delete error:', error);
+                alert("削除に失敗しました: " + error.message);
+                statusLabel.innerText = "⚠️ 削除に失敗しました";
+            }
+        }
+
         async function saveDataToCloudSilent() {
             if (!currentUser) return;
             const statusLabel = document.getElementById('cloudStatusLabel');
@@ -641,7 +675,6 @@
             }
         }
 
-        // ★全自動クラウド読み込み関数（裏側で静かに動作する版）
         async function loadDataFromCloudSilent() {
             if (!currentUser) return;
             try {
@@ -859,7 +892,7 @@
             localStorage.setItem('pfcCustomFoods', JSON.stringify(customFoodDict)); 
             renderFoodSelect(); 
             alert("マイ食材に登録しました！");
-            save(); // 自動セーブ発火
+            save(); 
         }
 
         function formatDate(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
@@ -975,7 +1008,7 @@
             };
             localStorage.setItem('pfcMySets', JSON.stringify(mySets));
             alert(`「${escapeHTML(setName)}」をマイセットに保存しました！\n次回から「＋食材を追加」→「マイセット」タブから一発で呼び出せます。`);
-            save(); // 自動セーブ発火
+            save(); 
         }
 
         function renderSetSelect() {
@@ -1027,7 +1060,7 @@
                 localStorage.setItem('pfcMySets', JSON.stringify(mySets));
                 renderSetSelect();
                 renderSetPreview();
-                save(); // 自動セーブ発火
+                save(); 
             }
         }
 
@@ -1132,7 +1165,7 @@
             document.getElementById('regName').value = ""; 
             renderFoodSelect(); 
             renderCustomFoodList();
-            save(); // 自動セーブ発火
+            save(); 
         }
         
         function renderCustomFoodList() {
@@ -1149,7 +1182,7 @@
             localStorage.setItem('pfcCustomFoods', JSON.stringify(customFoodDict)); 
             renderCustomFoodList(); 
             renderFoodSelect(); 
-            save(); // 自動セーブ発火
+            save(); 
         }
 
         function renderFoodSelect() {
@@ -1259,7 +1292,7 @@
                         
                         diaryData = d.diary; goals = d.goals; customFoodDict = d.foods; userProfile = d.profile; mySets = d.mySets || {};
                         render();
-                        save(); // 自動セーブ発火
+                        save(); 
                         alert("復元が完了しました！");
                     }
                 } catch(err) { 
@@ -1276,7 +1309,7 @@
                     localStorage.setItem('pfcDiaryData', JSON.stringify(d.diary)); 
                     diaryData = d.diary;
                     render();
-                    save(); // 自動セーブ発火
+                    save(); 
                     alert("復元が完了しました！");
                 } 
             } catch(e) { 
@@ -1284,7 +1317,6 @@
             } 
         }
         
-        // ★修正点: アプリ内の全データ保存を司るこの関数から、クラウドの自動セーブも連動させました
         function save() { 
             localStorage.setItem('pfcDiaryData', JSON.stringify(diaryData)); 
             localStorage.setItem('pfcGoals', JSON.stringify(goals));
@@ -1292,7 +1324,6 @@
             localStorage.setItem('pfcMySets', JSON.stringify(mySets));
             localStorage.setItem('pfcProfile', JSON.stringify(userProfile));
             
-            // クラウドに自動リアルタイム保存を実行
             saveDataToCloudSilent();
         }
     </script>
