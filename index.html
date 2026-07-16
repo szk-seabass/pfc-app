@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>PFC Pro Tracker v47</title>
+    <title>PFC Pro Tracker v48</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -210,7 +210,7 @@
             <p style="font-size:13px; color:#555;">アカウントを作成すると、データをクラウドに安全に保存し、他の端末と同期できます。</p>
             <label class="input-label">メールアドレス</label>
             <input type="email" id="authEmail" placeholder="example@email.com">
-            <label class="input-label">パスワード (6文字以上)</label>
+            <label class="input-label">パスワード (英字と数字を含む8文字以上)</label>
             <input type="password" id="authPassword" placeholder="パスワード">
             <div style="display:flex; gap:10px; margin-top:15px;">
                 <button onclick="handleLogin()" style="background:#3f51b5; color:white; flex:1;">ログイン</button>
@@ -290,7 +290,7 @@
             <button onclick="closeOverlay('manualOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button>
         </div>
         <div class="manual-section">
-            <h3>👤 アカウント登録・同期（New!）</h3>
+            <h3>👤 アカウント登録・同期</h3>
             <p>アカウントを作成することで、日々のデータを安全にクラウドに保存できるようになりました。機種変更時や他の端末を使う際も、ログインして「復元」を押すだけでデータを引き継げます。</p>
         </div>
         <div class="manual-section">
@@ -412,13 +412,13 @@
         // ==========================================
         // 🚀 SUPABASE CONFIGURATION
         // ==========================================
-        const supabaseUrl = 'https://zzjzdbkntqjbgjewixqa.supabase.co/rest/v1/';
+        // ★修正点: エンドポイントURLの余分な「/rest/v1/」を削除しました
+        const supabaseUrl = 'https://zzjzdbkntqjbgjewixqa.supabase.co';
         const supabaseKey = 'sb_publishable_Mj2IsNTX-TbK6kJ_2f-HNQ__GvUvdYG';
         
         const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
         let currentUser = null;
 
-        // ★ XSS脆弱性対策: ユーザー入力を安全な文字に変換する関数
         function escapeHTML(str) {
             if (typeof str !== 'string') return str;
             return str.replace(/[&<>'"]/g, function(match) {
@@ -541,8 +541,11 @@
             const password = document.getElementById('authPassword').value;
             const msgEl = document.getElementById('authMessage');
             
-            if(!email || password.length < 6) {
-                msgEl.innerText = "有効なメールアドレスと6文字以上のパスワードを入力してください";
+            // ★修正点: 8文字以上、英字と数字を最低1つずつ含む正規表現バリデーションを追加
+            const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).{8,}$/;
+            
+            if(!email || !passwordRegex.test(password)) {
+                msgEl.innerText = "有効なメールアドレスと、英字・数字を各1文字以上含む8文字以上のパスワードを入力してください";
                 return;
             }
             
@@ -650,7 +653,6 @@
                 if (error && error.code !== 'PGRST116') throw error;
 
                 if (data) {
-                    // ★ フォールバック強化: サーバーにデータがない場合も確実に空オブジェクトをセットする
                     diaryData = data.diary_data || {};
                     goals = data.goals || { p:0, f:0, c:0, cal:0 };
                     customFoodDict = data.custom_foods || {};
@@ -991,7 +993,6 @@
             for(let key in mySets) {
                 let opt = document.createElement('option');
                 opt.value = key;
-                // ★ XSS対策: テキストとして設定することで安全に描画
                 opt.text = mySets[key].name; 
                 select.appendChild(opt);
             }
@@ -1010,7 +1011,6 @@
             }
             
             const set = mySets[key];
-            // ★ XSS対策: 表示する文字列をエスケープ処理
             let html = `<b style="color:var(--primary);">${escapeHTML(set.name)}</b> (${set.items.length}品)<ul style="margin:8px 0; padding-left:20px;">`;
             let totalCal = 0;
             set.items.forEach(item => {
@@ -1081,7 +1081,6 @@
                     
                     if (meal && Array.isArray(meal.items)) {
                         meal.items.forEach((item, iIdx) => {
-                            // ★ XSS対策: 表示する文字列をエスケープ処理
                             html += `<div class="item-row"><span>${escapeHTML(item.name)}${item.displayGrams ? ' ('+escapeHTML(item.displayGrams)+')' : ''}</span><span>${item.cal}kcal <button class="btn-small" onclick="removeItem(${mIdx}, ${iIdx})">✕</button></span></div>`;
                             total.p += (item.p || 0); total.f += (item.f || 0); total.c += (item.c || 0); total.cal += (item.cal || 0);
                         });
@@ -1144,7 +1143,6 @@
             container.innerHTML = '';
             for(let key in customFoodDict) { 
                 const food = customFoodDict[key]; 
-                // ★ XSS対策: 表示する文字列をエスケープ処理
                 container.innerHTML += `<div class="custom-food-item"><div><b>${escapeHTML(food.name)}</b><br><small>P:${food.p} F:${food.f} C:${food.c}</small></div><button onclick="deleteCustomFood('${key}')" style="background:red; color:white;">削除</button></div>`; 
             }
         }
