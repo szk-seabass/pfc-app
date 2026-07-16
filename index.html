@@ -5,22 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>PFC Pro Tracker v45</title>
+    <title>PFC Pro Tracker v46 (Cloud)</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { --primary: #007AFF; --accent: #deff9a; --bg: #f2f2f7; --card-bg: #ffffff; --text: #1c1c1e; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0 auto; padding: calc(env(safe-area-inset-top) + 15px) 15px 120px 15px; max-width: 500px; }
         .card { background: var(--card-bg); border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .target-card { background: #1c1c1e; color: #fff; }
         
-        /* 目標カロリーカードのZ-indexを100に設定 */
         .total-card { border: 2px solid var(--primary); position: sticky; top: 10px; z-index: 100; }
         
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 16px; box-sizing: border-box; background: #f9f9f9; margin-bottom: 10px; }
         input[type="file"] { background: #fff; padding: 10px; }
         button { width: 100%; padding: 14px; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; }
         
-        /* 食事枠追加ボタンを最前面に */
         .btn-add-meal { background: var(--primary); color: white; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 20px); max-width: 480px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000;}
         
         .meal-section { border-left: 4px solid var(--primary); padding-left: 15px; margin-bottom: 25px; }
@@ -63,8 +62,7 @@
         
         .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         .profile-grid input, .profile-grid select { margin-bottom: 0; }
-        .formula-box { background: #f8f9fa; border-radius: 8px; padding: 12px; border-left: 4px solid var(--primary); margin: 10px 0; font-family: monospace; font-size: 13px; color: #333; line-height: 1.5; }
-        #monthlyOverlay, #customFoodOverlay, #backupOverlay, #manualOverlay, #recommendOverlay, #specOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:2000; padding:20px; box-sizing:border-box; overflow-y:auto; }
+        #monthlyOverlay, #customFoodOverlay, #backupOverlay, #manualOverlay, #recommendOverlay, #specOverlay, #cloudOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:2000; padding:20px; box-sizing:border-box; overflow-y:auto; }
 
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 10px; }
         .calendar-header-day { text-align: center; font-size: 12px; font-weight: bold; color: #666; padding: 5px 0; border-bottom: 1px solid #ddd; }
@@ -82,13 +80,14 @@
 
     <h2 style="text-align: center; margin: 15px 0;">💪 PFC Pro Tracker</h2>
 
-    <div class="header-menu">
+    <div class="header-menu" style="grid-template-columns: repeat(4, 1fr);">
         <div class="btn-header" onclick="openMonthlyView()" style="background: #e3f2fd; color: #007AFF; border: 1px solid #90caf9;">📅 月履歴</div>
-        <div class="btn-header" onclick="openOverlay('customFoodOverlay')" style="background: #fff3e0; color: #e65100; border: 1px solid #ffcc80;">🛠 食材管理</div>
+        <div class="btn-header" onclick="openOverlay('customFoodOverlay')" style="background: #fff3e0; color: #e65100; border: 1px solid #ffcc80;">🛠 食材</div>
+        <div class="btn-header" onclick="openOverlay('cloudOverlay')" style="background: #e8eaf6; color: #3f51b5; border: 1px solid #9fa8da;">☁️ クラウド</div>
         <div class="btn-header" onclick="openOverlay('backupOverlay')" style="background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7;">💾 データ</div>
         <div class="btn-header" onclick="openOverlay('manualOverlay')" style="background: #f3e5f5; color: #7b1fa2; border: 1px solid #ce93d8;">📖 使い方</div>
         <div class="btn-header" onclick="openOverlay('recommendOverlay')" style="background: #e0f2f1; color: #00796b; border: 1px solid #80cbc4;">🛒 おすすめ</div>
-        <div class="btn-header" onclick="openOverlay('specOverlay')" style="background: #e1bee7; color: #4a148c; border: 1px solid #ba68c8;">ℹ️ アプリ仕様</div>
+        <div class="btn-header" onclick="openOverlay('specOverlay')" style="background: #e1bee7; color: #4a148c; border: 1px solid #ba68c8;">ℹ️ 仕様</div>
     </div>
 
     <div class="card" style="padding: 10px 20px;">
@@ -200,6 +199,38 @@
         <button type="button" onclick="closeModal()" style="background:#ccc; margin-top:10px;">キャンセル</button>
     </div>
 
+    <div id="cloudOverlay">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2>☁️ クラウド連携</h2>
+            <button onclick="closeOverlay('cloudOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button>
+        </div>
+        
+        <div id="cloudLoginSection" class="card" style="background:#e8eaf6; border:1px solid #9fa8da;">
+            <h3 style="margin-top:0; color:#3f51b5; font-size:16px;">🔐 アカウントにログイン/登録</h3>
+            <p style="font-size:13px; color:#555;">データをクラウドに保存し、他の端末と同期できます。</p>
+            <label class="input-label">メールアドレス</label>
+            <input type="email" id="authEmail" placeholder="example@email.com">
+            <label class="input-label">パスワード (6文字以上)</label>
+            <input type="password" id="authPassword" placeholder="パスワード">
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <button onclick="handleLogin()" style="background:#3f51b5; color:white; flex:1;">ログイン</button>
+                <button onclick="handleSignup()" style="background:#fff; color:#3f51b5; border:1px solid #3f51b5; flex:1;">新規登録</button>
+            </div>
+            <p id="authMessage" style="font-size:12px; color:red; margin-top:10px; text-align:center;"></p>
+        </div>
+
+        <div id="cloudSyncSection" class="card" style="display:none; background:#e8eaf6; border:1px solid #9fa8da;">
+            <h3 style="margin-top:0; color:#3f51b5; font-size:16px;">🔄 同期メニュー</h3>
+            <p style="font-size:13px; font-weight:bold; color:#333;">ログイン中: <span id="currentUserEmail"></span></p>
+            
+            <button onclick="saveDataToCloud()" style="background:#3f51b5; color:white; margin-top:15px; margin-bottom:10px;">⬆️ 現在のデータをクラウドに保存</button>
+            <button onclick="loadDataFromCloud()" style="background:#ff9800; color:white; margin-bottom:15px;">⬇️ クラウドのデータで上書き復元</button>
+            
+            <hr style="border:0; border-top:1px solid #ccc; margin:20px 0;">
+            <button onclick="handleLogout()" style="background:#757575; color:white;">ログアウト</button>
+        </div>
+    </div>
+
     <div id="customFoodOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2>🛠 マイ食材</h2>
@@ -259,7 +290,11 @@
             <button onclick="closeOverlay('manualOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button>
         </div>
         <div class="manual-section">
-            <h3>🍱 マイセット機能（New!）</h3>
+            <h3>☁️ クラウド連携（New!）</h3>
+            <p>Supabaseを活用し、データをクラウドに保存できるようになりました。アカウントを作成・ログインし、「クラウドに保存」を押すだけでデータの同期が可能です。</p>
+        </div>
+        <div class="manual-section">
+            <h3>🍱 マイセット機能</h3>
             <p>毎日の「いつもの食事」を保存できる機能です。ホーム画面の食事枠の右上にある「★セット登録」から保存し、次回から食材追加画面の「マイセット」タブで一発で呼び出せます。</p>
         </div>
         <div class="manual-section">
@@ -276,7 +311,7 @@
         </div>
         <div class="manual-section">
             <h3>📅 4. 履歴の確認とデータ保存</h3>
-            <p>「月履歴」から過去の記録をカレンダーで確認できます。データはブラウザに保存されるため、機種変更時は「データ」から必ずバックアップファイルをダウンロードしてください。</p>
+            <p>「月履歴」から過去の記録をカレンダーで確認できます。データはブラウザに保存されるため、機種変更時は「データ」から必ずバックアップファイルをダウンロードするか、クラウドをご利用ください。</p>
         </div>
     </div>
 
@@ -389,6 +424,19 @@
 
 
     <script>
+        // ==========================================
+        // 🚀 SUPABASE CONFIGURATION (ここを書き換える)
+        // ==========================================
+        const supabaseUrl = 'https://zzjzdbkntqjbgjewixqa.supabase.co/rest/v1/';
+        const supabaseKey = 'sb_publishable_Mj2IsNTX-TbK6kJ_2f-HNQ__GvUvdYG';
+        
+        // Supabaseクライアントの初期化
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        let currentUser = null;
+
+        // ==========================================
+        // LOCAL STORAGE FUNCTIONS & INITIALIZATION
+        // ==========================================
         function safeJSONParse(key, defaultVal) {
             try {
                 const parsed = JSON.parse(localStorage.getItem(key));
@@ -429,7 +477,7 @@
             return new Date(dateString.replace(/-/g, '/'));
         }
 
-        window.onload = () => {
+        window.onload = async () => {
             const today = new Date(); 
             currentDateStr = formatDate(today); 
             document.getElementById('datePicker').value = currentDateStr;
@@ -448,7 +496,191 @@
             }
             renderFoodSelect(); 
             render();
+            
+            // クラウドセッションの確認
+            await checkUserSession();
         };
+
+        // ==========================================
+        // ☁️ CLOUD FUNCTIONS (SUPABASE)
+        // ==========================================
+        
+        async function checkUserSession() {
+            const { data, error } = await supabase.auth.getSession();
+            if (data.session) {
+                currentUser = data.session.user;
+                updateCloudUI();
+            }
+            
+            // 認証状態の変更をリッスン
+            supabase.auth.onAuthStateChange((event, session) => {
+                if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
+                    currentUser = session.user;
+                } else if (event === 'SIGNED_OUT') {
+                    currentUser = null;
+                }
+                updateCloudUI();
+            });
+        }
+
+        function updateCloudUI() {
+            if (currentUser) {
+                document.getElementById('cloudLoginSection').style.display = 'none';
+                document.getElementById('cloudSyncSection').style.display = 'block';
+                document.getElementById('currentUserEmail').innerText = currentUser.email;
+            } else {
+                document.getElementById('cloudLoginSection').style.display = 'block';
+                document.getElementById('cloudSyncSection').style.display = 'none';
+                document.getElementById('currentUserEmail').innerText = "";
+            }
+        }
+
+        async function handleSignup() {
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+            const msgEl = document.getElementById('authMessage');
+            
+            if(!email || password.length < 6) {
+                msgEl.innerText = "有効なメールアドレスと6文字以上のパスワードを入力してください";
+                return;
+            }
+            
+            msgEl.style.color = "blue";
+            msgEl.innerText = "登録処理中...";
+            
+            const { data, error } = await supabase.auth.signUp({
+                email: email,
+                password: password
+            });
+            
+            if (error) {
+                msgEl.style.color = "red";
+                msgEl.innerText = error.message;
+            } else {
+                msgEl.style.color = "green";
+                msgEl.innerText = "登録成功しました！(自動ログインします)";
+            }
+        }
+
+        async function handleLogin() {
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+            const msgEl = document.getElementById('authMessage');
+            
+            if(!email || !password) {
+                msgEl.innerText = "メールアドレスとパスワードを入力してください";
+                return;
+            }
+            
+            msgEl.style.color = "blue";
+            msgEl.innerText = "ログイン中...";
+            
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: email,
+                password: password
+            });
+            
+            if (error) {
+                msgEl.style.color = "red";
+                msgEl.innerText = error.message;
+            } else {
+                msgEl.innerText = "";
+            }
+        }
+
+        async function handleLogout() {
+            await supabase.auth.signOut();
+            alert("ログアウトしました");
+        }
+
+        async function saveDataToCloud() {
+            if (!currentUser) return alert("ログインが必要です");
+            
+            try {
+                const btn = event.target;
+                const originalText = btn.innerText;
+                btn.innerText = "🔄 保存中...";
+                btn.disabled = true;
+
+                const { error } = await supabase
+                    .from('user_data')
+                    .upsert({ 
+                        id: currentUser.id,
+                        diary_data: diaryData,
+                        goals: goals,
+                        custom_foods: customFoodDict,
+                        my_sets: mySets,
+                        profile: userProfile,
+                        updated_at: new Date().toISOString()
+                    });
+
+                if (error) throw error;
+                
+                btn.innerText = "✅ 保存完了！";
+                setTimeout(() => { btn.innerText = originalText; btn.disabled = false; }, 2000);
+                
+            } catch (error) {
+                console.error('Error saving data:', error);
+                alert("保存に失敗しました: " + error.message);
+                event.target.innerText = "⬆️ 現在のデータをクラウドに保存";
+                event.target.disabled = false;
+            }
+        }
+
+        async function loadDataFromCloud() {
+            if (!currentUser) return alert("ログインが必要です");
+            
+            if(!confirm("クラウドのデータで現在の端末のデータをすべて上書きしますか？（現在のローカルデータは消去されます）")) {
+                return;
+            }
+
+            try {
+                const btn = event.target;
+                const originalText = btn.innerText;
+                btn.innerText = "🔄 読み込み中...";
+                btn.disabled = true;
+
+                const { data, error } = await supabase
+                    .from('user_data')
+                    .select('*')
+                    .eq('id', currentUser.id)
+                    .single();
+
+                if (error && error.code !== 'PGRST116') throw error; // PGRST116 is "no rows returned"
+
+                if (data) {
+                    // Update variables
+                    diaryData = data.diary_data || {};
+                    goals = data.goals || { p:0, f:0, c:0, cal:0 };
+                    customFoodDict = data.custom_foods || {};
+                    mySets = data.my_sets || {};
+                    userProfile = data.profile || {};
+
+                    // Save to local storage
+                    localStorage.setItem('pfcDiaryData', JSON.stringify(diaryData));
+                    localStorage.setItem('pfcGoals', JSON.stringify(goals));
+                    localStorage.setItem('pfcCustomFoods', JSON.stringify(customFoodDict));
+                    localStorage.setItem('pfcMySets', JSON.stringify(mySets));
+                    localStorage.setItem('pfcProfile', JSON.stringify(userProfile));
+
+                    alert("クラウドからデータを復元しました！");
+                    location.reload(); // 画面を更新して最新の状態を反映
+                } else {
+                    alert("クラウドにデータが見つかりませんでした。先に「保存」を行ってください。");
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Error loading data:', error);
+                alert("読み込みに失敗しました: " + error.message);
+                event.target.innerText = "⬇️ クラウドのデータで上書き復元";
+                event.target.disabled = false;
+            }
+        }
+
+        // ==========================================
+        // APP LOGIC FUNCTIONS
+        // ==========================================
 
         function getCombinedDict() { 
             return { ...defaultFoodDict, ...customFoodDict }; 
