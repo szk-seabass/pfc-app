@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>PFC Pro Tracker v52</title>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <title>PFC Pro Tracker v53</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { --primary: #007AFF; --accent: #deff9a; --bg: #f2f2f7; --card-bg: #ffffff; --text: #1c1c1e; }
@@ -17,7 +16,6 @@
         .total-card { border: 2px solid var(--primary); position: sticky; top: 10px; z-index: 100; }
         
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 16px; box-sizing: border-box; background: #f9f9f9; margin-bottom: 10px; }
-        input[type="file"] { background: #fff; padding: 10px; }
         button { width: 100%; padding: 14px; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; }
         
         .btn-add-meal { background: var(--primary); color: white; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 20px); max-width: 480px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000;}
@@ -35,20 +33,21 @@
         .bar-p { background: #ff9500; }
         .bar-f { background: #ff3b30; }
         .bar-c { background: #34c759; }
-        .header-menu { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 15px; }
+        
+        /* メニューを3列に変更 */
+        .header-menu { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 15px; }
         .btn-header { font-size: 12px; padding: 10px 2px; border-radius: 8px; text-align: center; font-weight: bold; word-break: keep-all; box-sizing: border-box; cursor: pointer; }
         .tab-container { display: flex; border-radius: 10px; overflow: hidden; margin-bottom: 15px; border: 1px solid var(--primary); }
         .tab-btn { flex: 1; text-align: center; padding: 10px; font-size: 14px; font-weight: bold; background: white; color: var(--primary); cursor: pointer; }
         .tab-btn.active { background: var(--primary); color: white; }
         .input-label { font-size: 12px; font-weight: bold; color: #666; margin-bottom: 2px; display: block; }
-        #ocrLoading { display: none; text-align: center; padding: 15px; color: var(--primary); font-weight: bold; font-size: 14px; background: #e3f2fd; border-radius: 8px; margin-bottom: 15px; }
+        
         .custom-food-item { border: 1px solid #ddd; padding: 10px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         .custom-food-info { font-size: 14px; }
         .custom-food-info span { color: #888; font-size: 12px; display: block;}
         .manual-section { margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
         .manual-section h3 { color: var(--primary); font-size: 16px; margin-bottom: 10px; }
         .manual-section p { font-size: 14px; line-height: 1.6; color: #444; margin-bottom: 8px;}
-        .manual-section ul { font-size: 14px; color: #444; padding-left: 20px; margin: 0; line-height: 1.6; }
         .action-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 15px; }
         .btn-action { padding: 10px 5px; font-size: 12px; border-radius: 8px; color: white; cursor: pointer; }
         
@@ -62,7 +61,7 @@
         
         .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         .profile-grid input, .profile-grid select { margin-bottom: 0; }
-        #monthlyOverlay, #customFoodOverlay, #backupOverlay, #manualOverlay, #recommendOverlay, #specOverlay, #cloudOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:2000; padding:20px; box-sizing:border-box; overflow-y:auto; }
+        #monthlyOverlay, #customFoodOverlay, #manualOverlay, #recommendOverlay, #specOverlay, #cloudOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:2000; padding:20px; box-sizing:border-box; overflow-y:auto; }
 
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 10px; }
         .calendar-header-day { text-align: center; font-size: 12px; font-weight: bold; color: #666; padding: 5px 0; border-bottom: 1px solid #ddd; }
@@ -74,6 +73,15 @@
         #adviceMessage { display:none; background:#e8f5e9; color:#2e7d32; padding:15px; border-radius:8px; font-size:13px; margin-top:15px; border:1px solid #c8e6c9; line-height:1.5; }
         .adv-pfc { display:flex; justify-content:space-between; margin-top:10px; font-weight:bold; background:#fff; padding:12px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.1); }
         .btn-apply-adv { display:block; width:100%; background:#2e7d32; color:white; padding:12px; margin-top:15px; border-radius:8px; font-weight:bold; font-size:14px; text-align:center; border:none; cursor:pointer; }
+        
+        /* ★ モーダルの見切れ調整と背景の追加 */
+        #modalBackdrop { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2999; }
+        #inputModal {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 90%; max-width: 400px; background: var(--card-bg); z-index: 3000;
+            border-radius: 15px; padding: 20px; box-sizing: border-box; max-height: 85vh; overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
 <body>
@@ -84,7 +92,6 @@
         <div class="btn-header" onclick="openMonthlyView()" style="background: #e3f2fd; color: #007AFF; border: 1px solid #90caf9;">📅 月履歴</div>
         <div class="btn-header" onclick="openOverlay('customFoodOverlay')" style="background: #fff3e0; color: #e65100; border: 1px solid #ffcc80;">🛠 食材</div>
         <div class="btn-header" onclick="openOverlay('cloudOverlay')" style="background: #e8eaf6; color: #3f51b5; border: 1px solid #9fa8da;">👤 アカウント</div>
-        <div class="btn-header" onclick="openOverlay('backupOverlay')" style="background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7;">💾 データ</div>
         <div class="btn-header" onclick="openOverlay('manualOverlay')" style="background: #f3e5f5; color: #7b1fa2; border: 1px solid #ce93d8;">📖 使い方</div>
         <div class="btn-header" onclick="openOverlay('recommendOverlay')" style="background: #e0f2f1; color: #00796b; border: 1px solid #80cbc4;">🛒 おすすめ</div>
         <div class="btn-header" onclick="openOverlay('specOverlay')" style="background: #e1bee7; color: #4a148c; border: 1px solid #ba68c8;">ℹ️ 仕様</div>
@@ -159,10 +166,14 @@
     <div id="mealContainer"></div>
     <button class="btn-add-meal" onclick="addNewMeal()">＋ 新しい食事枠を追加</button>
 
-    <div id="inputModal" class="card" style="display:none; position:fixed; top:5%; left:5%; width:90%; z-index:3000; border:3px solid #000; max-height:90vh; overflow-y:auto;">
+    <!-- ★ モーダル背景 -->
+    <div id="modalBackdrop" onclick="closeModal()"></div>
+
+    <!-- 食材追加モーダル -->
+    <div id="inputModal">
         <div class="tab-container">
-            <div class="tab-btn active" id="tabBtnDict" onclick="switchTab('dict')">📖 リストから</div>
-            <div class="tab-btn" id="tabBtnManual" onclick="switchTab('manual')">✍️ 手動・写真</div>
+            <div class="tab-btn active" id="tabBtnDict" onclick="switchTab('dict')">📖 リスト</div>
+            <div class="tab-btn" id="tabBtnManual" onclick="switchTab('manual')">✍️ 手動入力</div>
             <div class="tab-btn" id="tabBtnSet" onclick="switchTab('set')">🍱 マイセット</div>
         </div>
         
@@ -173,10 +184,8 @@
             <input type="number" id="gramInput" placeholder="例: 100">
         </div>
         
+        <!-- ★ 手動入力タブ (OCR削除済み) -->
         <div id="areaManual" style="display:none;">
-            <button type="button" onclick="document.getElementById('ocrInput').click()" style="background:#e3f2fd; color:var(--primary); margin-bottom:15px; font-size:14px; padding:10px;">📷 写真から自動読取</button>
-            <input type="file" id="ocrInput" accept="image/*" style="display:none;" onchange="runOCR(event)">
-            <div id="ocrLoading">🔍 解析中...</div>
             <label class="input-label">1. 品名 (任意)</label>
             <input type="text" id="manualNameInput" placeholder="例: 外食の定食">
             <label class="input-label" style="margin-top:10px;">2. PFC</label>
@@ -197,9 +206,10 @@
         </div>
 
         <button type="button" onclick="commitItem()" style="background:var(--primary); color:white; margin-top:20px;">食事に反映を確定</button>
-        <button type="button" onclick="closeModal()" style="background:#ccc; margin-top:10px;">キャンセル</button>
+        <button type="button" onclick="closeModal()" style="background:#ccc; margin-top:10px; color:#333;">キャンセル</button>
     </div>
 
+    <!-- アカウント機能 -->
     <div id="cloudOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2 style="margin:0;">👤 アカウント登録・同期</h2>
@@ -267,49 +277,27 @@
         <div class="calendar-grid" id="calendarGrid"></div>
     </div>
 
-    <div id="backupOverlay">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h2>💾 データ管理</h2>
-            <button onclick="closeOverlay('backupOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button>
-        </div>
-        <div class="card" style="background:#e8f5e9; border:1px solid #a5d6a7;">
-            <h3 style="margin-top:0; color:#2e7d32; font-size:16px;">📁 ファイルで保存・復元</h3>
-            <button onclick="downloadBackupFile()" style="background:#2e7d32; color:white; margin-bottom:15px;">ファイルとしてダウンロード</button>
-            <input type="file" id="importFile" accept=".json" style="margin-bottom:10px; width:100%;">
-            <button onclick="restoreFromFile()" style="background:#f57f17; color:white;">ファイルから復元</button>
-        </div>
-        <div class="card" style="background:#f3e5f5; border:1px solid #ce93d8;">
-            <h3 style="margin-top:0; color:#7b1fa2; font-size:16px;">📝 テキストで復元</h3>
-            <textarea id="exportText" rows="2" readonly style="display:none;"></textarea>
-            <textarea id="importText" rows="3" placeholder="ここにバックアップテキストを貼り付け" style="margin-bottom:10px;"></textarea>
-            <button onclick="restoreBackupText()" style="background:#d81b60; color:white;">テキストから復元</button>
-        </div>
-    </div>
-
+    <!-- ★使い方ガイドの拡充 -->
     <div id="manualOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2>📖 使い方ガイド</h2>
             <button onclick="closeOverlay('manualOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button>
         </div>
         <div class="manual-section">
-            <h3>👤 アカウント登録・同期</h3>
-            <p>アカウントを作成することで、日々のデータが安全にクラウドにリアルタイム保存されるようになりました。機種変更時や他の端末を使う際も、ログインするだけで自動的にデータが復元・引き継がれます。</p>
+            <h3>👤 アカウント登録・自動同期</h3>
+            <p>アカウントを作成してログインすると、記録したデータが自動的にクラウドに保存されます。別のスマホやPCからログインしても、すぐに続きから記録できます。</p>
         </div>
         <div class="manual-section">
-            <h3>🍱 マイセット機能</h3>
+            <h3>🍱 マイセット機能（よく食べる食事）</h3>
             <p>毎日の「いつもの食事」を保存できる機能です。ホーム画面の食事枠の右上にある「★セット登録」から保存し、次回から食材追加画面の「マイセット」タブで一発で呼び出せます。</p>
         </div>
         <div class="manual-section">
-            <h3>📱 1. アプリをスマホに入れる</h3>
-            <p>ブラウザの共有メニューから「ホーム画面に追加」を選ぶと、アプリとして全画面で使えます。</p>
+            <h3>🛠 マイ食材の登録</h3>
+            <p>リストにない食材は「手動入力」タブから追加するか、「マイ食材」メニューからよく使う食材として登録できます。栄養成分は商品のパッケージ裏や、インターネットで「食材名 PFC」と検索して入力してください。</p>
         </div>
         <div class="manual-section">
-            <h3>🎯 2. 目標を自動計算する</h3>
+            <h3>🎯 目標を自動計算する</h3>
             <p>プロフィールを入力すると「TDEE(総消費カロリー)」を算出し、あなたに最適なPFCバランスを設定します。無謀な目標には安全装置（警告・推奨プラン）が作動するため、健康的にボディメイクが可能です。</p>
-        </div>
-        <div class="manual-section">
-            <h3>🍽️ 3. 食事を記録する</h3>
-            <p>画面下部の「＋ 新しい食事枠を追加」から食材を登録します。リストから選ぶか、栄養成分表示を「📷 写真から自動読取」することも可能です。</p>
         </div>
     </div>
 
@@ -563,13 +551,11 @@
             const password = document.getElementById('authPassword').value;
             const msgEl = document.getElementById('authMessage');
             
-            // ★ 文字種のカウント（英字、数字、記号）
             const hasLetter = /[a-zA-Z]/.test(password);
             const hasNumber = /\d/.test(password);
             const hasSymbol = /[^a-zA-Z0-9\s]/.test(password);
             const typesCount = (hasLetter ? 1 : 0) + (hasNumber ? 1 : 0) + (hasSymbol ? 1 : 0);
             
-            // ★ バリデーションチェック: 8文字以上かつ、2種類以上の文字種を含むか
             if(!email || password.length < 8 || typesCount < 2) {
                 msgEl.innerText = "有効なメールアドレスと、英字・数字・記号から2種類以上を含む8文字以上のパスワードを入力してください。";
                 return;
@@ -630,7 +616,6 @@
             
             if (!confirm("⚠️ 本当にアカウントを削除しますか？\nクラウド上のすべてのデータが完全に消去され、復元できなくなります。")) return;
             
-            // ★ 修正点: メールアドレスを画面に表示させず、ユーザー自身に入力させる
             const emailConfirm = prompt("確認のため、登録しているメールアドレスを入力してください:");
             if (emailConfirm !== currentUser.email) {
                 return alert("メールアドレスが一致しません。削除をキャンセルしました。");
@@ -641,8 +626,16 @@
             statusLabel.style.color = "red";
 
             try {
+                // 1. ユーザーデータの削除
                 await supabaseClient.from('user_data').delete().eq('id', currentUser.id);
+                
+                // 2. RPCでのアカウント削除
                 const { error: rpcError } = await supabaseClient.rpc('delete_user');
+                
+                // ★ RPCエラーのハンドリング強化
+                if (rpcError) {
+                    throw new Error("Supabaseでの設定(delete_user関数の作成)が完了していないか、権限エラーが発生しました。\n" + rpcError.message);
+                }
                 
                 await supabaseClient.auth.signOut();
                 localStorage.clear();
@@ -651,7 +644,7 @@
                 location.reload();
             } catch (error) {
                 console.error('Delete error:', error);
-                alert("削除に失敗しました: " + error.message);
+                alert("削除処理に失敗しました:\n" + error.message);
                 statusLabel.innerText = "⚠️ 削除に失敗しました";
             }
         }
@@ -730,14 +723,15 @@
             const currentVal = select.value;
             select.innerHTML = '';
             
+            // ★「筋肉を残して除脂肪」の文言を「緩やかに体重を減らす」に変更
             if (gender === 'female') {
                 select.innerHTML += '<option value="-500">短期集中ダイエット (-500kcal)</option>';
-                select.innerHTML += '<option value="-200">筋肉を残して除脂肪 (-200kcal)</option>';
+                select.innerHTML += '<option value="-200">緩やかに体重を減らす (-200kcal)</option>';
                 select.innerHTML += '<option value="0">維持 (現状をキープ / ±0kcal)</option>';
                 select.innerHTML += '<option value="300">筋肉を増やす増量 (+300kcal)</option>';
             } else {
                 select.innerHTML += '<option value="-500">短期集中ダイエット (-500kcal)</option>';
-                select.innerHTML += '<option value="-300">筋肉を残して除脂肪 (-300kcal)</option>';
+                select.innerHTML += '<option value="-300">緩やかに体重を減らす (-300kcal)</option>';
                 select.innerHTML += '<option value="0">維持 (現状をキープ / ±0kcal)</option>';
                 select.innerHTML += '<option value="300">筋肉を増やす増量 (+300kcal)</option>';
             }
@@ -805,7 +799,7 @@
                     let advPLabel = "P (推奨: 体重×1.5g)";
                     let advFLabel = "F (推奨: 総カロリーの30%)";
 
-                    adviceDiv.innerHTML = `💡 <b>プロからのアドバイス</b><br>
+                    adviceDiv.innerHTML = `💡 <b>アドバイス</b><br>
                         上記の計算結果（${targetCal}kcal）でも痩せますが、食事制限としてはかなりハード（危険）な数値です。停滞やリバウンドのリスクが高まります。<br><br>
                         無理なく綺麗に痩せるためには、運動頻度を上げて消費カロリーを増やし、<b>1日約${advCal}kcal</b>を食べながら除脂肪することをおすすめします。<br>
                         <div class="adv-pfc">
@@ -824,7 +818,7 @@
                     let advPLabel = "P (推奨: 体重×2.0g)";
                     let advFLabel = "F (推奨: 最低確保20%以上)";
 
-                    adviceDiv.innerHTML = `💡 <b>プロからのアドバイス</b><br>
+                    adviceDiv.innerHTML = `💡 <b>アドバイス</b><br>
                         上記の計算結果（${targetCal}kcal）でも痩せますが、食事制限としてはかなりハード（危険）な数値です。テストステロンや筋肉量が落ちるリスクが高まります。<br><br>
                         筋肉を落とさず健康的に絞るためには、運動頻度を上げて消費カロリーを増やし、<b>1日約${advCal}kcal</b>を食べながら除脂肪することをおすすめします。<br>
                         <div class="adv-pfc">
@@ -861,37 +855,6 @@
             alert(`安全な推奨プラン（${cal} kcal）に変更しました！`);
         }
 
-        async function runOCR(event) {
-            const file = event.target.files[0]; 
-            if (!file) return;
-            document.getElementById('ocrLoading').style.display = 'block';
-            try {
-                const img = new Image();
-                img.onload = async () => {
-                    const canvas = document.createElement('canvas'); 
-                    const ctx = canvas.getContext('2d');
-                    canvas.width = img.width * 2; 
-                    canvas.height = img.height * 2; 
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    const result = await Tesseract.recognize(canvas.toDataURL('image/jpeg'), 'jpn');
-                    
-                    let clean = result.data.text.replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0)).replace(/[oOＯｏ]/g, '0').replace(/[lIｌＩ|]/g, '1').replace(/,/g, '.').replace(/\s+/g, '');
-                    const p = clean.match(/(?:たんぱく質|蛋白質|タンパク質|たんばく質|たんぱく|ﾀﾝﾊﾟｸ|タンパク)[^0-9]*?([0-9]+\.?[0-9]*)/);
-                    const f = clean.match(/(?:脂質|脂)[^0-9]*?([0-9]+\.?[0-9]*)/);
-                    const c = clean.match(/(?:炭水化物|糖質|炭水)[^0-9]*?([0-9]+\.?[0-9]*)/);
-                    
-                    if(p) document.getElementById('pManual').value = parseFloat(p[1]).toFixed(1);
-                    if(f) document.getElementById('fManual').value = parseFloat(f[1]).toFixed(1);
-                    if(c) document.getElementById('cManual').value = parseFloat(c[1]).toFixed(1);
-                    document.getElementById('ocrLoading').style.display = 'none';
-                }; 
-                img.src = URL.createObjectURL(file);
-            } catch (e) { 
-                alert("失敗しました"); 
-                document.getElementById('ocrLoading').style.display = 'none'; 
-            }
-        }
-
         function regCustomFromManual() {
             const name = document.getElementById('manualNameInput').value;
             const p = parseFloat(document.getElementById('pManual').value) || 0; 
@@ -918,12 +881,17 @@
             save(); render(); 
         }
         
+        // ★ モーダルの開閉処理（背景も制御）
         function openModal(idx) { 
             activeMealIndex = idx; 
+            document.getElementById('modalBackdrop').style.display = 'block';
             document.getElementById('inputModal').style.display = 'block'; 
             updateGramLabel(); 
         }
-        function closeModal() { document.getElementById('inputModal').style.display = 'none'; }
+        function closeModal() { 
+            document.getElementById('modalBackdrop').style.display = 'none';
+            document.getElementById('inputModal').style.display = 'none'; 
+        }
         
         function switchTab(m) { 
             currentTabMode = m; 
@@ -1276,55 +1244,6 @@
                 grid.appendChild(cell);
             }
             document.getElementById('monthlyOverlay').style.display = 'block';
-        }
-
-        function downloadBackupFile() {
-            const s = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ diary: diaryData, goals, foods: customFoodDict, profile: userProfile, mySets: mySets }));
-            const a = document.createElement('a'); 
-            a.href = s; 
-            a.download = "pfc_backup_" + currentDateStr + ".json"; 
-            a.click();
-        }
-        
-        function restoreFromFile() {
-            const f = document.getElementById('importFile').files[0]; 
-            if(!f) return; 
-            const r = new FileReader();
-            r.onload = function(e) {
-                try {
-                    const d = JSON.parse(e.target.result);
-                    if(confirm("上書き復元しますか？")) { 
-                        localStorage.setItem('pfcDiaryData', JSON.stringify(d.diary)); 
-                        localStorage.setItem('pfcGoals', JSON.stringify(d.goals)); 
-                        localStorage.setItem('pfcCustomFoods', JSON.stringify(d.foods)); 
-                        localStorage.setItem('pfcProfile', JSON.stringify(d.profile)); 
-                        if (d.mySets) localStorage.setItem('pfcMySets', JSON.stringify(d.mySets)); 
-                        
-                        diaryData = d.diary; goals = d.goals; customFoodDict = d.foods; userProfile = d.profile; mySets = d.mySets || {};
-                        render();
-                        save(); 
-                        alert("復元が完了しました！");
-                    }
-                } catch(err) { 
-                    alert("エラー"); 
-                }
-            }; 
-            r.readAsText(f);
-        }
-
-        function restoreBackupText() { 
-            try { 
-                const d = JSON.parse(document.getElementById('importText').value); 
-                if(confirm("上書き復元？")) { 
-                    localStorage.setItem('pfcDiaryData', JSON.stringify(d.diary)); 
-                    diaryData = d.diary;
-                    render();
-                    save(); 
-                    alert("復元が完了しました！");
-                } 
-            } catch(e) { 
-                alert("エラー"); 
-            } 
         }
         
         function save() { 
