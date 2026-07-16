@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>PFC Pro Tracker v43</title>
+    <title>PFC Pro Tracker v44</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         :root { --primary: #007AFF; --accent: #deff9a; --bg: #f2f2f7; --card-bg: #ffffff; --text: #1c1c1e; }
@@ -20,7 +20,7 @@
         input[type="file"] { background: #fff; padding: 10px; }
         button { width: 100%; padding: 14px; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; }
         
-        /* ★ v43修正: 食事枠追加ボタンを最前面(z-index: 1000)に引き上げ */
+        /* 食事枠追加ボタンを最前面に */
         .btn-add-meal { background: var(--primary); color: white; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 20px); max-width: 480px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000;}
         
         .meal-section { border-left: 4px solid var(--primary); padding-left: 15px; margin-bottom: 25px; }
@@ -121,9 +121,7 @@
             <option value="0.45">毎日・ハードに (+0.45)</option>
         </select>
         <label class="input-label" style="color:#aaa; margin-top:10px; font-size:12px;">現在の目的</label>
-        <select id="goalSelect">
-            <!-- 動的生成 -->
-        </select>
+        <select id="goalSelect"></select>
         
         <div id="warningMessage"></div>
 
@@ -187,8 +185,8 @@
             </div>
             <button type="button" onclick="regCustomFromManual()" style="background:#fff3e0; color:#e65100; margin-top:15px; font-size:14px; padding:10px; border:1px solid #ffcc80;">✨ この内容をマイ食材に登録</button>
         </div>
-        <button onclick="commitItem()" style="background:var(--primary); color:white; margin-top:20px;">食事に反映を確定</button>
-        <button onclick="closeModal()" style="background:#ccc; margin-top:10px;">キャンセル</button>
+        <button type="button" onclick="commitItem()" style="background:var(--primary); color:white; margin-top:20px;">食事に反映を確定</button>
+        <button type="button" onclick="closeModal()" style="background:#ccc; margin-top:10px;">キャンセル</button>
     </div>
 
     <!-- マイ食材管理 -->
@@ -381,6 +379,16 @@
     </div>
 
     <script>
+        // ★ v44: 過去の破損データを安全に読み込むための自動修復関数
+        function safeJSONParse(key, defaultVal) {
+            try {
+                const parsed = JSON.parse(localStorage.getItem(key));
+                return parsed ? parsed : defaultVal;
+            } catch(e) {
+                return defaultVal; // エラーが起きたら初期値でリセット
+            }
+        }
+
         const defaultFoodDict = {
             "protein": { name: "プロテイン(粉末)", p: 70.1, f: 6.4, c: 14.6, base: 100 },
             "chicken": { name: "鶏もも肉", p: 18.8, f: 3.9, c: 0.0, base: 100 },
@@ -389,10 +397,19 @@
             "egg":     { name: "卵(1個)", p: 6.2, f: 5.2, c: 0.2, base: 1 } 
         };
         
-        let diaryData = JSON.parse(localStorage.getItem('pfcDiaryData')) || {};
-        let goals = JSON.parse(localStorage.getItem('pfcGoals')) || { p:0, f:0, c:0, cal:0 };
-        let customFoodDict = JSON.parse(localStorage.getItem('pfcCustomFoods')) || {};
-        let userProfile = JSON.parse(localStorage.getItem('pfcProfile')) || {};
+        // ★ v44: 過去のテストデータが配列など間違った形式だった場合に強制修復
+        let diaryData = safeJSONParse('pfcDiaryData', {});
+        if (typeof diaryData !== 'object' || Array.isArray(diaryData)) diaryData = {};
+
+        let goals = safeJSONParse('pfcGoals', { p:0, f:0, c:0, cal:0 });
+        if (typeof goals !== 'object' || Array.isArray(goals)) goals = { p:0, f:0, c:0, cal:0 };
+
+        let customFoodDict = safeJSONParse('pfcCustomFoods', {});
+        if (typeof customFoodDict !== 'object' || Array.isArray(customFoodDict)) customFoodDict = {};
+
+        let userProfile = safeJSONParse('pfcProfile', {});
+        if (typeof userProfile !== 'object' || Array.isArray(userProfile)) userProfile = {};
+
         let currentDateStr = ""; 
         let activeMealIndex = null; 
         let currentTabMode = 'dict';
@@ -421,6 +438,10 @@
             renderFoodSelect(); 
             render();
         };
+
+        function getCombinedDict() { 
+            return { ...defaultFoodDict, ...customFoodDict }; 
+        }
 
         function updateGoalOptions() {
             const gender = document.getElementById('genderSelect').value;
@@ -617,9 +638,8 @@
             render(); 
         }
         
-        // ★ v43: 新しい枠の追加ロジックを最適化（重複防止）
         function addNewMeal() { 
-            if (!diaryData[currentDateStr]) {
+            if (!diaryData[currentDateStr] || !Array.isArray(diaryData[currentDateStr])) {
                 diaryData[currentDateStr] = [{ items: [] }]; 
             } else {
                 diaryData[currentDateStr].push({ items: [] }); 
@@ -644,51 +664,69 @@
             document.getElementById('areaManual').style.display = m==='manual' ? 'block' : 'none'; 
         }
 
+        // ★ v44: try-catchで包み込み、絶対にサイレントクラッシュを起こさせない完全防弾仕様
         function commitItem() {
-            let p, f, c, name, cal, displayGrams; 
-            const combined = getCombinedDict();
-            
-            if(currentTabMode === 'manual') {
-                p = parseFloat(document.getElementById('pManual').value) || 0; 
-                f = parseFloat(document.getElementById('fManual').value) || 0; 
-                c = parseFloat(document.getElementById('cManual').value) || 0;
-                name = document.getElementById('manualNameInput').value || "手動入力"; 
-                cal = Math.round(p*4 + f*9 + c*4); 
-                displayGrams = null;
-            } else {
-                const select = document.getElementById('foodSelect');
-                const key = select.value || (select.options.length > 0 ? select.options[0].value : null);
-                if (!key) return alert("食材がありません");
+            try {
+                let p, f, c, name, cal, displayGrams; 
+                const combined = getCombinedDict();
+                
+                if(currentTabMode === 'manual') {
+                    p = parseFloat(document.getElementById('pManual').value) || 0; 
+                    f = parseFloat(document.getElementById('fManual').value) || 0; 
+                    c = parseFloat(document.getElementById('cManual').value) || 0;
+                    name = document.getElementById('manualNameInput').value || "手動入力"; 
+                    cal = Math.round(p*4 + f*9 + c*4); 
+                    displayGrams = null;
+                } else {
+                    const select = document.getElementById('foodSelect');
+                    const key = select.value || (select.options.length > 0 ? select.options[0].value : null);
+                    if (!key) return alert("食材がありません");
 
-                const mul = parseFloat(document.getElementById('gramInput').value) || 0;
-                const food = combined[key]; 
-                if (!food) return alert("食材の取得に失敗しました");
+                    const mul = parseFloat(document.getElementById('gramInput').value) || 0;
+                    const food = combined[key]; 
+                    if (!food) return alert("食材データが見つかりません");
 
-                const ratio = mul / (food.base || 100);
-                p = food.p * ratio; 
-                f = food.f * ratio; 
-                c = food.c * ratio; 
-                name = food.name; 
-                cal = Math.round(p*4 + f*9 + c*4); 
-                displayGrams = food.base === 1 ? `${mul}個(食)` : `${mul}g`;
+                    const ratio = mul / (food.base || 100);
+                    p = food.p * ratio; 
+                    f = food.f * ratio; 
+                    c = food.c * ratio; 
+                    name = food.name; 
+                    cal = Math.round(p*4 + f*9 + c*4); 
+                    displayGrams = food.base === 1 ? `${mul}個(食)` : `${mul}g`;
+                }
+                
+                // 過去の破損データを強制修復する安全装置
+                if (!diaryData[currentDateStr] || !Array.isArray(diaryData[currentDateStr])) {
+                    diaryData[currentDateStr] = []; 
+                }
+                
+                if (activeMealIndex === null || activeMealIndex === undefined || activeMealIndex < 0) {
+                    activeMealIndex = 0;
+                }
+                
+                // 枠が足りない場合の自動補填ループ
+                let safeguardCount = 0;
+                while (diaryData[currentDateStr].length <= activeMealIndex && safeguardCount < 10) {
+                    diaryData[currentDateStr].push({ items: [] });
+                    safeguardCount++;
+                }
+                
+                // items配列が消えてしまっている場合の完全修復
+                if (!diaryData[currentDateStr][activeMealIndex].items || !Array.isArray(diaryData[currentDateStr][activeMealIndex].items)) {
+                    diaryData[currentDateStr][activeMealIndex].items = [];
+                }
+                
+                diaryData[currentDateStr][activeMealIndex].items.push({ name, p, f, c, cal, displayGrams });
+                
+                save(); 
+                render(); 
+                closeModal();
+
+            } catch (error) {
+                // サイレントエラーを完全に防ぎ、ユーザーに必ず通知する
+                alert("食材の追加中にエラーが発生しました。\n大変お手数ですが、「この日の記録をリセット」を押してデータをクリーンにしてから再度お試しください。");
+                console.error("Commit Error:", error);
             }
-            
-            if (!diaryData[currentDateStr]) diaryData[currentDateStr] = [{ items: [] }];
-            
-            // 安全装置: activeMealIndexが無効な場合のフォールバック
-            if (activeMealIndex === null || activeMealIndex < 0) activeMealIndex = 0;
-            
-            // ループが無限にならないよう上限付きで安全に枠を補填
-            let safeguardCount = 0;
-            while (!diaryData[currentDateStr][activeMealIndex] && safeguardCount < 10) {
-                diaryData[currentDateStr].push({ items: [] });
-                safeguardCount++;
-            }
-            
-            diaryData[currentDateStr][activeMealIndex].items.push({ name, p, f, c, cal, displayGrams });
-            save(); 
-            render(); 
-            closeModal();
         }
 
         function removeItem(m, i) { 
@@ -734,63 +772,73 @@
             } 
         }
 
+        // ★ v44: 描画時も破損データで停止しないように防弾処理
         function render() {
-            document.getElementById('selectedDateLabel').innerText = `${currentDateStr} の記録`;
-            const container = document.getElementById('mealContainer'); 
-            container.innerHTML = ''; 
-            let total = { p:0, f:0, c:0, cal:0 };
-            
-            let meals = diaryData[currentDateStr];
-            if (!meals || meals.length === 0) {
-                meals = [{ items: [] }];
-            }
-            
-            meals.forEach((meal, mIdx) => {
-                const card = document.createElement('div'); 
-                card.className = 'card meal-section';
-                let html = `<div class="meal-header"><b>${mIdx+1}食目</b> <span onclick="removeMeal(${mIdx})" style="color:red; font-size:12px; cursor:pointer;">枠削除</span></div><hr>`;
-                meal.items.forEach((item, iIdx) => {
-                    html += `<div class="item-row"><span>${item.name}${item.displayGrams ? ' ('+item.displayGrams+')' : ''}</span><span>${item.cal}kcal <button class="btn-small" onclick="removeItem(${mIdx}, ${iIdx})">✕</button></span></div>`;
-                    total.p += item.p; 
-                    total.f += item.f; 
-                    total.c += item.c; 
-                    total.cal += item.cal;
-                });
-                html += `<button onclick="openModal(${mIdx})" style="margin-top:10px;">＋ 食材を追加</button>`; 
-                card.innerHTML = html; 
-                container.appendChild(card);
-            });
-            
-            document.getElementById('dailyCal').innerText = total.cal; 
-            document.getElementById('goalCal').innerText = goals.cal || 0;
-            
-            // ★ v43: NaN%によるレイアウト崩れを完全に防ぐ
-            const updateBar = (id, sum, goal, barId) => {
-                document.getElementById(id).innerText = sum.toFixed(1); 
-                const goalVal = goals[id.replace('Sum','')];
-                document.getElementById(goal).innerText = goalVal.toString();
+            try {
+                document.getElementById('selectedDateLabel').innerText = `${currentDateStr} の記録`;
+                const container = document.getElementById('mealContainer'); 
+                container.innerHTML = ''; 
+                let total = { p:0, f:0, c:0, cal:0 };
                 
-                const percent = (goalVal && goalVal > 0 && !isNaN(goalVal)) ? Math.min(100, (sum / goalVal) * 100) : 0;
-                document.getElementById(barId).style.width = percent + '%';
-            };
-            
-            updateBar('pSum', total.p, 'pGoal', 'pBar'); 
-            updateBar('fSum', total.f, 'fGoal', 'fBar'); 
-            updateBar('cSum', total.c, 'cGoal', 'cBar');
-            
-            if(goals.cal > 0) {
-                document.getElementById('currentGoalsDisplay').style.display = 'block';
-                if(userProfile.bmr) {
-                    document.getElementById('displayMetabolism').innerText = `基礎代謝: 約${Math.round(userProfile.bmr)}kcal / 活動係数: ${userProfile.activityFactor.toFixed(2)}`;
+                let meals = diaryData[currentDateStr];
+                if (!meals || !Array.isArray(meals) || meals.length === 0) {
+                    meals = [{ items: [] }];
                 }
-                document.getElementById('displayTargetCal').innerText = `${goals.cal} kcal`;
-                document.getElementById('displayTargetP').innerText = `${goals.p} g`;
-                document.getElementById('displayTargetF').innerText = `${goals.f} g`;
-                document.getElementById('displayTargetC').innerText = `${goals.c} g`;
-            } else {
-                document.getElementById('currentGoalsDisplay').style.display = 'none';
+                
+                meals.forEach((meal, mIdx) => {
+                    const card = document.createElement('div'); 
+                    card.className = 'card meal-section';
+                    let html = `<div class="meal-header"><b>${mIdx+1}食目</b> <span onclick="removeMeal(${mIdx})" style="color:red; font-size:12px; cursor:pointer;">枠削除</span></div><hr>`;
+                    
+                    // meal.itemsが正しく存在する場合のみループ
+                    if (meal && Array.isArray(meal.items)) {
+                        meal.items.forEach((item, iIdx) => {
+                            html += `<div class="item-row"><span>${item.name}${item.displayGrams ? ' ('+item.displayGrams+')' : ''}</span><span>${item.cal}kcal <button class="btn-small" onclick="removeItem(${mIdx}, ${iIdx})">✕</button></span></div>`;
+                            total.p += (item.p || 0); 
+                            total.f += (item.f || 0); 
+                            total.c += (item.c || 0); 
+                            total.cal += (item.cal || 0);
+                        });
+                    }
+                    html += `<button onclick="openModal(${mIdx})" style="margin-top:10px;">＋ 食材を追加</button>`; 
+                    card.innerHTML = html; 
+                    container.appendChild(card);
+                });
+                
+                document.getElementById('dailyCal').innerText = total.cal; 
+                document.getElementById('goalCal').innerText = (goals.cal || 0).toString();
+                
+                const updateBar = (id, sum, goalId, barId) => {
+                    document.getElementById(id).innerText = sum.toFixed(1); 
+                    // goalsデータが壊れていても0で代替してフリーズ回避
+                    const goalVal = goals[id.replace('Sum','')] || 0;
+                    document.getElementById(goalId).innerText = goalVal.toString();
+                    
+                    const percent = (goalVal && goalVal > 0 && !isNaN(goalVal)) ? Math.min(100, (sum / goalVal) * 100) : 0;
+                    document.getElementById(barId).style.width = percent + '%';
+                };
+                
+                updateBar('pSum', total.p, 'pGoal', 'pBar'); 
+                updateBar('fSum', total.f, 'fGoal', 'fBar'); 
+                updateBar('cSum', total.c, 'cGoal', 'cBar');
+                
+                if(goals.cal > 0) {
+                    document.getElementById('currentGoalsDisplay').style.display = 'block';
+                    if(userProfile.bmr) {
+                        document.getElementById('displayMetabolism').innerText = `基礎代謝: 約${Math.round(userProfile.bmr)}kcal / 活動係数: ${userProfile.activityFactor.toFixed(2)}`;
+                    }
+                    document.getElementById('displayTargetCal').innerText = `${goals.cal} kcal`;
+                    document.getElementById('displayTargetP').innerText = `${goals.p} g`;
+                    document.getElementById('displayTargetF').innerText = `${goals.f} g`;
+                    document.getElementById('displayTargetC').innerText = `${goals.c} g`;
+                } else {
+                    document.getElementById('currentGoalsDisplay').style.display = 'none';
+                }
+                document.getElementById('btnPaste').style.display = localStorage.getItem('pfcClipboard') ? 'block' : 'none';
+            
+            } catch (e) {
+                console.error("Render Error:", e);
             }
-            document.getElementById('btnPaste').style.display = localStorage.getItem('pfcClipboard') ? 'block' : 'none';
         }
 
         function resetDayAll() { 
@@ -906,8 +954,10 @@
                 cell.className = 'calendar-cell'; 
                 const dateKey = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
                 let cal = 0; 
-                if(diaryData[dateKey]) { 
-                    diaryData[dateKey].forEach(m => { m.items.forEach(it => cal += it.cal); }); 
+                if(diaryData[dateKey] && Array.isArray(diaryData[dateKey])) { 
+                    diaryData[dateKey].forEach(m => { 
+                        if(m && Array.isArray(m.items)) m.items.forEach(it => cal += (it.cal || 0)); 
+                    }); 
                 }
                 cell.innerHTML = `<div>${d}</div><div class="cal-cal-val">${cal > 0 ? cal : ''}</div>`;
                 cell.onclick = () => { 
