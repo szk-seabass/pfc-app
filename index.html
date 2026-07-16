@@ -6,10 +6,13 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="PFCろぐ">
+    <meta name="theme-color" content="#007AFF">
     <title>PFCろぐ</title>
 
     <script>
+        // ★ PWA用アイコンとマニフェスト（設定）を自動生成して適用する機能
         (function() {
+            // 1. アイコンの生成
             const canvas = document.createElement('canvas');
             canvas.width = 192;
             canvas.height = 192;
@@ -49,6 +52,22 @@
             linkApple.rel = 'apple-touch-icon';
             linkApple.href = iconUrl;
             document.head.appendChild(linkApple);
+
+            // 2. PWA用マニフェストの生成 (これを入れることでフルスクリーンアプリになります)
+            const manifest = {
+                name: "PFCろぐ",
+                short_name: "PFCろぐ",
+                display: "standalone", // フルスクリーン（ブラウザ枠なし）モード
+                background_color: "#f2f2f7",
+                theme_color: "#007AFF",
+                icons: [{ src: iconUrl, sizes: "192x192", type: "image/png" }]
+            };
+            const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/manifest+json'});
+            const manifestUrl = URL.createObjectURL(manifestBlob);
+            const linkManifest = document.createElement('link');
+            linkManifest.rel = 'manifest';
+            linkManifest.href = manifestUrl;
+            document.head.appendChild(linkManifest);
         })();
     </script>
 
@@ -372,6 +391,13 @@
             <h2 style="margin:0; color:#00796b;">🛒 おすすめギア</h2>
             <button onclick="closeOverlay('recommendOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button>
         </div>
+        
+        <div style="background:#fff8e1; padding:12px; border-radius:8px; border:1px solid #ffe082; margin-bottom:15px;">
+            <p style="font-size:11px; line-height:1.4; color:#666; margin:0;">
+                <b>【PR】</b><br>当アプリ「PFCろぐ」は、Amazonアソシエイト・プログラム等に参加しています。以下のリンク経由で商品を購入いただくと、売上の一部が開発者に還元され、アプリの維持・改善に役立てられます。
+            </p>
+        </div>
+
         <p style="font-size:13px; color:#666; margin-bottom:10px; line-height:1.5;">日々のボディメイクを効率化するために、開発者が実際に使っているおすすめアイテムです。</p>
         
         <h3 class="genre-title">💊 サプリメント</h3>
@@ -458,10 +484,6 @@
             <h3>🛡️ プロ基準のセーフティ機能</h3>
             <p>極端な食事制限による基礎代謝低下やリバウンドを防ぐため、パーソナルトレーナーの現場指導に基づいた安全装置を搭載しています。<br>無謀な目標数値が設定された場合は、ホルモンバランスや筋肉量を維持しながら「美しく健康に痩せる推奨プラン」をシステムが自動的に提案し、あなたを正しいダイエットへと導きます。</p>
         </div>
-        <div class="manual-section" style="background:#fff8e1; padding:15px; border-radius:8px; border:1px solid #ffe082; margin-top:30px;">
-            <h3 style="color:#f57f17; font-size:14px; margin-top:0;">⚠️ 免責事項（アフィリエイト）</h3>
-            <p style="font-size:11px; line-height:1.5; color:#666; margin:0;">PFCろぐ（当サイト）は、Amazon.co.jpを宣伝しリンクすることによってサイトが紹介料を獲得できる手段を提供することを目的に設定されたアフィリエイトプログラムである、Amazonアソシエイト・プログラムの参加者です。また、楽天アフィリエイトプログラムにも参加しています。</p>
-        </div>
     </div>
 
     <script>
@@ -542,7 +564,6 @@
             return new Date(dateString.replace(/-/g, '/'));
         }
 
-        // ★ プロフィールフォームを更新する関数 (undefined を厳格にチェックする修正版)
         function renderProfileForm() {
             if(userProfile.weight) {
                 document.getElementById('genderSelect').value = userProfile.gender || 'male';
@@ -550,7 +571,6 @@
                 if(userProfile.height) document.getElementById('heightInput').value = userProfile.height;
                 document.getElementById('weightInput').value = userProfile.weight;
                 
-                // ★ 修正: 0などの値が false と判定されないように undefined と null をチェック
                 if(userProfile.jobIntensity !== undefined && userProfile.jobIntensity !== null) {
                     document.getElementById('jobIntensity').value = userProfile.jobIntensity;
                 }
