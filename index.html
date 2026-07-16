@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>PFC Pro Tracker v46 (Cloud)</title>
+    <title>PFC Pro Tracker v47</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -83,7 +83,7 @@
     <div class="header-menu">
         <div class="btn-header" onclick="openMonthlyView()" style="background: #e3f2fd; color: #007AFF; border: 1px solid #90caf9;">📅 月履歴</div>
         <div class="btn-header" onclick="openOverlay('customFoodOverlay')" style="background: #fff3e0; color: #e65100; border: 1px solid #ffcc80;">🛠 食材</div>
-        <div class="btn-header" onclick="openOverlay('cloudOverlay')" style="background: #e8eaf6; color: #3f51b5; border: 1px solid #9fa8da;">☁️ クラウド</div>
+        <div class="btn-header" onclick="openOverlay('cloudOverlay')" style="background: #e8eaf6; color: #3f51b5; border: 1px solid #9fa8da;">👤 アカウント</div>
         <div class="btn-header" onclick="openOverlay('backupOverlay')" style="background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7;">💾 データ</div>
         <div class="btn-header" onclick="openOverlay('manualOverlay')" style="background: #f3e5f5; color: #7b1fa2; border: 1px solid #ce93d8;">📖 使い方</div>
         <div class="btn-header" onclick="openOverlay('recommendOverlay')" style="background: #e0f2f1; color: #00796b; border: 1px solid #80cbc4;">🛒 おすすめ</div>
@@ -201,13 +201,13 @@
 
     <div id="cloudOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h2>☁️ クラウド連携</h2>
+            <h2 style="margin:0;">👤 アカウント登録・同期</h2>
             <button onclick="closeOverlay('cloudOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button>
         </div>
         
         <div id="cloudLoginSection" class="card" style="background:#e8eaf6; border:1px solid #9fa8da;">
-            <h3 style="margin-top:0; color:#3f51b5; font-size:16px;">🔐 アカウントにログイン/登録</h3>
-            <p style="font-size:13px; color:#555;">データをクラウドに保存し、他の端末と同期できます。</p>
+            <h3 style="margin-top:0; color:#3f51b5; font-size:16px;">🔐 ログイン / 新規登録</h3>
+            <p style="font-size:13px; color:#555;">アカウントを作成すると、データをクラウドに安全に保存し、他の端末と同期できます。</p>
             <label class="input-label">メールアドレス</label>
             <input type="email" id="authEmail" placeholder="example@email.com">
             <label class="input-label">パスワード (6文字以上)</label>
@@ -223,8 +223,8 @@
             <h3 style="margin-top:0; color:#3f51b5; font-size:16px;">🔄 同期メニュー</h3>
             <p style="font-size:13px; font-weight:bold; color:#333;">ログイン中: <span id="currentUserEmail"></span></p>
             
-            <button onclick="saveDataToCloud()" style="background:#3f51b5; color:white; margin-top:15px; margin-bottom:10px;">⬆️ 現在のデータをクラウドに保存</button>
-            <button onclick="loadDataFromCloud()" style="background:#ff9800; color:white; margin-bottom:15px;">⬇️ クラウドのデータで上書き復元</button>
+            <button onclick="saveDataToCloud()" style="background:#3f51b5; color:white; margin-top:15px; margin-bottom:10px;">⬆️ 今のデータをアカウントに保存</button>
+            <button onclick="loadDataFromCloud()" style="background:#ff9800; color:white; margin-bottom:15px;">⬇️ 保存したデータで上書き復元</button>
             
             <hr style="border:0; border-top:1px solid #ccc; margin:20px 0;">
             <button onclick="handleLogout()" style="background:#757575; color:white;">ログアウト</button>
@@ -290,8 +290,8 @@
             <button onclick="closeOverlay('manualOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button>
         </div>
         <div class="manual-section">
-            <h3>☁️ クラウド連携（New!）</h3>
-            <p>Supabaseを活用し、データをクラウドに保存できるようになりました。アカウントを作成・ログインし、「クラウドに保存」を押すだけでデータの同期が可能です。</p>
+            <h3>👤 アカウント登録・同期（New!）</h3>
+            <p>アカウントを作成することで、日々のデータを安全にクラウドに保存できるようになりました。機種変更時や他の端末を使う際も、ログインして「復元」を押すだけでデータを引き継げます。</p>
         </div>
         <div class="manual-section">
             <h3>🍱 マイセット機能</h3>
@@ -308,10 +308,6 @@
         <div class="manual-section">
             <h3>🍽️ 3. 食事を記録する</h3>
             <p>画面下部の「＋ 新しい食事枠を追加」から食材を登録します。リストから選ぶか、栄養成分表示を「📷 写真から自動読取」することも可能です。</p>
-        </div>
-        <div class="manual-section">
-            <h3>📅 4. 履歴の確認とデータ保存</h3>
-            <p>「月履歴」から過去の記録をカレンダーで確認できます。データはブラウザに保存されるため、機種変更時は「データ」から必ずバックアップファイルをダウンロードするか、クラウドをご利用ください。</p>
         </div>
     </div>
 
@@ -391,16 +387,6 @@
                 <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4aRC10h" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hRYJQ4" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
-
-        <h3 class="genre-title">🥦 食材</h3>
-        <div class="affiliate-card">
-            <div class="affiliate-icon-container">🍽️</div>
-            <div class="affiliate-content">
-                <div class="affiliate-title">おすすめオートミール</div>
-                <div class="affiliate-desc">減量期の主食に最適。食物繊維が豊富で腹持ち抜群です。</div>
-                <div style="display: flex; gap: 8px;"><a href="★AmazonのURL★" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="★楽天のURL★" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
-            </div>
-        </div>
     </div>
 
     <div id="specOverlay">
@@ -422,7 +408,6 @@
         </div>
     </div>
 
-
     <script>
         // ==========================================
         // 🚀 SUPABASE CONFIGURATION
@@ -430,9 +415,23 @@
         const supabaseUrl = 'https://zzjzdbkntqjbgjewixqa.supabase.co/rest/v1/';
         const supabaseKey = 'sb_publishable_Mj2IsNTX-TbK6kJ_2f-HNQ__GvUvdYG';
         
-        // ★修正点: 変数名「supabase」がCDNのグローバル変数と衝突しフリーズの原因となっていたため「supabaseClient」に変更しました
         const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
         let currentUser = null;
+
+        // ★ XSS脆弱性対策: ユーザー入力を安全な文字に変換する関数
+        function escapeHTML(str) {
+            if (typeof str !== 'string') return str;
+            return str.replace(/[&<>'"]/g, function(match) {
+                const escape = {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                };
+                return escape[match];
+            });
+        }
 
         // ==========================================
         // LOCAL STORAGE FUNCTIONS & INITIALIZATION
@@ -497,7 +496,6 @@
             renderFoodSelect(); 
             render();
             
-            // クラウドセッションの確認
             await checkUserSession();
         };
 
@@ -507,14 +505,12 @@
         
         async function checkUserSession() {
             try {
-                // ★修正点: すべて「supabaseClient」に変更
                 const { data, error } = await supabaseClient.auth.getSession();
                 if (data && data.session) {
                     currentUser = data.session.user;
                     updateCloudUI();
                 }
                 
-                // 認証状態の変更をリッスン
                 supabaseClient.auth.onAuthStateChange((event, session) => {
                     if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
                         currentUser = session.user;
@@ -532,7 +528,7 @@
             if (currentUser) {
                 document.getElementById('cloudLoginSection').style.display = 'none';
                 document.getElementById('cloudSyncSection').style.display = 'block';
-                document.getElementById('currentUserEmail').innerText = currentUser.email;
+                document.getElementById('currentUserEmail').innerText = escapeHTML(currentUser.email);
             } else {
                 document.getElementById('cloudLoginSection').style.display = 'block';
                 document.getElementById('cloudSyncSection').style.display = 'none';
@@ -627,7 +623,7 @@
             } catch (error) {
                 console.error('Error saving data:', error);
                 alert("保存に失敗しました: " + error.message);
-                event.target.innerText = "⬆️ 現在のデータをクラウドに保存";
+                event.target.innerText = "⬆️ 今のデータをアカウントに保存";
                 event.target.disabled = false;
             }
         }
@@ -651,17 +647,16 @@
                     .eq('id', currentUser.id)
                     .single();
 
-                if (error && error.code !== 'PGRST116') throw error; // PGRST116 is "no rows returned"
+                if (error && error.code !== 'PGRST116') throw error;
 
                 if (data) {
-                    // Update variables
+                    // ★ フォールバック強化: サーバーにデータがない場合も確実に空オブジェクトをセットする
                     diaryData = data.diary_data || {};
                     goals = data.goals || { p:0, f:0, c:0, cal:0 };
                     customFoodDict = data.custom_foods || {};
                     mySets = data.my_sets || {};
                     userProfile = data.profile || {};
 
-                    // Save to local storage
                     localStorage.setItem('pfcDiaryData', JSON.stringify(diaryData));
                     localStorage.setItem('pfcGoals', JSON.stringify(goals));
                     localStorage.setItem('pfcCustomFoods', JSON.stringify(customFoodDict));
@@ -669,7 +664,7 @@
                     localStorage.setItem('pfcProfile', JSON.stringify(userProfile));
 
                     alert("クラウドからデータを復元しました！");
-                    location.reload(); // 画面を更新して最新の状態を反映
+                    location.reload();
                 } else {
                     alert("クラウドにデータが見つかりませんでした。先に「保存」を行ってください。");
                     btn.innerText = originalText;
@@ -678,7 +673,7 @@
             } catch (error) {
                 console.error('Error loading data:', error);
                 alert("読み込みに失敗しました: " + error.message);
-                event.target.innerText = "⬇️ クラウドのデータで上書き復元";
+                event.target.innerText = "⬇️ 保存したデータで上書き復元";
                 event.target.disabled = false;
             }
         }
@@ -983,7 +978,7 @@
                 items: JSON.parse(JSON.stringify(meal.items)) 
             };
             localStorage.setItem('pfcMySets', JSON.stringify(mySets));
-            alert(`「${setName}」をマイセットに保存しました！\n次回から「＋食材を追加」→「マイセット」タブから一発で呼び出せます。`);
+            alert(`「${escapeHTML(setName)}」をマイセットに保存しました！\n次回から「＋食材を追加」→「マイセット」タブから一発で呼び出せます。`);
         }
 
         function renderSetSelect() {
@@ -996,7 +991,8 @@
             for(let key in mySets) {
                 let opt = document.createElement('option');
                 opt.value = key;
-                opt.text = mySets[key].name;
+                // ★ XSS対策: テキストとして設定することで安全に描画
+                opt.text = mySets[key].name; 
                 select.appendChild(opt);
             }
         }
@@ -1014,10 +1010,11 @@
             }
             
             const set = mySets[key];
-            let html = `<b style="color:var(--primary);">${set.name}</b> (${set.items.length}品)<ul style="margin:8px 0; padding-left:20px;">`;
+            // ★ XSS対策: 表示する文字列をエスケープ処理
+            let html = `<b style="color:var(--primary);">${escapeHTML(set.name)}</b> (${set.items.length}品)<ul style="margin:8px 0; padding-left:20px;">`;
             let totalCal = 0;
             set.items.forEach(item => {
-                html += `<li>${item.name} ${item.displayGrams ? '<small>('+item.displayGrams+')</small>' : ''} - ${item.cal}kcal</li>`;
+                html += `<li>${escapeHTML(item.name)} ${item.displayGrams ? '<small>('+escapeHTML(item.displayGrams)+')</small>' : ''} - ${item.cal}kcal</li>`;
                 totalCal += item.cal;
             });
             html += `</ul><b style="color:#d32f2f;">合計: ${totalCal} kcal</b>`;
@@ -1084,7 +1081,8 @@
                     
                     if (meal && Array.isArray(meal.items)) {
                         meal.items.forEach((item, iIdx) => {
-                            html += `<div class="item-row"><span>${item.name}${item.displayGrams ? ' ('+item.displayGrams+')' : ''}</span><span>${item.cal}kcal <button class="btn-small" onclick="removeItem(${mIdx}, ${iIdx})">✕</button></span></div>`;
+                            // ★ XSS対策: 表示する文字列をエスケープ処理
+                            html += `<div class="item-row"><span>${escapeHTML(item.name)}${item.displayGrams ? ' ('+escapeHTML(item.displayGrams)+')' : ''}</span><span>${item.cal}kcal <button class="btn-small" onclick="removeItem(${mIdx}, ${iIdx})">✕</button></span></div>`;
                             total.p += (item.p || 0); total.f += (item.f || 0); total.c += (item.c || 0); total.cal += (item.cal || 0);
                         });
                     }
@@ -1146,7 +1144,8 @@
             container.innerHTML = '';
             for(let key in customFoodDict) { 
                 const food = customFoodDict[key]; 
-                container.innerHTML += `<div class="custom-food-item"><div><b>${food.name}</b><br><small>P:${food.p} F:${food.f} C:${food.c}</small></div><button onclick="deleteCustomFood('${key}')" style="background:red; color:white;">削除</button></div>`; 
+                // ★ XSS対策: 表示する文字列をエスケープ処理
+                container.innerHTML += `<div class="custom-food-item"><div><b>${escapeHTML(food.name)}</b><br><small>P:${food.p} F:${food.f} C:${food.c}</small></div><button onclick="deleteCustomFood('${key}')" style="background:red; color:white;">削除</button></div>`; 
             }
         }
         
