@@ -6,11 +6,58 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="PFCろぐ">
-    
     <title>PFCろぐ</title>
-    
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23ffffff'/><rect x='20' y='25' width='60' height='12' rx='6' fill='%23ff9500'/><rect x='20' y='45' width='45' height='12' rx='6' fill='%23ff3b30'/><rect x='20' y='65' width='70' height='12' rx='6' fill='%2334c759'/></svg>">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23ffffff'/><rect x='20' y='25' width='60' height='12' rx='6' fill='%23ff9500'/><rect x='20' y='45' width='45' height='12' rx='6' fill='%23ff3b30'/><rect x='20' y='65' width='70' height='12' rx='6' fill='%2334c759'/></svg>">
+
+    <script>
+        // ★ スマホホーム画面用のPNGアイコンを自動生成する機能
+        (function() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 192;
+            canvas.height = 192;
+            const ctx = canvas.getContext('2d');
+            
+            // 背景（白）
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, 192, 192);
+            
+            // 丸みを帯びたバーを描くための関数
+            function fillRoundRect(x, y, w, h, r) {
+                ctx.beginPath();
+                ctx.moveTo(x + r, y);
+                ctx.lineTo(x + w - r, y);
+                ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+                ctx.lineTo(x + w, y + h - r);
+                ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+                ctx.lineTo(x + r, y + h);
+                ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+                ctx.lineTo(x, y + r);
+                ctx.quadraticCurveTo(x, y, x + r, y);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            // PFCバーの描画 (P:オレンジ, F:赤, C:緑)
+            ctx.fillStyle = '#ff9500'; fillRoundRect(29, 48, 115, 24, 12);
+            ctx.fillStyle = '#ff3b30'; fillRoundRect(29, 86, 86, 24, 12);
+            ctx.fillStyle = '#34c759'; fillRoundRect(29, 124, 134, 24, 12);
+            
+            // 描画したものをPNG画像のURLに変換
+            const iconUrl = canvas.toDataURL('image/png');
+            
+            // Android等のタブアイコン用
+            const linkIcon = document.createElement('link');
+            linkIcon.rel = 'icon';
+            linkIcon.type = 'image/png';
+            linkIcon.href = iconUrl;
+            document.head.appendChild(linkIcon);
+            
+            // iOSホーム画面用 (apple-touch-icon)
+            const linkApple = document.createElement('link');
+            linkApple.rel = 'apple-touch-icon';
+            linkApple.href = iconUrl;
+            document.head.appendChild(linkApple);
+        })();
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -1286,7 +1333,7 @@
             }
             document.getElementById('monthlyOverlay').style.display = 'block';
         }
-
+        
         function save() { 
             localStorage.setItem('pfcDiaryData', JSON.stringify(diaryData)); 
             localStorage.setItem('pfcGoals', JSON.stringify(goals));
