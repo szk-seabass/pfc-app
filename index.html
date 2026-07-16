@@ -542,17 +542,27 @@
             return new Date(dateString.replace(/-/g, '/'));
         }
 
-        // ★ プロフィールフォームを更新する関数を新設
+        // ★ プロフィールフォームを更新する関数 (undefined を厳格にチェックする修正版)
         function renderProfileForm() {
             if(userProfile.weight) {
                 document.getElementById('genderSelect').value = userProfile.gender || 'male';
                 if(userProfile.age) document.getElementById('ageInput').value = userProfile.age;
                 if(userProfile.height) document.getElementById('heightInput').value = userProfile.height;
                 document.getElementById('weightInput').value = userProfile.weight;
-                if(userProfile.jobIntensity) document.getElementById('jobIntensity').value = userProfile.jobIntensity;
-                if(userProfile.exerciseFrequency) document.getElementById('exerciseFrequency').value = userProfile.exerciseFrequency;
+                
+                // ★ 修正: 0などの値が false と判定されないように undefined と null をチェック
+                if(userProfile.jobIntensity !== undefined && userProfile.jobIntensity !== null) {
+                    document.getElementById('jobIntensity').value = userProfile.jobIntensity;
+                }
+                if(userProfile.exerciseFrequency !== undefined && userProfile.exerciseFrequency !== null) {
+                    document.getElementById('exerciseFrequency').value = userProfile.exerciseFrequency;
+                }
+                
                 updateGoalOptions();
-                if(userProfile.goalOffset !== undefined) document.getElementById('goalSelect').value = userProfile.goalOffset;
+                
+                if(userProfile.goalOffset !== undefined && userProfile.goalOffset !== null) {
+                    document.getElementById('goalSelect').value = userProfile.goalOffset;
+                }
             } else {
                 updateGoalOptions();
             }
@@ -790,7 +800,6 @@
                     localStorage.setItem('pfcMySets', JSON.stringify(mySets));
                     localStorage.setItem('pfcProfile', JSON.stringify(userProfile));
                     
-                    // ★ ダウンロードしたプロフィールの値を画面の入力欄に再セット
                     renderProfileForm();
                     render();
                 }
