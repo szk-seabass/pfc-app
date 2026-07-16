@@ -36,7 +36,7 @@
                 ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
                 ctx.lineTo(x + r, y + h);
                 ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-                ctx.lineTo(x, y + r);
+                ctx.lineTo(x + r, y + r);
                 ctx.quadraticCurveTo(x, y, x + r, y);
                 ctx.closePath();
                 ctx.fill();
@@ -198,7 +198,7 @@
         <select id="exerciseFrequency">
             <option value="0">運動はほぼしない (+0.0)</option>
             <option value="0.15">週1〜2回 (+0.15)</option>
-            <option value="0.30">週3〜5回・しっかり (+0.3)</option>
+            <option value="0.3">週3〜5回・しっかり (+0.3)</option>
             <option value="0.45">毎日・ハードに (+0.45)</option>
         </select>
         <label class="input-label" style="color:#aaa; margin-top:10px; font-size:12px;">現在の目的</label>
@@ -262,9 +262,9 @@
             <input type="text" id="manualNameInput" placeholder="例: 外食の定食">
             <label class="input-label" style="margin-top:10px;">2. PFC</label>
             <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
-                <input type="number" id="pManual" placeholder="P" step="0.1" value="0.0">
-                <input type="number" id="fManual" placeholder="F" step="0.1" value="0.0">
-                <input type="number" id="cManual" placeholder="C" step="0.1" value="0.0">
+                <input type="number" id="pManual" placeholder="P" step="0.1">
+                <input type="number" id="fManual" placeholder="F" step="0.1">
+                <input type="number" id="cManual" placeholder="C" step="0.1">
             </div>
             <button type="button" onclick="regCustomFromManual()" style="background:#fff3e0; color:#e65100; margin-top:15px; font-size:14px; padding:10px; border:1px solid #ffcc80;">✨ この内容をマイ食材に登録</button>
         </div>
@@ -614,7 +614,7 @@
                     document.getElementById('jobIntensity').value = userProfile.jobIntensity;
                 }
                 if(userProfile.exerciseFrequency !== undefined && userProfile.exerciseFrequency !== null) {
-                    document.getElementById('exerciseFrequency').value = userProfile.exerciseFrequency;
+                    document.getElementById('exerciseFrequency').value = userProfile.exerciseFrequency.toString();
                 }
                 
                 updateGoalOptions();
@@ -1013,6 +1013,13 @@
             customFoodDict['custom_' + Date.now()] = { name, p, f, c, base: 1 };
             localStorage.setItem(customFoodsKey, JSON.stringify(customFoodDict)); 
             renderFoodSelect(); 
+            
+            // ★ v68修正: 登録後に入力欄をリセット
+            document.getElementById('manualNameInput').value = "";
+            document.getElementById('pManual').value = "";
+            document.getElementById('fManual').value = "";
+            document.getElementById('cManual').value = "";
+            
             alert("マイ食材に登録しました！");
             save(); 
         }
@@ -1039,6 +1046,13 @@
         function closeModal() { 
             document.getElementById('modalBackdrop').style.display = 'none';
             document.getElementById('inputModal').style.display = 'none'; 
+            
+            // モーダルを閉じた時に入力内容をリセット
+            document.getElementById('gramInput').value = "";
+            document.getElementById('manualNameInput').value = "";
+            document.getElementById('pManual').value = "";
+            document.getElementById('fManual').value = "";
+            document.getElementById('cManual').value = "";
         }
         
         function switchTab(m) { 
