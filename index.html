@@ -5,18 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>PFC Pro Tracker v42</title>
+    <title>PFC Pro Tracker v43</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         :root { --primary: #007AFF; --accent: #deff9a; --bg: #f2f2f7; --card-bg: #ffffff; --text: #1c1c1e; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0 auto; padding: calc(env(safe-area-inset-top) + 15px) 15px 120px 15px; max-width: 500px; }
         .card { background: var(--card-bg); border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .target-card { background: #1c1c1e; color: #fff; }
+        
+        /* 目標カロリーカードのZ-indexを100に設定 */
         .total-card { border: 2px solid var(--primary); position: sticky; top: 10px; z-index: 100; }
+        
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 16px; box-sizing: border-box; background: #f9f9f9; margin-bottom: 10px; }
         input[type="file"] { background: #fff; padding: 10px; }
         button { width: 100%; padding: 14px; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; }
-        .btn-add-meal { background: var(--primary); color: white; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 20px); max-width: 480px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 90;}
+        
+        /* ★ v43修正: 食事枠追加ボタンを最前面(z-index: 1000)に引き上げ */
+        .btn-add-meal { background: var(--primary); color: white; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 20px); max-width: 480px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000;}
+        
         .meal-section { border-left: 4px solid var(--primary); padding-left: 15px; margin-bottom: 25px; }
         .item-row { display: flex; justify-content: space-between; font-size: 14px; padding: 5px 0; border-bottom: 1px solid #eee; }
         .btn-small { width: auto; padding: 5px 10px; font-size: 12px; background: #eee; margin-left: 10px; }
@@ -116,7 +122,8 @@
         </select>
         <label class="input-label" style="color:#aaa; margin-top:10px; font-size:12px;">現在の目的</label>
         <select id="goalSelect">
-            </select>
+            <!-- 動的生成 -->
+        </select>
         
         <div id="warningMessage"></div>
 
@@ -154,6 +161,7 @@
     <div id="mealContainer"></div>
     <button class="btn-add-meal" onclick="addNewMeal()">＋ 新しい食事枠を追加</button>
 
+    <!-- 食材追加モーダル -->
     <div id="inputModal" class="card" style="display:none; position:fixed; top:5%; left:5%; width:90%; z-index:3000; border:3px solid #000; max-height:90vh; overflow-y:auto;">
         <div class="tab-container">
             <div class="tab-btn active" id="tabBtnDict" onclick="switchTab('dict')">📖 リストから</div>
@@ -183,6 +191,7 @@
         <button onclick="closeModal()" style="background:#ccc; margin-top:10px;">キャンセル</button>
     </div>
 
+    <!-- マイ食材管理 -->
     <div id="customFoodOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2>🛠 マイ食材</h2>
@@ -209,6 +218,7 @@
         <div id="customFoodListContainer"></div>
     </div>
 
+    <!-- カレンダー -->
     <div id="monthlyOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <h2 id="monthlyTitle" style="margin:0;">摂取履歴</h2>
@@ -217,6 +227,7 @@
         <div class="calendar-grid" id="calendarGrid"></div>
     </div>
 
+    <!-- データバックアップ -->
     <div id="backupOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2>💾 データ管理</h2>
@@ -236,6 +247,7 @@
         </div>
     </div>
 
+    <!-- 使い方マニュアル -->
     <div id="manualOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2>📖 使い方ガイド</h2>
@@ -259,6 +271,7 @@
         </div>
     </div>
 
+    <!-- おすすめ商品 -->
     <div id="recommendOverlay" style="background:#f2f2f7;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
             <h2 style="margin:0; color:#00796b;">🛒 おすすめギア</h2>
@@ -347,6 +360,7 @@
         </div>
     </div>
 
+    <!-- アプリ仕様 -->
     <div id="specOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2 style="margin:0; color:#4a148c;">ℹ️ アプリ詳細仕様</h2>
@@ -602,12 +616,18 @@
             currentDateStr = document.getElementById('datePicker').value; 
             render(); 
         }
+        
+        // ★ v43: 新しい枠の追加ロジックを最適化（重複防止）
         function addNewMeal() { 
-            if (!diaryData[currentDateStr]) diaryData[currentDateStr] = [{ items: [] }]; 
-            diaryData[currentDateStr].push({ items: [] }); 
+            if (!diaryData[currentDateStr]) {
+                diaryData[currentDateStr] = [{ items: [] }]; 
+            } else {
+                diaryData[currentDateStr].push({ items: [] }); 
+            }
             save(); 
             render(); 
         }
+        
         function openModal(idx) { 
             activeMealIndex = idx; 
             document.getElementById('inputModal').style.display = 'block'; 
@@ -624,7 +644,6 @@
             document.getElementById('areaManual').style.display = m==='manual' ? 'block' : 'none'; 
         }
 
-        // ★ v42: 食材追加処理をより強固にエラー防止
         function commitItem() {
             let p, f, c, name, cal, displayGrams; 
             const combined = getCombinedDict();
@@ -638,13 +657,12 @@
                 displayGrams = null;
             } else {
                 const select = document.getElementById('foodSelect');
-                // スマホブラウザの「空値バグ」対策（値がない場合は強制的に1番目を取得）
                 const key = select.value || (select.options.length > 0 ? select.options[0].value : null);
                 if (!key) return alert("食材がありません");
 
                 const mul = parseFloat(document.getElementById('gramInput').value) || 0;
                 const food = combined[key]; 
-                if (!food) return alert("食材の取得に失敗しました"); // 安全装置
+                if (!food) return alert("食材の取得に失敗しました");
 
                 const ratio = mul / (food.base || 100);
                 p = food.p * ratio; 
@@ -655,12 +673,16 @@
                 displayGrams = food.base === 1 ? `${mul}個(食)` : `${mul}g`;
             }
             
-            // 安全装置1: データ配列が未定義なら初期化
             if (!diaryData[currentDateStr]) diaryData[currentDateStr] = [{ items: [] }];
             
-            // 安全装置2: 万が一 activeMealIndex の枠が存在しない場合は自動補填してフリーズ回避
-            while (!diaryData[currentDateStr][activeMealIndex]) {
+            // 安全装置: activeMealIndexが無効な場合のフォールバック
+            if (activeMealIndex === null || activeMealIndex < 0) activeMealIndex = 0;
+            
+            // ループが無限にならないよう上限付きで安全に枠を補填
+            let safeguardCount = 0;
+            while (!diaryData[currentDateStr][activeMealIndex] && safeguardCount < 10) {
                 diaryData[currentDateStr].push({ items: [] });
+                safeguardCount++;
             }
             
             diaryData[currentDateStr][activeMealIndex].items.push({ name, p, f, c, cal, displayGrams });
@@ -675,18 +697,14 @@
             render(); 
         }
 
-        // ★ v42: 空のダミー枠を削除しようとした際のクラッシュを防止
         function removeMeal(m) { 
             if (!diaryData[currentDateStr] || !diaryData[currentDateStr][m]) return; 
             
             if(confirm("削除しますか？")) { 
                 diaryData[currentDateStr].splice(m, 1); 
-                
-                // すべての枠を消した場合は、中途半端な空配列を残さず綺麗にリセットする
                 if(diaryData[currentDateStr].length === 0) {
                     delete diaryData[currentDateStr];
                 }
-                
                 save(); 
                 render(); 
             } 
@@ -716,14 +734,12 @@
             } 
         }
 
-        // ★ v42: データが空の際も確実にダミー枠を描画して追加ボタンを機能させる
         function render() {
             document.getElementById('selectedDateLabel').innerText = `${currentDateStr} の記録`;
             const container = document.getElementById('mealContainer'); 
             container.innerHTML = ''; 
             let total = { p:0, f:0, c:0, cal:0 };
             
-            // 安全装置: データが存在しない、または空配列になってしまった場合はダミー枠を用意
             let meals = diaryData[currentDateStr];
             if (!meals || meals.length === 0) {
                 meals = [{ items: [] }];
@@ -748,10 +764,14 @@
             document.getElementById('dailyCal').innerText = total.cal; 
             document.getElementById('goalCal').innerText = goals.cal || 0;
             
+            // ★ v43: NaN%によるレイアウト崩れを完全に防ぐ
             const updateBar = (id, sum, goal, barId) => {
                 document.getElementById(id).innerText = sum.toFixed(1); 
-                document.getElementById(goal).innerText = goals[id.replace('Sum','')].toString();
-                document.getElementById(barId).style.width = goals[id.replace('Sum','')] > 0 ? Math.min(100, (sum / goals[id.replace('Sum','')]) * 100) + '%' : '0%';
+                const goalVal = goals[id.replace('Sum','')];
+                document.getElementById(goal).innerText = goalVal.toString();
+                
+                const percent = (goalVal && goalVal > 0 && !isNaN(goalVal)) ? Math.min(100, (sum / goalVal) * 100) : 0;
+                document.getElementById(barId).style.width = percent + '%';
             };
             
             updateBar('pSum', total.p, 'pGoal', 'pBar'); 
@@ -820,7 +840,6 @@
             renderFoodSelect(); 
         }
 
-        // ★ v42: セレクトボックス生成時に強制的に初期値を持たせる
         function renderFoodSelect() {
             const select = document.getElementById('foodSelect'); 
             select.innerHTML = '';
@@ -852,7 +871,6 @@
             select.onchange = updateGramLabel;
         }
         
-        // ★ v42: ここも空文字対策
         function updateGramLabel() { 
             const select = document.getElementById('foodSelect');
             const val = select.value || (select.options.length > 0 ? select.options[0].value : null);
