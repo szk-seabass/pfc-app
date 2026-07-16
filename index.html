@@ -7,12 +7,19 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="PFCろぐ">
     <meta name="theme-color" content="#007AFF">
-    <title>PFCろぐ</title>
+    
+    <!-- ★ Google検索用の説明文 (SEO対策) -->
+    <title>PFCろぐ - シンプルで高精度なPFCバランス管理アプリ</title>
+    <meta name="description" content="PFCろぐは、登録不要・全自動クラウド同期対応の超シンプルPFC管理ツールです。精密なTDEE計算に基づいた目標設定と、パッケージ裏の手動入力・マイセット機能で、毎日のボディメイクをストレスなく記録できます。">
+    
+    <!-- ★ SNS（X, LINE, インスタ等）でURLを貼った時に綺麗に見せる設定（OGP） -->
+    <meta property="og:title" content="PFCろぐ - シンプルで高精度なPFCバランス管理アプリ">
+    <meta property="og:description" content="登録不要ですぐに使える！全自動同期・高精度カロリー計算を搭載した、ダイエッター・トレーニーのための食事管理アプリ。">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary"> <!-- Xで正方形のカードとして表示 -->
 
     <script>
-        // ★ PWA用アイコンとマニフェスト（設定）を自動生成して適用する機能
         (function() {
-            // 1. アイコンの生成
             const canvas = document.createElement('canvas');
             canvas.width = 192;
             canvas.height = 192;
@@ -53,11 +60,10 @@
             linkApple.href = iconUrl;
             document.head.appendChild(linkApple);
 
-            // 2. PWA用マニフェストの生成 (これを入れることでフルスクリーンアプリになります)
             const manifest = {
                 name: "PFCろぐ",
                 short_name: "PFCろぐ",
-                display: "standalone", // フルスクリーン（ブラウザ枠なし）モード
+                display: "standalone",
                 background_color: "#f2f2f7",
                 theme_color: "#007AFF",
                 icons: [{ src: iconUrl, sizes: "192x192", type: "image/png" }]
