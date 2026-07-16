@@ -5,8 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>PFC Pro Tracker v57</title>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <meta name="apple-mobile-web-app-title" content="PFCろぐ">
+    
+    <title>PFCろぐ</title>
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23ffffff'/><rect x='20' y='25' width='60' height='12' rx='6' fill='%23ff9500'/><rect x='20' y='45' width='45' height='12' rx='6' fill='%23ff3b30'/><rect x='20' y='65' width='70' height='12' rx='6' fill='%2334c759'/></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23ffffff'/><rect x='20' y='25' width='60' height='12' rx='6' fill='%23ff9500'/><rect x='20' y='45' width='45' height='12' rx='6' fill='%23ff3b30'/><rect x='20' y='65' width='70' height='12' rx='6' fill='%2334c759'/></svg>">
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { --primary: #007AFF; --accent: #deff9a; --bg: #f2f2f7; --card-bg: #ffffff; --text: #1c1c1e; }
@@ -17,7 +22,6 @@
         .total-card { border: 2px solid var(--primary); position: sticky; top: 10px; z-index: 100; }
         
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 16px; box-sizing: border-box; background: #f9f9f9; margin-bottom: 10px; }
-        input[type="file"] { background: #fff; padding: 10px; }
         button { width: 100%; padding: 14px; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; }
         
         .btn-add-meal { background: var(--primary); color: white; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 20px); max-width: 480px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000;}
@@ -36,7 +40,6 @@
         .bar-f { background: #ff3b30; }
         .bar-c { background: #34c759; }
         
-        /* ★ メニューを2列に変更しスッキリさせる */
         .header-menu { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
         .btn-header { font-size: 14px; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; word-break: keep-all; box-sizing: border-box; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         
@@ -65,7 +68,6 @@
         .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         .profile-grid input, .profile-grid select { margin-bottom: 0; }
         
-        /* ★ オーバーレイ設定 */
         #monthlyOverlay, #customFoodOverlay, #manualOverlay, #recommendOverlay, #specOverlay, #cloudOverlay, #settingsOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:2000; padding:20px; box-sizing:border-box; overflow-y:auto; }
 
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 10px; }
@@ -90,13 +92,11 @@
 </head>
 <body>
 
-    <!-- ★ ヘッダー周りのデザインをハイブリッド仕様に変更 -->
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-top:10px;">
-        <h2 style="margin: 0;">💪 PFC Pro Tracker</h2>
+        <h2 style="margin: 0;">💪 PFCろぐ</h2>
         <div onclick="openOverlay('settingsOverlay')" style="font-size:24px; cursor:pointer; background:#fff; border-radius:50%; width:44px; height:44px; display:flex; justify-content:center; align-items:center; box-shadow:0 2px 6px rgba(0,0,0,0.1);">⚙️</div>
     </div>
 
-    <!-- メインメニューは毎日使うものだけ -->
     <div class="header-menu">
         <div class="btn-header" onclick="openMonthlyView()" style="background: #e3f2fd; color: #007AFF; border: 1px solid #90caf9;">📅 月履歴</div>
         <div class="btn-header" onclick="openOverlay('customFoodOverlay')" style="background: #fff3e0; color: #e65100; border: 1px solid #ffcc80;">🛠 食材・セット管理</div>
@@ -217,7 +217,6 @@
         <button type="button" onclick="closeModal()" style="background:#ccc; margin-top:10px; color:#333; padding:10px;">キャンセル</button>
     </div>
 
-    <!-- ★ 設定・その他メニュー (ハイブリッド用) -->
     <div id="settingsOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2 style="margin:0;">⚙️ 設定・その他</h2>
@@ -421,7 +420,7 @@
         </div>
         <div class="manual-section" style="background:#fff8e1; padding:15px; border-radius:8px; border:1px solid #ffe082; margin-top:30px;">
             <h3 style="color:#f57f17; font-size:14px; margin-top:0;">⚠️ 免責事項（アフィリエイト）</h3>
-            <p style="font-size:11px; line-height:1.5; color:#666; margin:0;">PFC Pro Tracker（当サイト）は、Amazon.co.jpを宣伝しリンクすることによってサイトが紹介料を獲得できる手段を提供することを目的に設定されたアフィリエイトプログラムである、Amazonアソシエイト・プログラムの参加者です。また、楽天アフィリエイトプログラムにも参加しています。</p>
+            <p style="font-size:11px; line-height:1.5; color:#666; margin:0;">PFCろぐ（当サイト）は、Amazon.co.jpを宣伝しリンクすることによってサイトが紹介料を獲得できる手段を提供することを目的に設定されたアフィリエイトプログラムである、Amazonアソシエイト・プログラムの参加者です。また、楽天アフィリエイトプログラムにも参加しています。</p>
         </div>
     </div>
 
@@ -1095,7 +1094,7 @@
         }
 
         function shareDay() {
-            let text = `【${currentDateStr} のPFC記録】\nカロリー: ${document.getElementById('dailyCal').innerText} / ${goals.cal} kcal\nP:${document.getElementById('pSum').innerText}g F:${document.getElementById('fSum').innerText}g C:${document.getElementById('cSum').innerText}g\n\n#PFC_Tracker`;
+            let text = `【${currentDateStr} のPFC記録】\nカロリー: ${document.getElementById('dailyCal').innerText} / ${goals.cal} kcal\nP:${document.getElementById('pSum').innerText}g F:${document.getElementById('fSum').innerText}g C:${document.getElementById('cSum').innerText}g\n\n#PFCろぐ`;
             if (navigator.share) { 
                 navigator.share({ text: text }).catch(console.error); 
             } else { 
@@ -1287,7 +1286,7 @@
             }
             document.getElementById('monthlyOverlay').style.display = 'block';
         }
-        
+
         function save() { 
             localStorage.setItem('pfcDiaryData', JSON.stringify(diaryData)); 
             localStorage.setItem('pfcGoals', JSON.stringify(goals));
