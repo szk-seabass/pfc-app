@@ -624,7 +624,7 @@
             document.getElementById('areaManual').style.display = m==='manual' ? 'block' : 'none'; 
         }
 
-        // ★ v42: 食材追加処理をより堅牢に修正
+        // ★ v42: 食材追加処理をより強固にエラー防止
         function commitItem() {
             let p, f, c, name, cal, displayGrams; 
             const combined = getCombinedDict();
@@ -637,10 +637,15 @@
                 cal = Math.round(p*4 + f*9 + c*4); 
                 displayGrams = null;
             } else {
-                const key = document.getElementById('foodSelect').value; 
+                const select = document.getElementById('foodSelect');
+                // スマホブラウザの「空値バグ」対策（値がない場合は強制的に1番目を取得）
+                const key = select.value || (select.options.length > 0 ? select.options[0].value : null);
+                if (!key) return alert("食材がありません");
+
                 const mul = parseFloat(document.getElementById('gramInput').value) || 0;
                 const food = combined[key]; 
-                if (!food) return alert("食材が正しく選択されていません"); // 安全装置
+                if (!food) return alert("食材の取得に失敗しました"); // 安全装置
+
                 const ratio = mul / (food.base || 100);
                 p = food.p * ratio; 
                 f = food.f * ratio; 
@@ -650,10 +655,10 @@
                 displayGrams = food.base === 1 ? `${mul}個(食)` : `${mul}g`;
             }
             
-            // 安全装置: データ配列が未定義なら初期化
+            // 安全装置1: データ配列が未定義なら初期化
             if (!diaryData[currentDateStr]) diaryData[currentDateStr] = [{ items: [] }];
             
-            // 安全装置: activeMealIndex の枠が存在しない場合は作成
+            // 安全装置2: 万が一 activeMealIndex の枠が存在しない場合は自動補填してフリーズ回避
             while (!diaryData[currentDateStr][activeMealIndex]) {
                 diaryData[currentDateStr].push({ items: [] });
             }
@@ -664,22 +669,24 @@
             closeModal();
         }
 
-        // ★ v42: 枠削除の際のエラー(クラッシュ)を完全に防ぐ
         function removeItem(m, i) { 
             diaryData[currentDateStr][m].items.splice(i, 1); 
             save(); 
             render(); 
         }
+
+        // ★ v42: 空のダミー枠を削除しようとした際のクラッシュを防止
         function removeMeal(m) { 
-            // データが存在しない日（ダミー枠）の削除ボタンを押した際のエラーを回避
-            if (!diaryData[currentDateStr]) return; 
+            if (!diaryData[currentDateStr] || !diaryData[currentDateStr][m]) return; 
             
             if(confirm("削除しますか？")) { 
                 diaryData[currentDateStr].splice(m, 1); 
-                // もし全ての枠が消えたら、その日のデータ自体をきれいに削除する
+                
+                // すべての枠を消した場合は、中途半端な空配列を残さず綺麗にリセットする
                 if(diaryData[currentDateStr].length === 0) {
                     delete diaryData[currentDateStr];
                 }
+                
                 save(); 
                 render(); 
             } 
@@ -709,17 +716,23 @@
             } 
         }
 
+        // ★ v42: データが空の際も確実にダミー枠を描画して追加ボタンを機能させる
         function render() {
             document.getElementById('selectedDateLabel').innerText = `${currentDateStr} の記録`;
             const container = document.getElementById('mealContainer'); 
             container.innerHTML = ''; 
             let total = { p:0, f:0, c:0, cal:0 };
-            const meals = diaryData[currentDateStr] || [{ items: [] }];
+            
+            // 安全装置: データが存在しない、または空配列になってしまった場合はダミー枠を用意
+            let meals = diaryData[currentDateStr];
+            if (!meals || meals.length === 0) {
+                meals = [{ items: [] }];
+            }
             
             meals.forEach((meal, mIdx) => {
                 const card = document.createElement('div'); 
                 card.className = 'card meal-section';
-                let html = `<div class="meal-header"><b>${mIdx+1}食目</b> <span onclick="removeMeal(${mIdx})" style="color:red; font-size:12px;">枠削除</span></div><hr>`;
+                let html = `<div class="meal-header"><b>${mIdx+1}食目</b> <span onclick="removeMeal(${mIdx})" style="color:red; font-size:12px; cursor:pointer;">枠削除</span></div><hr>`;
                 meal.items.forEach((item, iIdx) => {
                     html += `<div class="item-row"><span>${item.name}${item.displayGrams ? ' ('+item.displayGrams+')' : ''}</span><span>${item.cal}kcal <button class="btn-small" onclick="removeItem(${mIdx}, ${iIdx})">✕</button></span></div>`;
                     total.p += item.p; 
@@ -727,7 +740,7 @@
                     total.c += item.c; 
                     total.cal += item.cal;
                 });
-                html += `<button onclick="openModal(${mIdx})">＋ 食材を追加</button>`; 
+                html += `<button onclick="openModal(${mIdx})" style="margin-top:10px;">＋ 食材を追加</button>`; 
                 card.innerHTML = html; 
                 container.appendChild(card);
             });
@@ -807,6 +820,7 @@
             renderFoodSelect(); 
         }
 
+        // ★ v42: セレクトボックス生成時に強制的に初期値を持たせる
         function renderFoodSelect() {
             const select = document.getElementById('foodSelect'); 
             select.innerHTML = '';
@@ -831,12 +845,17 @@
                 } 
                 select.appendChild(g2);
             }
+            
+            if (select.options.length > 0) {
+                select.value = select.options[0].value;
+            }
             select.onchange = updateGramLabel;
         }
         
-        // ★ v42: ここもエラーにならないよう堅牢化
+        // ★ v42: ここも空文字対策
         function updateGramLabel() { 
-            const val = document.getElementById('foodSelect').value;
+            const select = document.getElementById('foodSelect');
+            const val = select.value || (select.options.length > 0 ? select.options[0].value : null);
             if(!val) return;
             const f = getCombinedDict()[val]; 
             if(f) document.getElementById('dictGramLabel').innerText = f.base === 1 ? "2. 食べる個数" : "2. グラム数(g)"; 
