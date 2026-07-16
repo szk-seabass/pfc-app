@@ -36,7 +36,7 @@
                 ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
                 ctx.lineTo(x + r, y + h);
                 ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-                ctx.lineTo(x + r, y + r);
+                ctx.lineTo(x, y + r);
                 ctx.quadraticCurveTo(x, y, x + r, y);
                 ctx.closePath();
                 ctx.fill();
@@ -299,7 +299,6 @@
         </div>
         
         <div style="display:flex; flex-direction:column; gap:12px;">
-            <!-- ★ お知らせ・お問い合わせ用ボタン -->
             <button onclick="openNoticeOverlay()" style="background:#fff3e0; color:#e65100; border:1px solid #ffcc80; padding:15px; text-align:left;">🔔 お知らせ / お問い合わせ</button>
             <button onclick="closeOverlay('settingsOverlay'); openOverlay('cloudOverlay')" style="background:#e8eaf6; color:#3f51b5; border:1px solid #9fa8da; padding:15px; text-align:left;">👤 アカウント・同期設定</button>
             <button onclick="closeOverlay('settingsOverlay'); openOverlay('manualOverlay')" style="background:#f3e5f5; color:#7b1fa2; border:1px solid #ce93d8; padding:15px; text-align:left;">📖 使い方ガイド</button>
@@ -329,7 +328,8 @@
                 <div class="type-btn" onclick="selectInquiryType('💬 その他のご意見・ご要望', this)">💬 その他のご意見・ご要望</div>
             </div>
             
-            <label class="input-label" style="color:#ddd; margin-top:15px; margin-bottom:8px;">連絡先メールアドレス <span style="color:#ff3b30;">*</span> <span id="emailAutoFill" style="color:#34c759; font-size:11px; display:none;">✔ 自動入力済み</span></label>
+            <!-- ★ v71修正: 赤い必須マーク(*)を削除しました -->
+            <label class="input-label" style="color:#ddd; margin-top:15px; margin-bottom:8px;">連絡先メールアドレス <span id="emailAutoFill" style="color:#34c759; font-size:11px; display:none;">✔ 自動入力済み</span></label>
             <input type="email" id="inquiryEmail" placeholder="返信をご希望の場合は入力してください" style="background:#2c2c2e; border:1px solid #444; color:#fff; padding:12px; border-radius:8px;">
             
             <label class="input-label" style="color:#ddd; margin-top:15px; margin-bottom:8px;">お問い合わせ内容 <span style="color:#ff3b30;">*</span></label>
@@ -675,7 +675,6 @@
         let activeMealIndex = null; 
         let currentTabMode = 'dict';
 
-        // ★ お問い合わせフォーム用変数
         let selectedInquiryType = '✨ 機能のご要望';
 
         function parseDateSafe(dateString) {
@@ -784,7 +783,6 @@
             }
         }
 
-        // ★ お問い合わせフォーム用のUIコントロール関数
         function openNoticeOverlay() {
             document.getElementById('settingsOverlay').style.display = 'none';
             document.getElementById('noticeOverlay').style.display = 'block';
@@ -810,14 +808,13 @@
             document.getElementById('charCount').innerText = len + '文字';
         }
 
-        // ★ Supabaseにお問い合わせデータを送信する関数
+        // ★ v71修正: アドレス未入力（匿名）での送信を許可
         async function submitInquiry() {
             const email = document.getElementById('inquiryEmail').value;
             const content = document.getElementById('inquiryContent').value;
             const btn = document.getElementById('submitInquiryBtn');
             
             if (!content) return alert("お問い合わせ内容を入力してください。");
-            if (!email) return alert("ご連絡先のメールアドレスを入力してください。");
             
             btn.innerText = "送信中...";
             btn.disabled = true;
@@ -826,7 +823,7 @@
                 const { error } = await supabaseClient
                     .from('inquiries')
                     .insert([{ 
-                        user_email: email, 
+                        user_email: email || '未入力', 
                         type: selectedInquiryType, 
                         content: content 
                     }]);
