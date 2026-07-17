@@ -36,7 +36,7 @@
                 ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
                 ctx.lineTo(x + r, y + h);
                 ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-                ctx.lineTo(x, y + r);
+                ctx.lineTo(x + r, y + r);
                 ctx.quadraticCurveTo(x, y, x + r, y);
                 ctx.closePath();
                 ctx.fill();
@@ -153,13 +153,11 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
 
-        /* お知らせ・お問い合わせ用スタイル */
         .notice-list { list-style: none; padding: 0; margin: 0; }
         .notice-item { padding: 15px; background:#fff; border-radius:10px; margin-bottom:10px; box-shadow:0 2px 4px rgba(0,0,0,0.05); }
         .notice-date { font-size: 12px; color: var(--primary); margin-bottom: 6px; display: block; font-weight:bold; }
         .notice-text { font-size: 13px; line-height: 1.6; color:#333;}
         
-        /* 問い合わせフォーム（ダークカード） */
         .type-btn { padding: 12px 15px; border: 1px solid #444; border-radius: 8px; font-size: 14px; cursor: pointer; background: #2c2c2e; color: #ccc; transition: 0.2s; margin-bottom: 8px;}
         .type-btn.active { border-color: #007AFF; background: rgba(0,122,255,0.15); color: #fff; font-weight: bold; }
     </style>
@@ -183,10 +181,11 @@
     </div>
 
     <div class="card" style="padding: 10px 20px;">
-        <div style="display:flex; align-items:center; justify-content:space-between;">
-            <button class="date-btn" onclick="changeDate(-1)">◀</button>
-            <input type="date" id="datePicker" class="date-input" onchange="onDateChanged()">
-            <button class="date-btn" onclick="changeDate(1)">▶</button>
+        <!-- ★ v72修正: 日付と矢印ボタンのマージンを無くし横一列に整列 -->
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+            <button onclick="changeDate(-1)" style="margin:0; padding:12px; flex:1; background:#eee; color:#333;">◀</button>
+            <input type="date" id="datePicker" onchange="onDateChanged()" style="margin:0; text-align:center; flex:2;">
+            <button onclick="changeDate(1)" style="margin:0; padding:12px; flex:1; background:#eee; color:#333;">▶</button>
         </div>
     </div>
 
@@ -200,9 +199,10 @@
         </div>
         <label class="input-label" style="color:#aaa; font-size:12px;">仕事・日常生活の強度</label>
         <select id="jobIntensity">
-            <option value="1.2">デスクワーク中心 (生活最低係数1.2)</option>
-            <option value="1.4">立ち仕事・営業 (よく歩く層)</option>
-            <option value="1.6">肉体労働 (重労働・現場層)</option>
+            <!-- ★ v72修正: 生活活動係数の表記を統一 -->
+            <option value="1.2">デスクワーク中心 (生活活動係数1.2)</option>
+            <option value="1.4">立ち仕事・営業 (生活活動係数1.4)</option>
+            <option value="1.6">肉体労働・現場層 (生活活動係数1.6)</option>
         </select>
         <label class="input-label" style="color:#aaa; margin-top:10px; font-size:12px;">運動（筋トレ等）の頻度</label>
         <select id="exerciseFrequency">
@@ -291,7 +291,7 @@
         <button type="button" onclick="closeModal()" style="background:#ccc; margin-top:10px; color:#333; padding:10px;">キャンセル</button>
     </div>
 
-    <!-- ★ 設定メニュー -->
+    <!-- 設定メニュー -->
     <div id="settingsOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2 style="margin:0;">⚙️ 設定・その他</h2>
@@ -307,14 +307,13 @@
         </div>
     </div>
 
-    <!-- ★ お知らせ・お問い合わせ画面（新UI） -->
+    <!-- お知らせ・お問い合わせ画面 -->
     <div id="noticeOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2 style="margin:0;">🔔 お知らせ / お問い合わせ</h2>
             <button onclick="closeOverlay('noticeOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button>
         </div>
 
-        <!-- 問い合わせフォーム (ダークカード) -->
         <div class="card" style="background:#1c1c1e; color:#fff; border-radius:15px; padding:20px; box-shadow:0 10px 20px rgba(0,0,0,0.1);">
             <div style="text-align:center; margin-bottom:20px;">
                 <h3 style="margin:0; font-size:18px;">📫 お問い合わせ</h3>
@@ -328,7 +327,6 @@
                 <div class="type-btn" onclick="selectInquiryType('💬 その他のご意見・ご要望', this)">💬 その他のご意見・ご要望</div>
             </div>
             
-            <!-- ★ v71修正: 赤い必須マーク(*)を削除しました -->
             <label class="input-label" style="color:#ddd; margin-top:15px; margin-bottom:8px;">連絡先メールアドレス <span id="emailAutoFill" style="color:#34c759; font-size:11px; display:none;">✔ 自動入力済み</span></label>
             <input type="email" id="inquiryEmail" placeholder="返信をご希望の場合は入力してください" style="background:#2c2c2e; border:1px solid #444; color:#fff; padding:12px; border-radius:8px;">
             
@@ -342,30 +340,30 @@
         <h3 style="font-size:16px; margin-top:30px; color:#333; border-bottom:2px solid #ddd; padding-bottom:5px;">📢 アップデート情報</h3>
         <ul class="notice-list">
             <li class="notice-item">
+                <span class="notice-date">2026/07/17</span>
+                <div class="notice-text">
+                    ・食事の共有テキストに「各食事内容の詳細」を追加しました。<br>
+                    ・お問い合わせフォームから開発者へ直接メールが飛ぶように変更しました。<br>
+                    ・日付UIのズレを修正しました。
+                </div>
+            </li>
+            <li class="notice-item">
                 <span class="notice-date">2026/07/16</span>
                 <div class="notice-text">
                     ・アプリ内にお問い合わせフォームを実装しました。<br>
-                    ・手動入力時の初期値を空欄に変更しました（改善）。<br>
-                    ・コピー＆ペースト時のエラーを修正しました。
+                    ・手動入力時の初期値を空欄に変更しました（改善）。
                 </div>
             </li>
             <li class="notice-item">
                 <span class="notice-date">2026/07/15</span>
                 <div class="notice-text">
-                    ・PWA（フルスクリーンアプリ化）に対応しました。<br>
-                    ・クラウド自動同期機能の安定性を向上しました。
-                </div>
-            </li>
-            <li class="notice-item">
-                <span class="notice-date">2026/07/14</span>
-                <div class="notice-text">
-                    ・PFCろぐ v1.0 リリース！
+                    ・PWA（フルスクリーンアプリ化）に対応しました。
                 </div>
             </li>
         </ul>
     </div>
 
-    <!-- クラウド設定 -->
+    <!-- 以下略: クラウド設定・マイ食材・カレンダー等のUI (v71と同等) -->
     <div id="cloudOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2 style="margin:0;">👤 アカウント登録・同期</h2>
@@ -405,7 +403,6 @@
         </div>
     </div>
 
-    <!-- マイ食材 -->
     <div id="customFoodOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2>🛠 マイ食材</h2>
@@ -432,7 +429,6 @@
         <div id="customFoodListContainer"></div>
     </div>
 
-    <!-- カレンダー -->
     <div id="monthlyOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <h2 id="monthlyTitle" style="margin:0;">摂取履歴</h2>
@@ -441,7 +437,6 @@
         <div class="calendar-grid" id="calendarGrid"></div>
     </div>
 
-    <!-- 使い方ガイド -->
     <div id="manualOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2>📖 使い方ガイド</h2>
@@ -465,7 +460,6 @@
         </div>
     </div>
 
-    <!-- おすすめアイテム -->
     <div id="recommendOverlay" style="background:#f2f2f7;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
             <h2 style="margin:0; color:#00796b;">🛒 おすすめアイテム</h2>
@@ -585,7 +579,6 @@
         </div>
     </div>
 
-    <!-- 仕様説明 -->
     <div id="specOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2 style="margin:0; color:#4a148c;">ℹ️ アプリ詳細仕様</h2>
@@ -808,9 +801,9 @@
             document.getElementById('charCount').innerText = len + '文字';
         }
 
-        // ★ v71修正: アドレス未入力（匿名）での送信を許可
+        // ★ v72修正: FormSubmitを使用して実際にメールを送信
         async function submitInquiry() {
-            const email = document.getElementById('inquiryEmail').value;
+            const email = document.getElementById('inquiryEmail').value || '未入力';
             const content = document.getElementById('inquiryContent').value;
             const btn = document.getElementById('submitInquiryBtn');
             
@@ -820,16 +813,28 @@
             btn.disabled = true;
             
             try {
-                const { error } = await supabaseClient
-                    .from('inquiries')
-                    .insert([{ 
-                        user_email: email || '未入力', 
-                        type: selectedInquiryType, 
-                        content: content 
-                    }]);
-                    
-                if (error) throw error;
+                // 1. Supabaseへの保存（バックアップ）
+                await supabaseClient.from('inquiries').insert([{ 
+                    user_email: email, 
+                    type: selectedInquiryType, 
+                    content: content 
+                }]);
                 
+                // 2. 指定アドレスへの実際のメール送信 (FormSubmit API)
+                await fetch('https://formsubmit.co/ajax/taiyo.fish000419@gmail.com', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        _subject: `【PFCろぐ】お問い合わせ (${selectedInquiryType})`,
+                        連絡先メールアドレス: email,
+                        お問い合わせ種類: selectedInquiryType,
+                        お問い合わせ内容: content
+                    })
+                });
+
                 alert("お問い合わせを送信しました。\n貴重なご意見ありがとうございます！");
                 document.getElementById('inquiryContent').value = '';
                 updateCharCount();
@@ -1340,17 +1345,39 @@
         }
 
         function removeItem(m, i) { diaryData[currentDateStr][m].items.splice(i, 1); save(); render(); }
+        
+        // ★ v72修正: 食事枠が1つの場合は削除できないように変更
         function removeMeal(m) { 
             if (!diaryData[currentDateStr] || !diaryData[currentDateStr][m]) return; 
+            
+            if (diaryData[currentDateStr].length <= 1) {
+                return alert("食事枠が残り1個の場合は削除できません。");
+            }
+            
             if(confirm("削除しますか？")) { 
                 diaryData[currentDateStr].splice(m, 1); 
-                if(diaryData[currentDateStr].length === 0) delete diaryData[currentDateStr];
                 save(); render(); 
             } 
         }
 
+        // ★ v72修正: 共有テキストに食事内容（詳細）を含めるように変更
         function shareDay() {
-            let text = `【${currentDateStr} のPFC記録】\nカロリー: ${document.getElementById('dailyCal').innerText} / ${goals.cal} kcal\nP:${document.getElementById('pSum').innerText}g F:${document.getElementById('fSum').innerText}g C:${document.getElementById('cSum').innerText}g\n\n#PFCろぐ`;
+            let text = `【${currentDateStr} のPFC記録】\nカロリー: ${document.getElementById('dailyCal').innerText} / ${goals.cal} kcal\nP:${document.getElementById('pSum').innerText}g F:${document.getElementById('fSum').innerText}g C:${document.getElementById('cSum').innerText}g\n\n`;
+            
+            let data = diaryData[currentDateStr];
+            if (data && data.length > 0) {
+                data.forEach((meal, mIdx) => {
+                    if (meal.items && meal.items.length > 0) {
+                        text += `[${mIdx + 1}食目]\n`;
+                        meal.items.forEach(it => {
+                            text += `・${it.name} ${it.displayGrams ? '('+it.displayGrams+')' : ''} - ${it.cal}kcal\n`;
+                        });
+                    }
+                });
+                text += '\n';
+            }
+            text += `#PFCろぐ`;
+
             if (navigator.share) { 
                 navigator.share({ text: text }).catch(console.error); 
             } else { 
