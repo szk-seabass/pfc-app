@@ -232,6 +232,7 @@
             <h4 style="margin:0 0 12px 0; color:var(--accent); font-size:14px; text-align:center;">🏁 目標達成シミュレーション</h4>
             <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:15px;">
                 <span style="font-size:13px; color:#ddd;">目標体重:</span>
+                <!-- ★入力時もAPI通信をせず、画面表示のみに留める -->
                 <input type="number" id="targetWeightInput" placeholder="例: 65" step="0.1" style="width:100px; margin:0; padding:8px; text-align:center; background:#2c2c2e; border:1px solid #555; color:#fff;" oninput="calculateSimulation()">
                 <span style="font-size:13px; color:#ddd;">kg</span>
             </div>
@@ -351,10 +352,10 @@
             <li class="notice-item">
                 <span class="notice-date">2026/07/17</span>
                 <div class="notice-text">
+                    ・クラウド同期時のデータ反映速度を改善しました。<br>
                     ・目標達成シミュレーション機能を追加しました！<br>
                     ・食事の共有テキストに「各食事内容の詳細」を追加しました。<br>
                     ・お問い合わせフォームから開発者へ直接メールが飛ぶように変更しました。<br>
-                    ・日付UIのズレを修正しました。
                 </div>
             </li>
             <li class="notice-item">
@@ -459,6 +460,7 @@
             <h3>👤 アカウント登録・自動同期</h3>
             <p>アカウントを作成してログインすると、記録したデータが自動的にクラウドに保存されます。別のスマホやPCからログインしても、すぐに続きから記録できます。</p>
         </div>
+        <!-- ★ v74追加: 使い方ガイドにシミュレーションを追加 -->
         <div class="manual-section">
             <h3>🏁 目標達成シミュレーション</h3>
             <p>目標設定カード内に「目標体重」を入力すると、設定したカロリー差分に基づいて達成までの予測日数を算出できます。日々のモチベーション維持にご活用ください。</p>
@@ -611,6 +613,7 @@
             <h3>🛡️ プロ基準のセーフティ機能</h3>
             <p>極端な食事制限による基礎代謝低下やリバウンドを防ぐため、パーソナルトレーナーの現場指導に基づいた安全装置を搭載しています。<br>無謀な目標数値が設定された場合は、ホルモンバランスや筋肉量を維持しながら「美しく健康に痩せる推奨プラン」をシステムが自動的に提案し、あなたを正しいダイエットへと導きます。</p>
         </div>
+        <!-- ★ v74追加: 詳細仕様にシミュレーションの計算式を追加 -->
         <div class="manual-section">
             <h3>📉 目標達成シミュレーションの計算式</h3>
             <p>体重(体脂肪)1kgの増減に必要なカロリーを約7,200kcalとして定義し、1日のアンダー/オーバーカロリーから目標達成までの日数を算出しています。</p>
@@ -733,8 +736,8 @@
             renderProfileForm();
             renderFoodSelect(); 
             render();
-            // ★ v74追加: リロード時にシミュレーション結果を確実に表示
-            calculateSimulation();
+            // ★ v76修正: 起動時はクラウド上書きを回避するため isInit=true を渡す
+            calculateSimulation(true);
             
             await checkUserSession();
         };
@@ -1024,12 +1027,12 @@
                     localStorage.setItem(profileKey, JSON.stringify(userProfile));
                     
                     renderProfileForm();
-                    // ★ v75修正: クラウドデータ復元直後に「リストの更新（再描画）」を実行
                     renderFoodSelect();
                     renderCustomFoodList();
 
                     render();
-                    calculateSimulation();
+                    // ★ v76修正: クラウド復元時も上書き競合を防ぐため isInit=true を渡す
+                    calculateSimulation(true);
                 }
             } catch (error) {
                 console.error('Auto load error:', error);
@@ -1157,7 +1160,8 @@
             localStorage.setItem(profileKey, JSON.stringify(userProfile)); 
             localStorage.setItem(goalsKey, JSON.stringify(goals));
             
-            calculateSimulation();
+            // 手動計算の時は強制セーブする
+            calculateSimulation(false);
             render(); 
             alert(`目標を ${targetCal} kcal で計算しました。`);
         }
@@ -1173,14 +1177,15 @@
 
             localStorage.setItem(goalsKey, JSON.stringify(goals));
             
-            calculateSimulation();
+            calculateSimulation(false);
             render();
 
             document.getElementById('adviceMessage').innerHTML = `💡 <b>推奨プラン（${cal}kcal）を適用しました！</b><br>食事はこれ以上減らさず、日常の活動量や運動頻度を増やしてこの目標を目指しましょう。`;
             alert(`安全な推奨プラン（${cal} kcal）に変更しました！`);
         }
 
-        function calculateSimulation() {
+        // ★ v76修正: isInitフラグを追加し、起動時の勝手なクラウド上書きを防止
+        function calculateSimulation(isInit = false) {
             const currentWeight = parseFloat(document.getElementById('weightInput').value);
             const targetWeight = parseFloat(document.getElementById('targetWeightInput').value);
             const tdee = userProfile.tdee;
@@ -1227,8 +1232,12 @@
             resultDiv.style.display = 'block';
             
             userProfile.targetWeight = targetWeight;
-            localStorage.setItem(profileKey, JSON.stringify(userProfile));
-            saveDataToCloudSilent();
+            
+            // ★ 初期ロード時以外（ユーザーの手入力時）のみ保存を走らせる
+            if (!isInit) {
+                localStorage.setItem(profileKey, JSON.stringify(userProfile));
+                saveDataToCloudSilent();
+            }
         }
 
         function regCustomFromManual() {
