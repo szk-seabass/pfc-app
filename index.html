@@ -181,7 +181,6 @@
     </div>
 
     <div class="card" style="padding: 10px 20px;">
-        <!-- ★ v72修正: 日付と矢印ボタンのマージンを無くし横一列に整列 -->
         <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
             <button onclick="changeDate(-1)" style="margin:0; padding:12px; flex:1; background:#eee; color:#333;">◀</button>
             <input type="date" id="datePicker" onchange="onDateChanged()" style="margin:0; text-align:center; flex:2;">
@@ -194,12 +193,11 @@
         <div class="profile-grid">
             <select id="genderSelect" onchange="updateGoalOptions()"><option value="male">男性</option><option value="female">女性</option></select>
             <input type="number" id="ageInput" placeholder="年齢">
-            <input type="number" id="heightInput" placeholder="身長(cm)">
-            <input type="number" id="weightInput" placeholder="体重(kg)">
+            <input type="number" id="heightInput" placeholder="身長(cm)" oninput="calculateSimulation()">
+            <input type="number" id="weightInput" placeholder="体重(kg)" oninput="calculateSimulation()">
         </div>
         <label class="input-label" style="color:#aaa; font-size:12px;">仕事・日常生活の強度</label>
         <select id="jobIntensity">
-            <!-- ★ v72修正: 生活活動係数の表記を統一 -->
             <option value="1.2">デスクワーク中心 (生活活動係数1.2)</option>
             <option value="1.4">立ち仕事・営業 (生活活動係数1.4)</option>
             <option value="1.6">肉体労働・現場層 (生活活動係数1.6)</option>
@@ -229,6 +227,19 @@
         </div>
 
         <div id="adviceMessage"></div>
+
+        <!-- ★ v73追加: 目標達成シミュレーション セクション -->
+        <div id="simulationSection" style="display:none; margin-top:20px; background:rgba(255,255,255,0.05); padding:15px; border-radius:8px; border:1px solid rgba(255,255,255,0.1);">
+            <h4 style="margin:0 0 12px 0; color:var(--accent); font-size:14px; text-align:center;">🏁 目標達成シミュレーション</h4>
+            <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:15px;">
+                <span style="font-size:13px; color:#ddd;">目標体重:</span>
+                <input type="number" id="targetWeightInput" placeholder="例: 65" step="0.1" style="width:100px; margin:0; padding:8px; text-align:center; background:#2c2c2e; border:1px solid #555; color:#fff;" oninput="calculateSimulation()">
+                <span style="font-size:13px; color:#ddd;">kg</span>
+            </div>
+            <div id="simulationResult" style="font-size:13px; color:#ccc; line-height:1.6; display:none;">
+                <!-- 計算結果がここに表示されます -->
+            </div>
+        </div>
     </div>
 
     <div class="card total-card">
@@ -342,6 +353,7 @@
             <li class="notice-item">
                 <span class="notice-date">2026/07/17</span>
                 <div class="notice-text">
+                    ・目標達成シミュレーション機能を追加しました！<br>
                     ・食事の共有テキストに「各食事内容の詳細」を追加しました。<br>
                     ・お問い合わせフォームから開発者へ直接メールが飛ぶように変更しました。<br>
                     ・日付UIのズレを修正しました。
@@ -363,7 +375,7 @@
         </ul>
     </div>
 
-    <!-- 以下略: クラウド設定・マイ食材・カレンダー等のUI (v71と同等) -->
+    <!-- 以下略: クラウド設定・マイ食材・カレンダー等のUI -->
     <div id="cloudOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2 style="margin:0;">👤 アカウント登録・同期</h2>
@@ -681,6 +693,11 @@
                 if(userProfile.height) document.getElementById('heightInput').value = userProfile.height;
                 document.getElementById('weightInput').value = userProfile.weight;
                 
+                // ★ v73追加: 目標体重の復元
+                if(userProfile.targetWeight) {
+                    document.getElementById('targetWeightInput').value = userProfile.targetWeight;
+                }
+
                 if(userProfile.jobIntensity !== undefined && userProfile.jobIntensity !== null) {
                     document.getElementById('jobIntensity').value = userProfile.jobIntensity;
                 }
@@ -801,7 +818,6 @@
             document.getElementById('charCount').innerText = len + '文字';
         }
 
-        // ★ v72修正: FormSubmitを使用して実際にメールを送信
         async function submitInquiry() {
             const email = document.getElementById('inquiryEmail').value || '未入力';
             const content = document.getElementById('inquiryContent').value;
@@ -813,14 +829,12 @@
             btn.disabled = true;
             
             try {
-                // 1. Supabaseへの保存（バックアップ）
                 await supabaseClient.from('inquiries').insert([{ 
                     user_email: email, 
                     type: selectedInquiryType, 
                     content: content 
                 }]);
                 
-                // 2. 指定アドレスへの実際のメール送信 (FormSubmit API)
                 await fetch('https://formsubmit.co/ajax/taiyo.fish000419@gmail.com', {
                     method: 'POST',
                     headers: {
@@ -1126,6 +1140,8 @@
             localStorage.setItem(profileKey, JSON.stringify(userProfile)); 
             localStorage.setItem(goalsKey, JSON.stringify(goals));
             
+            // ★ v73追加: 目標計算が更新されたらシミュレーションも自動更新
+            calculateSimulation();
             render(); 
             alert(`目標を ${targetCal} kcal で計算しました。`);
         }
@@ -1140,10 +1156,69 @@
             document.getElementById('displayFLabel').innerText = fLabel;
 
             localStorage.setItem(goalsKey, JSON.stringify(goals));
+            
+            // ★ v73追加
+            calculateSimulation();
             render();
 
             document.getElementById('adviceMessage').innerHTML = `💡 <b>推奨プラン（${cal}kcal）を適用しました！</b><br>食事はこれ以上減らさず、日常の活動量や運動頻度を増やしてこの目標を目指しましょう。`;
             alert(`安全な推奨プラン（${cal} kcal）に変更しました！`);
+        }
+
+        // ★ v73追加: 目標達成シミュレーションの計算ロジック
+        function calculateSimulation() {
+            const currentWeight = parseFloat(document.getElementById('weightInput').value);
+            const targetWeight = parseFloat(document.getElementById('targetWeightInput').value);
+            const tdee = userProfile.tdee;
+            const targetCal = goals.cal;
+            const resultDiv = document.getElementById('simulationResult');
+
+            if (!currentWeight || !targetWeight || !tdee || !targetCal) {
+                resultDiv.style.display = 'none';
+                return;
+            }
+
+            const weightDiff = targetWeight - currentWeight;
+            const dailyDiff = targetCal - tdee; // マイナスならアンダーカロリー、プラスならオーバーカロリー
+
+            if (weightDiff === 0) {
+                resultDiv.innerHTML = `<div style="text-align:center; color:#ff9500; margin-top:10px;">現在の体重と同じです。</div>`;
+                resultDiv.style.display = 'block';
+                return;
+            }
+
+            // 増減量とカロリーの方向が矛盾しているかチェック
+            if ((weightDiff < 0 && dailyDiff >= 0) || (weightDiff > 0 && dailyDiff <= 0)) {
+                resultDiv.innerHTML = `<div style="text-align:center; color:#ff3b30; margin-top:10px;">現在の目的（増減カロリー）と目標体重の方向が一致していません。<br>上の「現在の目的」を見直してください。</div>`;
+                resultDiv.style.display = 'block';
+                return;
+            }
+
+            // 脂肪1kg = 7200kcalとして計算
+            const totalCalNeeded = Math.abs(weightDiff) * 7200;
+            const daysNeeded = Math.ceil(totalCalNeeded / Math.abs(dailyDiff));
+
+            // 現在の日付（コンテキスト日付）から達成予定日を算出
+            const realToday = new Date();
+            realToday.setDate(realToday.getDate() + daysNeeded);
+            const targetDateStr = `${realToday.getFullYear()}年${realToday.getMonth() + 1}月${realToday.getDate()}日`;
+
+            resultDiv.innerHTML = `
+                <div style="background:#2c2c2e; padding:10px; border-radius:6px; margin-bottom:10px; margin-top:10px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>現在の体重との差:</span><b>${weightDiff > 0 ? '+' : ''}${weightDiff.toFixed(1)} kg</b></div>
+                    <div style="display:flex; justify-content:space-between;"><span>1日の増減カロリー:</span><b>${dailyDiff > 0 ? '+' : ''}${Math.round(dailyDiff)} kcal</b></div>
+                </div>
+                <div style="text-align:center; font-size:15px; font-weight:bold; color:var(--accent);">
+                    ✨ 目標達成まで 約 <span style="font-size:20px;">${daysNeeded}</span> 日！<br>
+                    <span style="font-size:12px; color:#aaa; font-weight:normal;">（達成目安：${targetDateStr}）</span>
+                </div>
+            `;
+            resultDiv.style.display = 'block';
+            
+            // 目標体重をプロフィールに保存して次回も保持
+            userProfile.targetWeight = targetWeight;
+            localStorage.setItem(profileKey, JSON.stringify(userProfile));
+            saveDataToCloudSilent();
         }
 
         function regCustomFromManual() {
@@ -1346,7 +1421,6 @@
 
         function removeItem(m, i) { diaryData[currentDateStr][m].items.splice(i, 1); save(); render(); }
         
-        // ★ v72修正: 食事枠が1つの場合は削除できないように変更
         function removeMeal(m) { 
             if (!diaryData[currentDateStr] || !diaryData[currentDateStr][m]) return; 
             
@@ -1360,7 +1434,6 @@
             } 
         }
 
-        // ★ v72修正: 共有テキストに食事内容（詳細）を含めるように変更
         function shareDay() {
             let text = `【${currentDateStr} のPFC記録】\nカロリー: ${document.getElementById('dailyCal').innerText} / ${goals.cal} kcal\nP:${document.getElementById('pSum').innerText}g F:${document.getElementById('fSum').innerText}g C:${document.getElementById('cSum').innerText}g\n\n`;
             
@@ -1458,6 +1531,7 @@
                 
                 if(goals.cal > 0) {
                     document.getElementById('currentGoalsDisplay').style.display = 'block';
+                    document.getElementById('simulationSection').style.display = 'block';
                     if(userProfile.bmr) document.getElementById('displayMetabolism').innerText = `基礎代謝: 約${Math.round(userProfile.bmr)}kcal / 活動係数: ${userProfile.activityFactor.toFixed(2)}`;
                     document.getElementById('displayTargetCal').innerText = `${goals.cal} kcal`;
                     document.getElementById('displayTargetP').innerText = `${goals.p} g`;
@@ -1465,6 +1539,7 @@
                     document.getElementById('displayTargetC').innerText = `${goals.c} g`;
                 } else {
                     document.getElementById('currentGoalsDisplay').style.display = 'none';
+                    document.getElementById('simulationSection').style.display = 'none';
                 }
 
                 let clipData = localStorage.getItem('pfcClipboard');
