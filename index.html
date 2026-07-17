@@ -232,7 +232,6 @@
             <h4 style="margin:0 0 12px 0; color:var(--accent); font-size:14px; text-align:center;">🏁 目標達成シミュレーション</h4>
             <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:15px;">
                 <span style="font-size:13px; color:#ddd;">目標体重:</span>
-                <!-- ★入力時もAPI通信をせず、画面表示のみに留める -->
                 <input type="number" id="targetWeightInput" placeholder="例: 65" step="0.1" style="width:100px; margin:0; padding:8px; text-align:center; background:#2c2c2e; border:1px solid #555; color:#fff;" oninput="calculateSimulation()">
                 <span style="font-size:13px; color:#ddd;">kg</span>
             </div>
@@ -352,6 +351,7 @@
             <li class="notice-item">
                 <span class="notice-date">2026/07/17</span>
                 <div class="notice-text">
+                    ・おすすめアイテムのラインナップを大幅に拡充・整理しました。<br>
                     ・クラウド同期時のデータ反映速度を改善しました。<br>
                     ・目標達成シミュレーション機能を追加しました！<br>
                     ・食事の共有テキストに「各食事内容の詳細」を追加しました。<br>
@@ -460,7 +460,6 @@
             <h3>👤 アカウント登録・自動同期</h3>
             <p>アカウントを作成してログインすると、記録したデータが自動的にクラウドに保存されます。別のスマホやPCからログインしても、すぐに続きから記録できます。</p>
         </div>
-        <!-- ★ v74追加: 使い方ガイドにシミュレーションを追加 -->
         <div class="manual-section">
             <h3>🏁 目標達成シミュレーション</h3>
             <p>目標設定カード内に「目標体重」を入力すると、設定したカロリー差分に基づいて達成までの予測日数を算出できます。日々のモチベーション維持にご活用ください。</p>
@@ -543,6 +542,15 @@
                 <div style="display: flex; gap: 8px;"><a href="https://amzn.to/3TDydd3" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a></div>
             </div>
         </div>
+        <!-- ★ v77追加: REYS クレアチン -->
+        <div class="affiliate-card">
+            <div class="affiliate-icon-container">💊</div>
+            <div class="affiliate-content">
+                <div class="affiliate-title">REYS クレアチン</div>
+                <div class="affiliate-desc">高純度で水に溶けやすいクレアチン。トレーニングのパフォーマンス向上や筋力アップをしっかりサポートしてくれます。</div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4vABxTS" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a></div>
+            </div>
+        </div>
         <div class="affiliate-card">
             <div class="affiliate-icon-container">💊</div>
             <div class="affiliate-content">
@@ -561,14 +569,41 @@
                 <div style="display: flex; gap: 8px;"><a href="https://amzn.to/44xDPrO" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hgGI6I" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
-
-        <h3 class="genre-title">🏋️ トレーニングギア</h3>
+        <!-- ★ v77追加: クエーカー オートミール -->
         <div class="affiliate-card">
-            <div class="affiliate-icon-container">⚖️</div>
+            <div class="affiliate-icon-container">🥣</div>
             <div class="affiliate-content">
-                <div class="affiliate-title">デジタルキッチンスケール</div>
-                <div class="affiliate-desc">0.1g単位で正確に量れる神アイテム。PFC管理の正確さが劇的に変わります。</div>
-                <div style="display: flex; gap: 8px;"><a href="★AmazonのURL★" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="★楽天のURL★" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+                <div class="affiliate-title">クエーカー オートミール</div>
+                <div class="affiliate-desc">食物繊維が豊富で低GIな定番オートミール。腹持ちが良く、ダイエット中の良質な炭水化物（C）補給にぴったりです。</div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4wIg4cn" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hPXYWT" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+            </div>
+        </div>
+
+        <!-- ★ v77修正: カテゴリ名を トレーニングアイテム に変更 -->
+        <h3 class="genre-title">🏋️ トレーニングアイテム</h3>
+        <!-- デジタルキッチンスケールを削除し、ALLOUT 3商品を追加 -->
+        <div class="affiliate-card">
+            <div class="affiliate-icon-container">🧤</div>
+            <div class="affiliate-content">
+                <div class="affiliate-title">ALLOUT パワーグリップ</div>
+                <div class="affiliate-desc">背中のトレーニングの必需品。握力の消耗を防ぎ、狙った筋肉を限界まで追い込むことができます。</div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4gNZEe5" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/h8mRz5" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+            </div>
+        </div>
+        <div class="affiliate-card">
+            <div class="affiliate-icon-container">💪</div>
+            <div class="affiliate-content">
+                <div class="affiliate-title">ALLOUT エルボースリーブ</div>
+                <div class="affiliate-desc">プレス系の種目で肘をしっかり保護・サポート。関節の負担を減らし、高重量のトレーニングを安全に行えます。</div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4pvjEV8" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hksa22" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+            </div>
+        </div>
+        <div class="affiliate-card">
+            <div class="affiliate-icon-container">✊</div>
+            <div class="affiliate-content">
+                <div class="affiliate-title">ALLOUT リストラップ</div>
+                <div class="affiliate-desc">手首を強力に固定し、ベンチプレスなどのプッシュ系種目でフォームを安定させ、ケガを予防する重要アイテムです。</div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4bttKjk" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/h8mRXJ" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
         <div class="affiliate-card">
@@ -613,7 +648,6 @@
             <h3>🛡️ プロ基準のセーフティ機能</h3>
             <p>極端な食事制限による基礎代謝低下やリバウンドを防ぐため、パーソナルトレーナーの現場指導に基づいた安全装置を搭載しています。<br>無謀な目標数値が設定された場合は、ホルモンバランスや筋肉量を維持しながら「美しく健康に痩せる推奨プラン」をシステムが自動的に提案し、あなたを正しいダイエットへと導きます。</p>
         </div>
-        <!-- ★ v74追加: 詳細仕様にシミュレーションの計算式を追加 -->
         <div class="manual-section">
             <h3>📉 目標達成シミュレーションの計算式</h3>
             <p>体重(体脂肪)1kgの増減に必要なカロリーを約7,200kcalとして定義し、1日のアンダー/オーバーカロリーから目標達成までの日数を算出しています。</p>
@@ -736,7 +770,6 @@
             renderProfileForm();
             renderFoodSelect(); 
             render();
-            // ★ v76修正: 起動時はクラウド上書きを回避するため isInit=true を渡す
             calculateSimulation(true);
             
             await checkUserSession();
@@ -1031,7 +1064,6 @@
                     renderCustomFoodList();
 
                     render();
-                    // ★ v76修正: クラウド復元時も上書き競合を防ぐため isInit=true を渡す
                     calculateSimulation(true);
                 }
             } catch (error) {
@@ -1160,7 +1192,6 @@
             localStorage.setItem(profileKey, JSON.stringify(userProfile)); 
             localStorage.setItem(goalsKey, JSON.stringify(goals));
             
-            // 手動計算の時は強制セーブする
             calculateSimulation(false);
             render(); 
             alert(`目標を ${targetCal} kcal で計算しました。`);
@@ -1184,7 +1215,6 @@
             alert(`安全な推奨プラン（${cal} kcal）に変更しました！`);
         }
 
-        // ★ v76修正: isInitフラグを追加し、起動時の勝手なクラウド上書きを防止
         function calculateSimulation(isInit = false) {
             const currentWeight = parseFloat(document.getElementById('weightInput').value);
             const targetWeight = parseFloat(document.getElementById('targetWeightInput').value);
@@ -1233,7 +1263,6 @@
             
             userProfile.targetWeight = targetWeight;
             
-            // ★ 初期ロード時以外（ユーザーの手入力時）のみ保存を走らせる
             if (!isInit) {
                 localStorage.setItem(profileKey, JSON.stringify(userProfile));
                 saveDataToCloudSilent();
