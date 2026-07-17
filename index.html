@@ -228,7 +228,6 @@
 
         <div id="adviceMessage"></div>
 
-        <!-- ★ v73追加: 目標達成シミュレーション セクション -->
         <div id="simulationSection" style="display:none; margin-top:20px; background:rgba(255,255,255,0.05); padding:15px; border-radius:8px; border:1px solid rgba(255,255,255,0.1);">
             <h4 style="margin:0 0 12px 0; color:var(--accent); font-size:14px; text-align:center;">🏁 目標達成シミュレーション</h4>
             <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:15px;">
@@ -237,7 +236,6 @@
                 <span style="font-size:13px; color:#ddd;">kg</span>
             </div>
             <div id="simulationResult" style="font-size:13px; color:#ccc; line-height:1.6; display:none;">
-                <!-- 計算結果がここに表示されます -->
             </div>
         </div>
     </div>
@@ -375,7 +373,7 @@
         </ul>
     </div>
 
-    <!-- 以下略: クラウド設定・マイ食材・カレンダー等のUI -->
+    <!-- クラウド設定 -->
     <div id="cloudOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2 style="margin:0;">👤 アカウント登録・同期</h2>
@@ -415,6 +413,7 @@
         </div>
     </div>
 
+    <!-- マイ食材 -->
     <div id="customFoodOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2>🛠 マイ食材</h2>
@@ -441,6 +440,7 @@
         <div id="customFoodListContainer"></div>
     </div>
 
+    <!-- カレンダー -->
     <div id="monthlyOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <h2 id="monthlyTitle" style="margin:0;">摂取履歴</h2>
@@ -449,6 +449,7 @@
         <div class="calendar-grid" id="calendarGrid"></div>
     </div>
 
+    <!-- 使い方ガイド -->
     <div id="manualOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2>📖 使い方ガイド</h2>
@@ -457,6 +458,11 @@
         <div class="manual-section">
             <h3>👤 アカウント登録・自動同期</h3>
             <p>アカウントを作成してログインすると、記録したデータが自動的にクラウドに保存されます。別のスマホやPCからログインしても、すぐに続きから記録できます。</p>
+        </div>
+        <!-- ★ v74追加: 使い方ガイドにシミュレーションを追加 -->
+        <div class="manual-section">
+            <h3>🏁 目標達成シミュレーション</h3>
+            <p>目標設定カード内に「目標体重」を入力すると、設定したカロリー差分に基づいて達成までの予測日数を算出できます。日々のモチベーション維持にご活用ください。</p>
         </div>
         <div class="manual-section">
             <h3>🍱 マイセット機能（よく食べる食事）</h3>
@@ -472,6 +478,7 @@
         </div>
     </div>
 
+    <!-- おすすめアイテム -->
     <div id="recommendOverlay" style="background:#f2f2f7;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
             <h2 style="margin:0; color:#00796b;">🛒 おすすめアイテム</h2>
@@ -604,6 +611,11 @@
             <h3>🛡️ プロ基準のセーフティ機能</h3>
             <p>極端な食事制限による基礎代謝低下やリバウンドを防ぐため、パーソナルトレーナーの現場指導に基づいた安全装置を搭載しています。<br>無謀な目標数値が設定された場合は、ホルモンバランスや筋肉量を維持しながら「美しく健康に痩せる推奨プラン」をシステムが自動的に提案し、あなたを正しいダイエットへと導きます。</p>
         </div>
+        <!-- ★ v74追加: 詳細仕様にシミュレーションの計算式を追加 -->
+        <div class="manual-section">
+            <h3>📉 目標達成シミュレーションの計算式</h3>
+            <p>体重(体脂肪)1kgの増減に必要なカロリーを約7,200kcalとして定義し、1日のアンダー/オーバーカロリーから目標達成までの日数を算出しています。</p>
+        </div>
     </div>
 
     <script>
@@ -693,7 +705,6 @@
                 if(userProfile.height) document.getElementById('heightInput').value = userProfile.height;
                 document.getElementById('weightInput').value = userProfile.weight;
                 
-                // ★ v73追加: 目標体重の復元
                 if(userProfile.targetWeight) {
                     document.getElementById('targetWeightInput').value = userProfile.targetWeight;
                 }
@@ -723,6 +734,8 @@
             renderProfileForm();
             renderFoodSelect(); 
             render();
+            // ★ v74追加: リロード時にシミュレーション結果を確実に表示
+            calculateSimulation();
             
             await checkUserSession();
         };
@@ -1013,6 +1026,8 @@
                     
                     renderProfileForm();
                     render();
+                    // ★ v74追加: クラウド復元後もシミュレーション結果を表示
+                    calculateSimulation();
                 }
             } catch (error) {
                 console.error('Auto load error:', error);
@@ -1140,7 +1155,6 @@
             localStorage.setItem(profileKey, JSON.stringify(userProfile)); 
             localStorage.setItem(goalsKey, JSON.stringify(goals));
             
-            // ★ v73追加: 目標計算が更新されたらシミュレーションも自動更新
             calculateSimulation();
             render(); 
             alert(`目標を ${targetCal} kcal で計算しました。`);
@@ -1157,7 +1171,6 @@
 
             localStorage.setItem(goalsKey, JSON.stringify(goals));
             
-            // ★ v73追加
             calculateSimulation();
             render();
 
@@ -1165,7 +1178,6 @@
             alert(`安全な推奨プラン（${cal} kcal）に変更しました！`);
         }
 
-        // ★ v73追加: 目標達成シミュレーションの計算ロジック
         function calculateSimulation() {
             const currentWeight = parseFloat(document.getElementById('weightInput').value);
             const targetWeight = parseFloat(document.getElementById('targetWeightInput').value);
@@ -1179,7 +1191,7 @@
             }
 
             const weightDiff = targetWeight - currentWeight;
-            const dailyDiff = targetCal - tdee; // マイナスならアンダーカロリー、プラスならオーバーカロリー
+            const dailyDiff = targetCal - tdee;
 
             if (weightDiff === 0) {
                 resultDiv.innerHTML = `<div style="text-align:center; color:#ff9500; margin-top:10px;">現在の体重と同じです。</div>`;
@@ -1187,18 +1199,15 @@
                 return;
             }
 
-            // 増減量とカロリーの方向が矛盾しているかチェック
             if ((weightDiff < 0 && dailyDiff >= 0) || (weightDiff > 0 && dailyDiff <= 0)) {
                 resultDiv.innerHTML = `<div style="text-align:center; color:#ff3b30; margin-top:10px;">現在の目的（増減カロリー）と目標体重の方向が一致していません。<br>上の「現在の目的」を見直してください。</div>`;
                 resultDiv.style.display = 'block';
                 return;
             }
 
-            // 脂肪1kg = 7200kcalとして計算
             const totalCalNeeded = Math.abs(weightDiff) * 7200;
             const daysNeeded = Math.ceil(totalCalNeeded / Math.abs(dailyDiff));
 
-            // 現在の日付（コンテキスト日付）から達成予定日を算出
             const realToday = new Date();
             realToday.setDate(realToday.getDate() + daysNeeded);
             const targetDateStr = `${realToday.getFullYear()}年${realToday.getMonth() + 1}月${realToday.getDate()}日`;
@@ -1215,7 +1224,6 @@
             `;
             resultDiv.style.display = 'block';
             
-            // 目標体重をプロフィールに保存して次回も保持
             userProfile.targetWeight = targetWeight;
             localStorage.setItem(profileKey, JSON.stringify(userProfile));
             saveDataToCloudSilent();
