@@ -9,7 +9,6 @@
     <meta name="theme-color" content="#007AFF">
     
     <meta name="google-site-verification" content="AfwYmlpSIJny7k4j378Wzdeb3qGoxuJh5uj-fr7P2Go" />
-    <!-- ★ v79修正: タイトルと説明文に検索キーワード(カロリー計算、PFC計算、無料など)を追加 -->
     <title>PFCろぐ - 無料でシンプルなカロリー計算＆PFCバランス管理アプリ</title>
     <meta name="description" content="「PFCろぐ」は、登録不要ですぐに使える無料のPFC計算・カロリー計算アプリです。精密なTDEE計算に基づいたダイエット目標設定、手動入力、マイセット機能で、ダイエッターやトレーニーの毎日の食事記録とボディメイクをストレスなくサポートします。">
     <meta name="keywords" content="PFC計算,カロリー計算,食事管理,ダイエット,アプリ,無料,TDEE,マクロ栄養素,PFCバランス">
@@ -106,6 +105,7 @@
         .bar-f { background: #ff3b30; }
         .bar-c { background: #34c759; }
         
+        /* ★ v80修正: メニューの2行配置用スタイル */
         .header-menu { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
         .btn-header { font-size: 14px; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; word-break: keep-all; box-sizing: border-box; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         
@@ -171,9 +171,11 @@
         <div onclick="openOverlay('settingsOverlay')" style="font-size:24px; cursor:pointer; background:#fff; border-radius:50%; width:44px; height:44px; display:flex; justify-content:center; align-items:center; box-shadow:0 2px 6px rgba(0,0,0,0.1);">⚙️</div>
     </div>
 
+    <!-- ★ v80修正: メニューを2行にして、おすすめアイテムをフルワイドで配置 -->
     <div class="header-menu">
         <div class="btn-header" onclick="openMonthlyView()" style="background: #e3f2fd; color: #007AFF; border: 1px solid #90caf9;">📅 月履歴</div>
         <div class="btn-header" onclick="openOverlay('customFoodOverlay')" style="background: #fff3e0; color: #e65100; border: 1px solid #ffcc80;">🛠 食材・セット管理</div>
+        <div class="btn-header" onclick="openOverlay('recommendOverlay')" style="grid-column: 1 / -1; background: #e0f2f1; color: #00796b; border: 1px solid #80cbc4;">🛒 おすすめアイテム</div>
     </div>
 
     <div id="guestWarningBanner" style="display:none; background:#fff3e0; border:1px solid #ffcc80; padding:12px; margin-bottom:15px; border-radius:10px; font-size:13px; color:#e65100;">
@@ -313,7 +315,7 @@
             <button onclick="openNoticeOverlay()" style="background:#fff3e0; color:#e65100; border:1px solid #ffcc80; padding:15px; text-align:left;">🔔 お知らせ / お問い合わせ</button>
             <button onclick="closeOverlay('settingsOverlay'); openOverlay('cloudOverlay')" style="background:#e8eaf6; color:#3f51b5; border:1px solid #9fa8da; padding:15px; text-align:left;">👤 アカウント・同期設定</button>
             <button onclick="closeOverlay('settingsOverlay'); openOverlay('manualOverlay')" style="background:#f3e5f5; color:#7b1fa2; border:1px solid #ce93d8; padding:15px; text-align:left;">📖 使い方ガイド</button>
-            <button onclick="closeOverlay('settingsOverlay'); openOverlay('recommendOverlay')" style="background:#e0f2f1; color:#00796b; border:1px solid #80cbc4; padding:15px; text-align:left;">🛒 おすすめアイテム</button>
+            <!-- ★ v80修正: ホームに移動したため、ここのおすすめアイテムボタンは削除 -->
             <button onclick="closeOverlay('settingsOverlay'); openOverlay('specOverlay')" style="background:#e1bee7; color:#4a148c; border:1px solid #ba68c8; padding:15px; text-align:left;">ℹ️ アプリ詳細仕様</button>
         </div>
     </div>
@@ -350,6 +352,12 @@
 
         <h3 style="font-size:16px; margin-top:30px; color:#333; border-bottom:2px solid #ddd; padding-bottom:5px;">📢 アップデート情報</h3>
         <ul class="notice-list">
+            <li class="notice-item">
+                <span class="notice-date">2026/07/22</span>
+                <div class="notice-text">
+                    ・ホーム画面のメニューを見直し、「おすすめアイテム」へアクセスしやすくなりました。
+                </div>
+            </li>
             <li class="notice-item">
                 <span class="notice-date">2026/07/17</span>
                 <div class="notice-text">
@@ -462,7 +470,6 @@
             <h3>👤 アカウント登録・自動同期</h3>
             <p>アカウントを作成してログインすると、記録したデータが自動的にクラウドに保存されます。別のスマホやPCからログインしても、すぐに続きから記録できます。</p>
         </div>
-        <!-- ★ v79修正: 使い方ガイドにキーワードを自然に追加 -->
         <div class="manual-section">
             <h3>🏁 目標達成シミュレーション</h3>
             <p>目標設定カード内に「目標体重」を入力すると、カロリー計算（PFC計算）の差分に基づいて達成までの予測日数を算出できます。日々のモチベーション維持にご活用ください。</p>
@@ -647,7 +654,6 @@
             <h3>🛡️ プロ基準のセーフティ機能</h3>
             <p>極端な食事制限による基礎代謝低下やリバウンドを防ぐため、パーソナルトレーナーの現場指導に基づいた安全装置を搭載しています。<br>無謀な目標数値が設定された場合は、ホルモンバランスや筋肉量を維持しながら「美しく健康に痩せる推奨プラン」をシステムが自動的に提案し、あなたを正しいダイエットへと導きます。</p>
         </div>
-        <!-- ★ v79修正: 仕様説明にもキーワードを自然に追加 -->
         <div class="manual-section">
             <h3>📉 目標達成シミュレーションとカロリー計算の式</h3>
             <p>体重(体脂肪)1kgの増減に必要なカロリーを約7,200kcalとして定義し、1日のアンダー/オーバーカロリーから目標達成までの日数を算出するカロリー計算ロジックを搭載しています。</p>
