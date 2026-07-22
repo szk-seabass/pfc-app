@@ -9,11 +9,13 @@
     <meta name="theme-color" content="#007AFF">
     
     <meta name="google-site-verification" content="AfwYmlpSIJny7k4j378Wzdeb3qGoxuJh5uj-fr7P2Go" />
-    <title>PFCろぐ - シンプルで高精度なPFCバランス管理アプリ</title>
-    <meta name="description" content="PFCろぐは、登録不要・全自動クラウド同期対応の超シンプルPFC管理ツールです。精密なTDEE計算に基づいた目標設定と、パッケージ裏の手動入力・マイセット機能で、毎日のボディメイクをストレスなく記録できます。">
+    <!-- ★ v79修正: タイトルと説明文に検索キーワード(カロリー計算、PFC計算、無料など)を追加 -->
+    <title>PFCろぐ - 無料でシンプルなカロリー計算＆PFCバランス管理アプリ</title>
+    <meta name="description" content="「PFCろぐ」は、登録不要ですぐに使える無料のPFC計算・カロリー計算アプリです。精密なTDEE計算に基づいたダイエット目標設定、手動入力、マイセット機能で、ダイエッターやトレーニーの毎日の食事記録とボディメイクをストレスなくサポートします。">
+    <meta name="keywords" content="PFC計算,カロリー計算,食事管理,ダイエット,アプリ,無料,TDEE,マクロ栄養素,PFCバランス">
     
-    <meta property="og:title" content="PFCろぐ - シンプルで高精度なPFCバランス管理アプリ">
-    <meta property="og:description" content="登録不要ですぐに使える！全自動同期・高精度カロリー計算を搭載した、ダイエッター・トレーニーのための食事管理アプリ。">
+    <meta property="og:title" content="PFCろぐ - 無料でシンプルなカロリー計算＆PFCバランス管理アプリ">
+    <meta property="og:description" content="登録不要ですぐに使える！全自動同期・高精度なPFC計算・カロリー計算を搭載した、ダイエッター・トレーニーのための食事管理アプリ。">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary">
 
@@ -460,9 +462,10 @@
             <h3>👤 アカウント登録・自動同期</h3>
             <p>アカウントを作成してログインすると、記録したデータが自動的にクラウドに保存されます。別のスマホやPCからログインしても、すぐに続きから記録できます。</p>
         </div>
+        <!-- ★ v79修正: 使い方ガイドにキーワードを自然に追加 -->
         <div class="manual-section">
             <h3>🏁 目標達成シミュレーション</h3>
-            <p>目標設定カード内に「目標体重」を入力すると、設定したカロリー差分に基づいて達成までの予測日数を算出できます。日々のモチベーション維持にご活用ください。</p>
+            <p>目標設定カード内に「目標体重」を入力すると、カロリー計算（PFC計算）の差分に基づいて達成までの予測日数を算出できます。日々のモチベーション維持にご活用ください。</p>
         </div>
         <div class="manual-section">
             <h3>🍱 マイセット機能（よく食べる食事）</h3>
@@ -644,9 +647,10 @@
             <h3>🛡️ プロ基準のセーフティ機能</h3>
             <p>極端な食事制限による基礎代謝低下やリバウンドを防ぐため、パーソナルトレーナーの現場指導に基づいた安全装置を搭載しています。<br>無謀な目標数値が設定された場合は、ホルモンバランスや筋肉量を維持しながら「美しく健康に痩せる推奨プラン」をシステムが自動的に提案し、あなたを正しいダイエットへと導きます。</p>
         </div>
+        <!-- ★ v79修正: 仕様説明にもキーワードを自然に追加 -->
         <div class="manual-section">
-            <h3>📉 目標達成シミュレーションの計算式</h3>
-            <p>体重(体脂肪)1kgの増減に必要なカロリーを約7,200kcalとして定義し、1日のアンダー/オーバーカロリーから目標達成までの日数を算出しています。</p>
+            <h3>📉 目標達成シミュレーションとカロリー計算の式</h3>
+            <p>体重(体脂肪)1kgの増減に必要なカロリーを約7,200kcalとして定義し、1日のアンダー/オーバーカロリーから目標達成までの日数を算出するカロリー計算ロジックを搭載しています。</p>
         </div>
     </div>
 
@@ -1211,7 +1215,6 @@
             alert(`安全な推奨プラン（${cal} kcal）に変更しました！`);
         }
 
-        // ★ v78修正: 矛盾エラーの内容を「運動を促す親切なメッセージ」に変更
         function calculateSimulation(isInit = false) {
             const currentWeight = parseFloat(document.getElementById('weightInput').value);
             const targetWeight = parseFloat(document.getElementById('targetWeightInput').value);
@@ -1233,7 +1236,6 @@
                 return;
             }
 
-            // 減量したいのにカロリーオーバー（セーフティ発動中などに起こる）
             if (weightDiff < 0 && dailyDiff >= 0) {
                 resultDiv.innerHTML = `
                     <div style="background:#ffebee; border:1px solid #ffcdd2; padding:12px; border-radius:8px; text-align:center; margin-top:10px;">
@@ -1247,7 +1249,6 @@
                 return;
             }
 
-            // 増量したいのにアンダーカロリー
             if (weightDiff > 0 && dailyDiff <= 0) {
                 resultDiv.innerHTML = `<div style="text-align:center; color:#ff3b30; margin-top:10px;">現在の目的が「減量・維持」になっているため、体重を増やす計算ができません。<br>上の「現在の目的」を増量に変更してください。</div>`;
                 resultDiv.style.display = 'block';
