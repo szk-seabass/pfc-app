@@ -18,6 +18,19 @@
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary">
 
+    <!-- ★ v81追加: Google Analytics (GA4) アクセス計測用コード -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX'); // ※アカウント作成後、ここに測定IDを入力します
+    </script>
+
+    <!-- ★ v81追加: Google AdSense 広告表示・審査用コード -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+    <!-- ※アカウント作成後、上記URLのclient=の後にパブリッシャーIDを入力します -->
+
     <script>
         (function() {
             const canvas = document.createElement('canvas');
@@ -105,7 +118,6 @@
         .bar-f { background: #ff3b30; }
         .bar-c { background: #34c759; }
         
-        /* ★ v80修正: メニューの2行配置用スタイル */
         .header-menu { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
         .btn-header { font-size: 14px; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; word-break: keep-all; box-sizing: border-box; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         
@@ -134,7 +146,8 @@
         .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         .profile-grid input, .profile-grid select { margin-bottom: 0; }
         
-        #monthlyOverlay, #customFoodOverlay, #manualOverlay, #recommendOverlay, #specOverlay, #cloudOverlay, #settingsOverlay, #noticeOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index:2000; padding:20px; box-sizing:border-box; overflow-y:auto; }
+        /* ★ v81修正: privacyOverlay を追加 */
+        #monthlyOverlay, #customFoodOverlay, #manualOverlay, #recommendOverlay, #specOverlay, #cloudOverlay, #settingsOverlay, #noticeOverlay, #privacyOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index:2000; padding:20px; box-sizing:border-box; overflow-y:auto; }
 
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 10px; }
         .calendar-header-day { text-align: center; font-size: 12px; font-weight: bold; color: #666; padding: 5px 0; border-bottom: 1px solid #ddd; }
@@ -171,7 +184,6 @@
         <div onclick="openOverlay('settingsOverlay')" style="font-size:24px; cursor:pointer; background:#fff; border-radius:50%; width:44px; height:44px; display:flex; justify-content:center; align-items:center; box-shadow:0 2px 6px rgba(0,0,0,0.1);">⚙️</div>
     </div>
 
-    <!-- ★ v80修正: メニューを2行にして、おすすめアイテムをフルワイドで配置 -->
     <div class="header-menu">
         <div class="btn-header" onclick="openMonthlyView()" style="background: #e3f2fd; color: #007AFF; border: 1px solid #90caf9;">📅 月履歴</div>
         <div class="btn-header" onclick="openOverlay('customFoodOverlay')" style="background: #fff3e0; color: #e65100; border: 1px solid #ffcc80;">🛠 食材・セット管理</div>
@@ -315,8 +327,29 @@
             <button onclick="openNoticeOverlay()" style="background:#fff3e0; color:#e65100; border:1px solid #ffcc80; padding:15px; text-align:left;">🔔 お知らせ / お問い合わせ</button>
             <button onclick="closeOverlay('settingsOverlay'); openOverlay('cloudOverlay')" style="background:#e8eaf6; color:#3f51b5; border:1px solid #9fa8da; padding:15px; text-align:left;">👤 アカウント・同期設定</button>
             <button onclick="closeOverlay('settingsOverlay'); openOverlay('manualOverlay')" style="background:#f3e5f5; color:#7b1fa2; border:1px solid #ce93d8; padding:15px; text-align:left;">📖 使い方ガイド</button>
-            <!-- ★ v80修正: ホームに移動したため、ここのおすすめアイテムボタンは削除 -->
             <button onclick="closeOverlay('settingsOverlay'); openOverlay('specOverlay')" style="background:#e1bee7; color:#4a148c; border:1px solid #ba68c8; padding:15px; text-align:left;">ℹ️ アプリ詳細仕様</button>
+            
+            <!-- ★ v81追加: プライバシーポリシーへの導線 -->
+            <button onclick="closeOverlay('settingsOverlay'); openOverlay('privacyOverlay')" style="background:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; padding:15px; text-align:left;">📜 プライバシーポリシー</button>
+        </div>
+    </div>
+
+    <!-- ★ v81追加: プライバシーポリシー画面 -->
+    <div id="privacyOverlay">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 style="margin:0;">📜 プライバシーポリシー</h2>
+            <button onclick="closeOverlay('privacyOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button>
+        </div>
+        <div class="manual-section">
+            <h3>アクセス解析ツールについて</h3>
+            <p>当アプリでは、Googleによるアクセス解析ツール「Googleアナリティクス」を利用しています。<br>
+            このGoogleアナリティクスはトラフィックデータの収集のためにクッキー（Cookie）を使用しております。トラフィックデータは匿名で収集されており、個人を特定するものではありません。</p>
+        </div>
+        <div class="manual-section">
+            <h3>広告の配信について</h3>
+            <p>当アプリでは、第三者配信の広告サービス「Google AdSense」を利用しております。<br>
+            広告配信事業者は、ユーザーの興味に応じた広告を表示するためにクッキー（Cookie）を使用することがあります。<br>
+            クッキー（Cookie）を無効にする設定、およびGoogleアドセンスに関する詳細は「<a href="https://policies.google.com/technologies/ads?hl=ja" target="_blank">広告 – ポリシーと規約 – Google</a>」をご覧ください。</p>
         </div>
     </div>
 
@@ -355,6 +388,7 @@
             <li class="notice-item">
                 <span class="notice-date">2026/07/22</span>
                 <div class="notice-text">
+                    ・設定メニューに「プライバシーポリシー」を追加しました。<br>
                     ・ホーム画面のメニューを見直し、「おすすめアイテム」へアクセスしやすくなりました。
                 </div>
             </li>
@@ -373,12 +407,6 @@
                 <div class="notice-text">
                     ・アプリ内にお問い合わせフォームを実装しました。<br>
                     ・手動入力時の初期値を空欄に変更しました（改善）。
-                </div>
-            </li>
-            <li class="notice-item">
-                <span class="notice-date">2026/07/15</span>
-                <div class="notice-text">
-                    ・PWA（フルスクリーンアプリ化）に対応しました。
                 </div>
             </li>
         </ul>
