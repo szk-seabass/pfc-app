@@ -349,7 +349,14 @@
             <h3>広告の配信について</h3>
             <p>当アプリでは、第三者配信の広告サービス「Google AdSense」を利用しております。<br>
             広告配信事業者は、ユーザーの興味に応じた広告を表示するためにクッキー（Cookie）を使用することがあります。<br>
-            クッキー（Cookie）を無効にする設定、およびGoogleアドセンスに関する詳細は「<a href="https://policies.google.com/technologies/ads?hl=ja" target="_blank">広告 – ポリシーと規約 – Google</a>」をご覧ください。</p>
+            クッキー（Cookie）を無効にする設定、およびGoogleアドセンスに関する詳細は「<a href="https://policies.google.com/technologies/ads?hl=ja" target="_blank" rel="noopener">広告 – ポリシーと規約 – Google</a>」をご覧ください。</p>
+        </div>
+        <!-- ★ 新規追加: アフィリエイトプログラムについて -->
+        <div class="manual-section">
+            <h3>アフィリエイトプログラムについて</h3>
+            <p>当アプリは、Amazonアソシエイト・プログラム等のアフィリエイトプログラムに参加しています。<br>
+            これらのプログラムにおいて、商品トラッキングのためにクッキー（Cookie）が使用される場合があります。<br>
+            Amazonのアソシエイトとして、PFCろぐは適格販売により収入を得ています。</p>
         </div>
     </div>
 
@@ -385,6 +392,13 @@
 
         <h3 style="font-size:16px; margin-top:30px; color:#333; border-bottom:2px solid #ddd; padding-bottom:5px;">📢 アップデート情報</h3>
         <ul class="notice-list">
+            <li class="notice-item">
+                <span class="notice-date">2026/07/24</span>
+                <div class="notice-text">
+                    ・アフィリエイトリンクの仕様を規約に準拠するよう修正しました。<br>
+                    ・プライバシーポリシーにアフィリエイトプログラムに関する追記を行いました。
+                </div>
+            </li>
             <li class="notice-item">
                 <span class="notice-date">2026/07/22</span>
                 <div class="notice-text">
@@ -523,21 +537,23 @@
             <button onclick="closeOverlay('recommendOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button>
         </div>
         
+        <!-- ★ 文言変更箇所: Amazon指定の文章を追加 -->
         <div style="background:#fff8e1; padding:12px; border-radius:8px; border:1px solid #ffe082; margin-bottom:15px;">
             <p style="font-size:11px; line-height:1.4; color:#666; margin:0;">
-                <b>【PR】</b><br>当アプリ「PFCろぐ」は、Amazonアソシエイト・プログラム等に参加しています。以下のリンク経由で商品を購入いただくと、売上の一部が開発者に還元され、アプリの維持・改善に役立てられます。
+                <b>【PR】</b><br>Amazonのアソシエイトとして、PFCろぐは適格販売により収入を得ています。<br>※以下のリンク経由で商品を購入いただくと、売上の一部が還元されアプリの維持・改善に役立てられます。
             </p>
         </div>
 
         <p style="font-size:13px; color:#666; margin-bottom:10px; line-height:1.5;">日々のボディメイクを効率化するために、開発者が実際に使っているおすすめアイテムです。</p>
         
+        <!-- ★ rel="sponsored noopener" の追加箇所 (すべてのアフィリエイトリンクに適用) -->
         <h3 class="genre-title">💊 サプリメント</h3>
         <div class="affiliate-card">
             <div class="affiliate-icon-container">🥤</div>
             <div class="affiliate-content">
                 <div class="affiliate-title">REYS ホエイプロテイン</div>
                 <div class="affiliate-desc">筋トレYouTuberの山澤さん監修。水に溶けやすくダマにならず、非常に美味しくて愛飲しています。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4fiO5Jt" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a></div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4fiO5Jt" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a></div>
             </div>
         </div>
         <div class="affiliate-card">
@@ -545,7 +561,7 @@
             <div class="affiliate-content">
                 <div class="affiliate-title">VITAS ホエイプロテイン</div>
                 <div class="affiliate-desc">フルーツ系からラテ系まで、美味しさに徹底的にこだわったプロテイン。ダマになりにくく日々のタンパク質補給に最適です。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/3ReubHi" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hYrfs" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/3ReubHi" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hYrfs" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
         <div class="affiliate-card">
@@ -553,7 +569,7 @@
             <div class="affiliate-content">
                 <div class="affiliate-title">エクスプロージョン ホエイプロテイン</div>
                 <div class="affiliate-desc">大容量3kgでコスパ最強。日々のトレーニングやダイエットの置き換えなど、気兼ねなくガンガン飲めるプロテインです。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4yomqPK" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hgtaDY" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4yomqPK" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hgtaDY" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
         <div class="affiliate-card">
@@ -561,7 +577,7 @@
             <div class="affiliate-content">
                 <div class="affiliate-title">アルプロン ホエイプロテイン</div>
                 <div class="affiliate-desc">国内製造で安心の高品質。フレーバーの種類が豊富で飲みやすく、日々のタンパク質補給やダイエットのサポートにおすすめです。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/3ThEdIo" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hPicGh" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/3ThEdIo" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hPicGh" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
         <div class="affiliate-card">
@@ -569,7 +585,7 @@
             <div class="affiliate-content">
                 <div class="affiliate-title">マイプロテイン ホエイプロテイン</div>
                 <div class="affiliate-desc">世界中で愛される定番プロテイン。フレーバーが非常に豊富で、日々のタンパク質補給のコスパも抜群です。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://a.r10.to/hPDSw1" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+                <div style="display: flex; gap: 8px;"><a href="https://a.r10.to/hPDSw1" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
         <div class="affiliate-card">
@@ -577,7 +593,7 @@
             <div class="affiliate-content">
                 <div class="affiliate-title">REYS EAA</div>
                 <div class="affiliate-desc">必須アミノ酸9種類を美味しく手軽に補給できるサプリ。トレーニング中の水分・栄養補給に最適です。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/3TDydd3" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a></div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/3TDydd3" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a></div>
             </div>
         </div>
         <div class="affiliate-card">
@@ -585,7 +601,7 @@
             <div class="affiliate-content">
                 <div class="affiliate-title">REYS クレアチン</div>
                 <div class="affiliate-desc">高純度で水に溶けやすいクレアチン。トレーニングのパフォーマンス向上や筋力アップをしっかりサポートしてくれます。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4vABxTS" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a></div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4vABxTS" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a></div>
             </div>
         </div>
         <div class="affiliate-card">
@@ -593,7 +609,7 @@
             <div class="affiliate-content">
                 <div class="affiliate-title">VITAS ビタパワー (マルチビタミン)</div>
                 <div class="affiliate-desc">12種類のビタミンをはじめ、マカや亜鉛など様々な栄養素をまとめて摂取できるサプリ。味が美味しくて毎日続けやすいのが特徴です。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4gJEFJn" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/h50q7O" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4gJEFJn" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/h50q7O" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
 
@@ -603,7 +619,7 @@
             <div class="affiliate-content">
                 <div class="affiliate-title">焼き芋</div>
                 <div class="affiliate-desc">低GIで食物繊維が豊富な自然のスイーツ。美味しく手軽に良質な炭水化物（C）を補給でき、ダイエットの強い味方です。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/44xDPrO" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hgGI6I" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/44xDPrO" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hgGI6I" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
         <div class="affiliate-card">
@@ -611,7 +627,7 @@
             <div class="affiliate-content">
                 <div class="affiliate-title">クエーカー オートミール</div>
                 <div class="affiliate-desc">食物繊維が豊富で低GIな定番オートミール。腹持ちが良く、ダイエット中の良質な炭水化物（C）補給にぴったりです。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4wIg4cn" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hPXYWT" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4wIg4cn" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hPXYWT" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
 
@@ -621,7 +637,7 @@
             <div class="affiliate-content">
                 <div class="affiliate-title">ALLOUT パワーグリップ</div>
                 <div class="affiliate-desc">背中のトレーニングの必需品。握力の消耗を防ぎ、狙った筋肉を限界まで追い込むことができます。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4gNZEe5" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/h8mRz5" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4gNZEe5" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/h8mRz5" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
         <div class="affiliate-card">
@@ -629,7 +645,7 @@
             <div class="affiliate-content">
                 <div class="affiliate-title">ALLOUT エルボースリーブ</div>
                 <div class="affiliate-desc">プレス系の種目で肘をしっかり保護・サポート。関節の負担を減らし、高重量のトレーニングを安全に行えます。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4pvjEV8" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hksa22" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4pvjEV8" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hksa22" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
         <div class="affiliate-card">
@@ -637,7 +653,7 @@
             <div class="affiliate-content">
                 <div class="affiliate-title">ALLOUT リストラップ</div>
                 <div class="affiliate-desc">手首を強力に固定し、ベンチプレスなどのプッシュ系種目でフォームを安定させ、ケガを予防する重要アイテムです。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4bttKjk" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/h8mRXJ" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4bttKjk" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/h8mRXJ" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
         <div class="affiliate-card">
@@ -645,7 +661,7 @@
             <div class="affiliate-content">
                 <div class="affiliate-title">VITAS プロテインシェイカー 1000ml</div>
                 <div class="affiliate-desc">ワンプッシュで開く大容量のドリンクボトル。漏れにくく持ち運びに便利で、プロテインやEAAのシェイクに最適です。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4pjAvKe" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hYMsit" target="_blank" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4pjAvKe" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hYMsit" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
             </div>
         </div>
         <div class="affiliate-card">
@@ -653,7 +669,7 @@
             <div class="affiliate-content">
                 <div class="affiliate-title">マイプロテイン シェイカー</div>
                 <div class="affiliate-desc">ダマになりにくいブレンダーボール付きの定番シェイカー。プロテインやEAAをしっかり溶かすことができます。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4wIP2lb" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a></div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4wIP2lb" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a></div>
             </div>
         </div>
 
@@ -663,7 +679,7 @@
             <div class="affiliate-content">
                 <div class="affiliate-title">[EVANE] エバン トレーニング タンクトップ</div>
                 <div class="affiliate-desc">4WAYストレッチとドライタッチ素材で快適な着心地。ハードなトレーニング時にも動きを妨げず、しっかりサポートします。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4aRC10h" target="_blank" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a></div>
+                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4aRC10h" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a></div>
             </div>
         </div>
     </div>
