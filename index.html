@@ -18,18 +18,18 @@
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary">
 
-    <!-- ★ v81追加: Google Analytics (GA4) アクセス計測用コード -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-535TETD22K"></script>
+    <!-- Google Analytics (GA4) アクセス計測用コード -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-535TETD22K'); // ※アカウント作成後、ここに測定IDを入力します
+      gtag('config', 'G-XXXXXXXXXX'); // ※取得した測定IDが入ります
     </script>
 
-    <!-- ★ v81追加: Google AdSense 広告表示・審査用コード -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9352585638973205" crossorigin="anonymous"></script>
-    <!-- ※アカウント作成後、上記URLのclient=の後にパブリッシャーIDを入力します -->
+    <!-- Google AdSense 広告表示・審査用コード -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+    <!-- ※取得したパブリッシャーIDが入ります -->
 
     <script>
         (function() {
@@ -136,18 +136,11 @@
         .btn-action { padding: 10px 5px; font-size: 12px; border-radius: 8px; color: white; cursor: pointer; }
         
         .genre-title { font-size: 15px; color: #00796b; border-bottom: 2px solid #b2dfdb; padding-bottom: 5px; margin: 20px 0 10px 0; }
-        .affiliate-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 15px; margin-bottom: 15px; display: flex; gap: 15px; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .affiliate-icon-container { width: 70px; height: 70px; background: #f8f9fa; border-radius: 8px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; border: 1px solid #f0f0f0; font-size: 36px; }
-        .affiliate-content { flex: 1; }
-        .affiliate-title { font-size: 14px; font-weight: bold; margin-bottom: 5px; color: #333; }
-        .affiliate-desc { font-size: 12px; color: #666; margin-bottom: 10px; line-height: 1.4; }
-        .affiliate-btn { display: inline-block; color: white; padding: 8px 0; font-size: 12px; font-weight: bold; border-radius: 6px; text-decoration: none; text-align: center; }
         
         .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         .profile-grid input, .profile-grid select { margin-bottom: 0; }
         
-        /* ★ v81修正: privacyOverlay を追加 */
-        #monthlyOverlay, #customFoodOverlay, #manualOverlay, #recommendOverlay, #specOverlay, #cloudOverlay, #settingsOverlay, #noticeOverlay, #privacyOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index:2000; padding:20px; box-sizing:border-box; overflow-y:auto; }
+        #monthlyOverlay, #customFoodOverlay, #manualOverlay, #specOverlay, #cloudOverlay, #settingsOverlay, #noticeOverlay, #privacyOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index:2000; padding:20px; box-sizing:border-box; overflow-y:auto; }
 
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 10px; }
         .calendar-header-day { text-align: center; font-size: 12px; font-weight: bold; color: #666; padding: 5px 0; border-bottom: 1px solid #ddd; }
@@ -175,6 +168,14 @@
         
         .type-btn { padding: 12px 15px; border: 1px solid #444; border-radius: 8px; font-size: 14px; cursor: pointer; background: #2c2c2e; color: #ccc; transition: 0.2s; margin-bottom: 8px;}
         .type-btn.active { border-color: #007AFF; background: rgba(0,122,255,0.15); color: #fff; font-weight: bold; }
+        
+        /* v83 SEO用コンテンツスタイル */
+        .seo-content-block { background: #fff; border-radius: 15px; padding: 20px; margin-top: 30px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .seo-content-block h2 { color: var(--primary); font-size: 20px; margin-top: 0; margin-bottom: 15px; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; }
+        .seo-content-block h3 { color: #333; font-size: 16px; margin-top: 20px; margin-bottom: 10px; border-left: 4px solid var(--primary); padding-left: 10px; }
+        .seo-content-block p { font-size: 14px; line-height: 1.8; color: #444; margin-bottom: 15px; }
+        .seo-content-block ul { padding-left: 20px; margin-bottom: 15px; }
+        .seo-content-block li { font-size: 14px; line-height: 1.6; color: #444; margin-bottom: 8px; }
     </style>
 </head>
 <body>
@@ -185,9 +186,10 @@
     </div>
 
     <div class="header-menu">
-        <div class="btn-header" onclick="openMonthlyView()" style="background: #e3f2fd; color: #007AFF; border: 1px solid #90caf9;">📅 月履歴</div>
-        <div class="btn-header" onclick="openOverlay('customFoodOverlay')" style="background: #fff3e0; color: #e65100; border: 1px solid #ffcc80;">🛠 食材・セット管理</div>
-        <div class="btn-header" onclick="openOverlay('recommendOverlay')" style="grid-column: 1 / -1; background: #e0f2f1; color: #00796b; border: 1px solid #80cbc4;">🛒 おすすめアイテム</div>
+        <div class="btn-header" onclick="openMonthlyView()" style="background: #e3f2fd; color: #007AFF; border: 1px solid #90caf9; grid-column: 1 / -1;">📅 月履歴</div>
+        <div class="btn-header" onclick="openOverlay('customFoodOverlay')" style="background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; grid-column: 1 / -1;">🛠 食材・セット管理</div>
+        <!-- v83修正: アフィリエイトボタンを審査中だけ隠す -->
+        <!-- <div class="btn-header" onclick="openOverlay('recommendOverlay')" style="grid-column: 1 / -1; background: #e0f2f1; color: #00796b; border: 1px solid #80cbc4;">🛒 おすすめアイテム</div> -->
     </div>
 
     <div id="guestWarningBanner" style="display:none; background:#fff3e0; border:1px solid #ffcc80; padding:12px; margin-bottom:15px; border-radius:10px; font-size:13px; color:#e65100;">
@@ -274,6 +276,27 @@
     </div>
 
     <div id="mealContainer"></div>
+    
+    <!-- v83 追加コンテンツ: AdSense審査突破用SEOテキスト -->
+    <div class="seo-content-block">
+        <h2>PFC計算・カロリー計算の基礎知識</h2>
+        <p>「PFCろぐ」は、日々の食事記録を通じてダイエットやボディメイクを成功に導くための無料PFC計算・カロリー管理アプリです。健康的な減量や筋力アップを目指すには、ただ食事量を減らすのではなく、「何をどれくらい食べるか」というPFCバランスの最適化が最も重要です。</p>
+        
+        <h3>TDEE（総消費カロリー）とは？</h3>
+        <p>TDEE（Total Daily Energy Expenditure）とは、基礎代謝に日々の活動量（仕事や運動など）を掛け合わせた「1日の総消費カロリー」のことです。ダイエットの基本は「摂取カロリー ＜ 消費カロリー（TDEE）」の状態を作ることです。<br>当アプリでは、世界基準である高精度な「ミフリン・サンジオール方程式」を採用し、ユーザーの年齢・身長・体重・活動レベルから正確なTDEEを自動算出します。これにより、極端な食事制限を防ぎ、リバウンドのリスクを最小限に抑えた健全な目標設定が可能です。</p>
+        
+        <h3>マクロ栄養素（PFCバランス）の役割</h3>
+        <p>カロリー制限だけでなく、以下の3大栄養素（PFC）のバランスを整えることが美しいボディラインを作る鍵となります。</p>
+        <ul>
+            <li><b>Protein（タンパク質）:</b> 筋肉や皮膚、髪の毛の材料となる最重要栄養素です。1gあたり4kcal。ダイエット中は筋肉量の低下を防ぐため、体重1kgあたり1.5g〜2.0gの摂取が推奨されます。</li>
+            <li><b>Fat（脂質）:</b> ホルモンバランスの維持や細胞膜の形成に不可欠です。1gあたり9kcalとカロリーが高いため過剰摂取には注意が必要ですが、総カロリーの20%〜30%は最低限確保する必要があります。</li>
+            <li><b>Carbohydrate（炭水化物）:</b> 脳や筋肉を動かすためのメインエネルギー源です。1gあたり4kcal。タンパク質と脂質を計算した後の「残り全カロリー」を炭水化物に割り当てるのが一般的です。適量な炭水化物はトレーニングのパフォーマンスを向上させます。</li>
+        </ul>
+
+        <h3>PFCろぐの効果的な使い方</h3>
+        <p>本アプリは「シンプルさ」を追求しています。面倒な初期設定は不要で、プロフィールを入力するだけで即座に目標PFCが設定されます。よく食べる食事は「マイセット」として登録することで、ワンタップで日々の記録が完了します。毎日の体重変化や目標達成シミュレーション機能も活用し、モチベーションを維持しながら理想の体型を目指しましょう。</p>
+    </div>
+
     <button class="btn-add-meal" onclick="addNewMeal()">＋ 新しい食事枠を追加</button>
 
     <div id="modalBackdrop" onclick="closeModal()"></div>
@@ -328,13 +351,11 @@
             <button onclick="closeOverlay('settingsOverlay'); openOverlay('cloudOverlay')" style="background:#e8eaf6; color:#3f51b5; border:1px solid #9fa8da; padding:15px; text-align:left;">👤 アカウント・同期設定</button>
             <button onclick="closeOverlay('settingsOverlay'); openOverlay('manualOverlay')" style="background:#f3e5f5; color:#7b1fa2; border:1px solid #ce93d8; padding:15px; text-align:left;">📖 使い方ガイド</button>
             <button onclick="closeOverlay('settingsOverlay'); openOverlay('specOverlay')" style="background:#e1bee7; color:#4a148c; border:1px solid #ba68c8; padding:15px; text-align:left;">ℹ️ アプリ詳細仕様</button>
-            
-            <!-- ★ v81追加: プライバシーポリシーへの導線 -->
             <button onclick="closeOverlay('settingsOverlay'); openOverlay('privacyOverlay')" style="background:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; padding:15px; text-align:left;">📜 プライバシーポリシー</button>
         </div>
     </div>
 
-    <!-- ★ v81追加: プライバシーポリシー画面 -->
+    <!-- プライバシーポリシー -->
     <div id="privacyOverlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2 style="margin:0;">📜 プライバシーポリシー</h2>
@@ -351,13 +372,14 @@
             広告配信事業者は、ユーザーの興味に応じた広告を表示するためにクッキー（Cookie）を使用することがあります。<br>
             クッキー（Cookie）を無効にする設定、およびGoogleアドセンスに関する詳細は「<a href="https://policies.google.com/technologies/ads?hl=ja" target="_blank" rel="noopener">広告 – ポリシーと規約 – Google</a>」をご覧ください。</p>
         </div>
-        <!-- ★ 新規追加: アフィリエイトプログラムについて -->
+        <!-- v83修正: 審査中はアフィリエイトの記述も念のため隠す -->
+        <!--
         <div class="manual-section">
             <h3>アフィリエイトプログラムについて</h3>
-            <p>当アプリは、Amazonアソシエイト・プログラム等のアフィリエイトプログラムに参加しています。<br>
-            これらのプログラムにおいて、商品トラッキングのためにクッキー（Cookie）が使用される場合があります。<br>
-            Amazonのアソシエイトとして、PFCろぐは適格販売により収入を得ています。</p>
+            <p>当アプリは、アフィリエイトプログラム（Amazonアソシエイト、楽天アフィリエイト等）に参加しています。<br>
+            リンク先での購入により、当アプリが適格販売として紹介料を獲得することがあります。その際、行動履歴等がCookieを通じて各プログラムの提供元に収集される場合があります。</p>
         </div>
+        -->
     </div>
 
     <!-- お知らせ・お問い合わせ画面 -->
@@ -393,34 +415,22 @@
         <h3 style="font-size:16px; margin-top:30px; color:#333; border-bottom:2px solid #ddd; padding-bottom:5px;">📢 アップデート情報</h3>
         <ul class="notice-list">
             <li class="notice-item">
-                <span class="notice-date">2026/07/24</span>
+                <span class="notice-date">2026/08/06</span>
                 <div class="notice-text">
-                    ・アフィリエイトリンクの仕様を規約に準拠するよう修正しました。<br>
-                    ・プライバシーポリシーにアフィリエイトプログラムに関する追記を行いました。
+                    ・PFC計算とカロリー管理に関する詳細な解説コラムを追加しました。
                 </div>
             </li>
             <li class="notice-item">
-                <span class="notice-date">2026/07/22</span>
+                <span class="notice-date">2026/07/24</span>
                 <div class="notice-text">
-                    ・設定メニューに「プライバシーポリシー」を追加しました。<br>
-                    ・ホーム画面のメニューを見直し、「おすすめアイテム」へアクセスしやすくなりました。
+                    ・プライバシーポリシーを更新しました。
                 </div>
             </li>
             <li class="notice-item">
                 <span class="notice-date">2026/07/17</span>
                 <div class="notice-text">
-                    ・目標達成シミュレーションの警告メッセージをより分かりやすく改善しました。<br>
-                    ・おすすめアイテムのラインナップを大幅に拡充・整理しました。<br>
                     ・クラウド同期時のデータ反映速度を改善しました。<br>
-                    ・食事の共有テキストに「各食事内容の詳細」を追加しました。<br>
                     ・お問い合わせフォームから開発者へ直接メールが飛ぶように変更しました。<br>
-                </div>
-            </li>
-            <li class="notice-item">
-                <span class="notice-date">2026/07/16</span>
-                <div class="notice-text">
-                    ・アプリ内にお問い合わせフォームを実装しました。<br>
-                    ・手動入力時の初期値を空欄に変更しました（改善）。
                 </div>
             </li>
         </ul>
@@ -530,159 +540,12 @@
         </div>
     </div>
 
-    <!-- おすすめアイテム -->
+    <!-- v83修正: おすすめアイテム全体を審査中だけ隠す -->
+    <!--
     <div id="recommendOverlay" style="background:#f2f2f7;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <h2 style="margin:0; color:#00796b;">🛒 おすすめアイテム</h2>
-            <button onclick="closeOverlay('recommendOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button>
-        </div>
-        
-        <!-- ★ 文言変更箇所: Amazon指定の文章を追加 -->
-        <div style="background:#fff8e1; padding:12px; border-radius:8px; border:1px solid #ffe082; margin-bottom:15px;">
-            <p style="font-size:11px; line-height:1.4; color:#666; margin:0;">
-                <b>【PR】</b><br>Amazonのアソシエイトとして、PFCろぐは適格販売により収入を得ています。<br>※以下のリンク経由で商品を購入いただくと、売上の一部が還元されアプリの維持・改善に役立てられます。
-            </p>
-        </div>
-
-        <p style="font-size:13px; color:#666; margin-bottom:10px; line-height:1.5;">日々のボディメイクを効率化するために、開発者が実際に使っているおすすめアイテムです。</p>
-        
-        <!-- ★ rel="sponsored noopener" の追加箇所 (すべてのアフィリエイトリンクに適用) -->
-        <h3 class="genre-title">💊 サプリメント</h3>
-        <div class="affiliate-card">
-            <div class="affiliate-icon-container">🥤</div>
-            <div class="affiliate-content">
-                <div class="affiliate-title">REYS ホエイプロテイン</div>
-                <div class="affiliate-desc">筋トレYouTuberの山澤さん監修。水に溶けやすくダマにならず、非常に美味しくて愛飲しています。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4fiO5Jt" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a></div>
-            </div>
-        </div>
-        <div class="affiliate-card">
-            <div class="affiliate-icon-container">🥤</div>
-            <div class="affiliate-content">
-                <div class="affiliate-title">VITAS ホエイプロテイン</div>
-                <div class="affiliate-desc">フルーツ系からラテ系まで、美味しさに徹底的にこだわったプロテイン。ダマになりにくく日々のタンパク質補給に最適です。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/3ReubHi" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hYrfs" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
-            </div>
-        </div>
-        <div class="affiliate-card">
-            <div class="affiliate-icon-container">🥤</div>
-            <div class="affiliate-content">
-                <div class="affiliate-title">エクスプロージョン ホエイプロテイン</div>
-                <div class="affiliate-desc">大容量3kgでコスパ最強。日々のトレーニングやダイエットの置き換えなど、気兼ねなくガンガン飲めるプロテインです。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4yomqPK" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hgtaDY" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
-            </div>
-        </div>
-        <div class="affiliate-card">
-            <div class="affiliate-icon-container">🥤</div>
-            <div class="affiliate-content">
-                <div class="affiliate-title">アルプロン ホエイプロテイン</div>
-                <div class="affiliate-desc">国内製造で安心の高品質。フレーバーの種類が豊富で飲みやすく、日々のタンパク質補給やダイエットのサポートにおすすめです。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/3ThEdIo" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hPicGh" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
-            </div>
-        </div>
-        <div class="affiliate-card">
-            <div class="affiliate-icon-container">🥤</div>
-            <div class="affiliate-content">
-                <div class="affiliate-title">マイプロテイン ホエイプロテイン</div>
-                <div class="affiliate-desc">世界中で愛される定番プロテイン。フレーバーが非常に豊富で、日々のタンパク質補給のコスパも抜群です。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://a.r10.to/hPDSw1" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
-            </div>
-        </div>
-        <div class="affiliate-card">
-            <div class="affiliate-icon-container">🥤</div>
-            <div class="affiliate-content">
-                <div class="affiliate-title">REYS EAA</div>
-                <div class="affiliate-desc">必須アミノ酸9種類を美味しく手軽に補給できるサプリ。トレーニング中の水分・栄養補給に最適です。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/3TDydd3" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a></div>
-            </div>
-        </div>
-        <div class="affiliate-card">
-            <div class="affiliate-icon-container">💊</div>
-            <div class="affiliate-content">
-                <div class="affiliate-title">REYS クレアチン</div>
-                <div class="affiliate-desc">高純度で水に溶けやすいクレアチン。トレーニングのパフォーマンス向上や筋力アップをしっかりサポートしてくれます。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4vABxTS" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a></div>
-            </div>
-        </div>
-        <div class="affiliate-card">
-            <div class="affiliate-icon-container">💊</div>
-            <div class="affiliate-content">
-                <div class="affiliate-title">VITAS ビタパワー (マルチビタミン)</div>
-                <div class="affiliate-desc">12種類のビタミンをはじめ、マカや亜鉛など様々な栄養素をまとめて摂取できるサプリ。味が美味しくて毎日続けやすいのが特徴です。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4gJEFJn" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/h50q7O" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
-            </div>
-        </div>
-
-        <h3 class="genre-title">🍠 ヘルシー食品</h3>
-        <div class="affiliate-card">
-            <div class="affiliate-icon-container">🍠</div>
-            <div class="affiliate-content">
-                <div class="affiliate-title">焼き芋</div>
-                <div class="affiliate-desc">低GIで食物繊維が豊富な自然のスイーツ。美味しく手軽に良質な炭水化物（C）を補給でき、ダイエットの強い味方です。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/44xDPrO" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hgGI6I" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
-            </div>
-        </div>
-        <div class="affiliate-card">
-            <div class="affiliate-icon-container">🥣</div>
-            <div class="affiliate-content">
-                <div class="affiliate-title">クエーカー オートミール</div>
-                <div class="affiliate-desc">食物繊維が豊富で低GIな定番オートミール。腹持ちが良く、ダイエット中の良質な炭水化物（C）補給にぴったりです。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4wIg4cn" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hPXYWT" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
-            </div>
-        </div>
-
-        <h3 class="genre-title">🏋️ トレーニングアイテム</h3>
-        <div class="affiliate-card">
-            <div class="affiliate-icon-container">🧤</div>
-            <div class="affiliate-content">
-                <div class="affiliate-title">ALLOUT パワーグリップ</div>
-                <div class="affiliate-desc">背中のトレーニングの必需品。握力の消耗を防ぎ、狙った筋肉を限界まで追い込むことができます。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4gNZEe5" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/h8mRz5" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
-            </div>
-        </div>
-        <div class="affiliate-card">
-            <div class="affiliate-icon-container">💪</div>
-            <div class="affiliate-content">
-                <div class="affiliate-title">ALLOUT エルボースリーブ</div>
-                <div class="affiliate-desc">プレス系の種目で肘をしっかり保護・サポート。関節の負担を減らし、高重量のトレーニングを安全に行えます。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4pvjEV8" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hksa22" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
-            </div>
-        </div>
-        <div class="affiliate-card">
-            <div class="affiliate-icon-container">✊</div>
-            <div class="affiliate-content">
-                <div class="affiliate-title">ALLOUT リストラップ</div>
-                <div class="affiliate-desc">手首を強力に固定し、ベンチプレスなどのプッシュ系種目でフォームを安定させ、ケガを予防する重要アイテムです。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4bttKjk" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/h8mRXJ" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
-            </div>
-        </div>
-        <div class="affiliate-card">
-            <div class="affiliate-icon-container">🫙</div>
-            <div class="affiliate-content">
-                <div class="affiliate-title">VITAS プロテインシェイカー 1000ml</div>
-                <div class="affiliate-desc">ワンプッシュで開く大容量のドリンクボトル。漏れにくく持ち運びに便利で、プロテインやEAAのシェイクに最適です。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4pjAvKe" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a><a href="https://a.r10.to/hYMsit" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#bf0000; flex:1;">楽天市場</a></div>
-            </div>
-        </div>
-        <div class="affiliate-card">
-            <div class="affiliate-icon-container">🫙</div>
-            <div class="affiliate-content">
-                <div class="affiliate-title">マイプロテイン シェイカー</div>
-                <div class="affiliate-desc">ダマになりにくいブレンダーボール付きの定番シェイカー。プロテインやEAAをしっかり溶かすことができます。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4wIP2lb" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a></div>
-            </div>
-        </div>
-
-        <h3 class="genre-title">👕 アパレル</h3>
-        <div class="affiliate-card">
-            <div class="affiliate-icon-container">👕</div>
-            <div class="affiliate-content">
-                <div class="affiliate-title">[EVANE] エバン トレーニング タンクトップ</div>
-                <div class="affiliate-desc">4WAYストレッチとドライタッチ素材で快適な着心地。ハードなトレーニング時にも動きを妨げず、しっかりサポートします。</div>
-                <div style="display: flex; gap: 8px;"><a href="https://amzn.to/4aRC10h" target="_blank" rel="sponsored noopener" class="affiliate-btn" style="background:#ff9500; flex:1;">Amazon</a></div>
-            </div>
-        </div>
+        ...
     </div>
+    -->
 
     <!-- 仕様説明 -->
     <div id="specOverlay">
