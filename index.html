@@ -188,8 +188,6 @@
     <div class="header-menu">
         <div class="btn-header" onclick="openMonthlyView()" style="background: #e3f2fd; color: #007AFF; border: 1px solid #90caf9; grid-column: 1 / -1;">📅 月履歴</div>
         <div class="btn-header" onclick="openOverlay('customFoodOverlay')" style="background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; grid-column: 1 / -1;">🛠 食材・セット管理</div>
-        <!-- v83修正: アフィリエイトボタンを審査中だけ隠す -->
-        <!-- <div class="btn-header" onclick="openOverlay('recommendOverlay')" style="grid-column: 1 / -1; background: #e0f2f1; color: #00796b; border: 1px solid #80cbc4;">🛒 おすすめアイテム</div> -->
     </div>
 
     <div id="guestWarningBanner" style="display:none; background:#fff3e0; border:1px solid #ffcc80; padding:12px; margin-bottom:15px; border-radius:10px; font-size:13px; color:#e65100;">
@@ -277,25 +275,33 @@
 
     <div id="mealContainer"></div>
     
-    <!-- v83 追加コンテンツ: AdSense審査突破用SEOテキスト -->
+    <!-- 追加コンテンツ: AdSense審査突破用SEOテキスト -->
     <div class="seo-content-block">
-        <h2>PFC計算・カロリー計算の基礎知識</h2>
-        <p>「PFCろぐ」は、日々の食事記録を通じてダイエットやボディメイクを成功に導くための無料PFC計算・カロリー管理アプリです。健康的な減量や筋力アップを目指すには、ただ食事量を減らすのではなく、「何をどれくらい食べるか」というPFCバランスの最適化が最も重要です。</p>
+        <h2>ダイエットを成功に導くPFCバランスとカロリー計算の重要性</h2>
+        <p>「PFCろぐ」は、日々の食事記録を通じてダイエットやボディメイクを成功に導くための無料PFC計算・カロリー管理アプリです。健康的な減量や筋力アップを目指すには、ただ闇雲に食事量を減らすのではなく、「何をどれくらい食べるか」というPFCバランス（マクロ栄養素）の最適化が最も重要となります。</p>
         
         <h3>TDEE（総消費カロリー）とは？</h3>
-        <p>TDEE（Total Daily Energy Expenditure）とは、基礎代謝に日々の活動量（仕事や運動など）を掛け合わせた「1日の総消費カロリー」のことです。ダイエットの基本は「摂取カロリー ＜ 消費カロリー（TDEE）」の状態を作ることです。<br>当アプリでは、世界基準である高精度な「ミフリン・サンジオール方程式」を採用し、ユーザーの年齢・身長・体重・活動レベルから正確なTDEEを自動算出します。これにより、極端な食事制限を防ぎ、リバウンドのリスクを最小限に抑えた健全な目標設定が可能です。</p>
+        <p>TDEE（Total Daily Energy Expenditure）とは、基礎代謝に日々の活動量（仕事での動きや運動など）を掛け合わせた「1日の総消費カロリー」を指します。ダイエットの基本原則は「摂取カロリー ＜ 消費カロリー（TDEE）」の状態を作ることです。<br>当アプリでは、世界中のフィットネス現場や医療機関で採用されている高精度な「ミフリン・サンジオール方程式」を採用し、ユーザーの年齢・身長・体重・活動レベルから正確なTDEEを自動算出します。これにより、極端な食事制限による代謝の低下を防ぎ、リバウンドのリスクを最小限に抑えた健全な目標設定が可能となります。</p>
         
-        <h3>マクロ栄養素（PFCバランス）の役割</h3>
-        <p>カロリー制限だけでなく、以下の3大栄養素（PFC）のバランスを整えることが美しいボディラインを作る鍵となります。</p>
+        <h3>PFCバランス（マクロ栄養素）の役割と理想的な割合</h3>
+        <p>総カロリーの管理だけでなく、以下の3大栄養素（PFC）のバランスを整えることが、筋肉を維持しつつ脂肪を落とす美しいボディライン作りの鍵となります。</p>
         <ul>
-            <li><b>Protein（タンパク質）:</b> 筋肉や皮膚、髪の毛の材料となる最重要栄養素です。1gあたり4kcal。ダイエット中は筋肉量の低下を防ぐため、体重1kgあたり1.5g〜2.0gの摂取が推奨されます。</li>
-            <li><b>Fat（脂質）:</b> ホルモンバランスの維持や細胞膜の形成に不可欠です。1gあたり9kcalとカロリーが高いため過剰摂取には注意が必要ですが、総カロリーの20%〜30%は最低限確保する必要があります。</li>
-            <li><b>Carbohydrate（炭水化物）:</b> 脳や筋肉を動かすためのメインエネルギー源です。1gあたり4kcal。タンパク質と脂質を計算した後の「残り全カロリー」を炭水化物に割り当てるのが一般的です。適量な炭水化物はトレーニングのパフォーマンスを向上させます。</li>
+            <li><b>Protein（タンパク質）:</b> 筋肉、皮膚、髪の毛などの材料となる最も重要な栄養素です。1gあたり4kcalのエネルギーを持ちます。ダイエット中はエネルギー不足により筋肉が分解されやすくなるため、筋肉量の低下を防ぐ目的で、体重1kgあたり1.5g〜2.0g程度の十分な摂取が推奨されます。</li>
+            <li><b>Fat（脂質）:</b> ホルモンバランスの正常な維持や細胞膜の形成、脂溶性ビタミンの吸収に不可欠な栄養素です。1gあたり9kcalとカロリーが高いため過剰摂取には注意が必要ですが、極端に制限すると肌荒れや体調不良の原因となります。総摂取カロリーの20%〜30%は最低限確保する必要があります。</li>
+            <li><b>Carbohydrate（炭水化物）:</b> 脳や体を動かすためのメインエネルギー源です。1gあたり4kcal。タンパク質と脂質の必要量を計算した後の「残りのカロリー」を炭水化物に割り当てるのが一般的な設定方法です。適切な量の炭水化物を摂取することで、トレーニングのパフォーマンスを向上させ、日常生活の疲労を防ぐことができます。</li>
         </ul>
 
-        <h3>PFCろぐの効果的な使い方</h3>
-        <p>本アプリは「シンプルさ」を追求しています。面倒な初期設定は不要で、プロフィールを入力するだけで即座に目標PFCが設定されます。よく食べる食事は「マイセット」として登録することで、ワンタップで日々の記録が完了します。毎日の体重変化や目標達成シミュレーション機能も活用し、モチベーションを維持しながら理想の体型を目指しましょう。</p>
+        <h3>PFCろぐを使った効果的なダイエット方法</h3>
+        <p>本アプリは「毎日ストレスなく続けられるシンプルさ」を追求して開発されました。面倒な初期設定は一切不要で、プロフィールを入力するだけで即座にあなた専用の目標PFCが設定されます。よく食べる食事は「マイセット」として登録することで、ワンタップで日々の食事記録が完了します。<br>また、毎日の体重変化や「目標達成シミュレーション機能」を活用することで、目標体重に到達するまでの目安日数が可視化され、モチベーションを高く保ちながら理想の体型を目指すことができます。健康的な食事管理のパートナーとして、ぜひ毎日ご活用ください。</p>
     </div>
+
+    <!-- 審査ロボット用のフッター情報 -->
+    <footer style="margin-top: 40px; padding: 20px 15px; text-align: center; font-size: 11px; color: #888; border-top: 1px solid #ddd; line-height: 1.6; background: #fff;">
+        <p><strong>お問い合わせ・運営者情報</strong><br>
+        taiyo.fish000419@gmail.com</p>
+        <p>当サイトではGoogle AdSenseによる広告配信、およびGoogle Analyticsを利用したアクセス解析を行っております。データの収集にはCookieを使用しています。詳細は<a href="#" onclick="openOverlay('privacyOverlay'); return false;" style="color: #007AFF;">プライバシーポリシー</a>をご確認ください。</p>
+        <p>© 2026 PFCろぐ</p>
+    </footer>
 
     <button class="btn-add-meal" onclick="addNewMeal()">＋ 新しい食事枠を追加</button>
 
@@ -372,14 +378,11 @@
             広告配信事業者は、ユーザーの興味に応じた広告を表示するためにクッキー（Cookie）を使用することがあります。<br>
             クッキー（Cookie）を無効にする設定、およびGoogleアドセンスに関する詳細は「<a href="https://policies.google.com/technologies/ads?hl=ja" target="_blank" rel="noopener">広告 – ポリシーと規約 – Google</a>」をご覧ください。</p>
         </div>
-        <!-- v83修正: 審査中はアフィリエイトの記述も念のため隠す -->
-        <!--
         <div class="manual-section">
-            <h3>アフィリエイトプログラムについて</h3>
-            <p>当アプリは、アフィリエイトプログラム（Amazonアソシエイト、楽天アフィリエイト等）に参加しています。<br>
-            リンク先での購入により、当アプリが適格販売として紹介料を獲得することがあります。その際、行動履歴等がCookieを通じて各プログラムの提供元に収集される場合があります。</p>
+            <h3>お問い合わせ窓口</h3>
+            <p>本アプリに関するお問い合わせや不具合の報告は、以下の管理者メールアドレスまでお願いいたします。<br>
+            taiyo.fish000419@gmail.com</p>
         </div>
-        -->
     </div>
 
     <!-- お知らせ・お問い合わせ画面 -->
@@ -392,7 +395,8 @@
         <div class="card" style="background:#1c1c1e; color:#fff; border-radius:15px; padding:20px; box-shadow:0 10px 20px rgba(0,0,0,0.1);">
             <div style="text-align:center; margin-bottom:20px;">
                 <h3 style="margin:0; font-size:18px;">📫 お問い合わせ</h3>
-                <p style="font-size:12px; color:#aaa; margin-top:5px;">機能のご要望・不具合の報告などお気軽にどうぞ。</p>
+                <p style="font-size:12px; color:#aaa; margin-top:5px;">機能のご要望・不具合の報告などお気軽にどうぞ。<br>
+                管理者メールアドレス: taiyo.fish000419@gmail.com</p>
             </div>
             
             <label class="input-label" style="color:#ddd; margin-bottom:8px;">お問い合わせの種類 <span style="color:#ff3b30;">*</span></label>
@@ -539,13 +543,6 @@
             <p>プロフィールを入力すると「TDEE(総消費カロリー)」を算出し、あなたに最適なPFCバランスを設定します。無謀な目標には安全装置（警告・推奨プラン）が作動するため、健康的にボディメイクが可能です。</p>
         </div>
     </div>
-
-    <!-- v83修正: おすすめアイテム全体を審査中だけ隠す -->
-    <!--
-    <div id="recommendOverlay" style="background:#f2f2f7;">
-        ...
-    </div>
-    -->
 
     <!-- 仕様説明 -->
     <div id="specOverlay">
