@@ -3,34 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>プライバシーポリシー - PFCろぐ</title>
+    <title>プライバシーポリシー・免責事項 - PFCろぐ</title>
     <style>
         :root { --primary: #007AFF; --bg: #f2f2f7; --text: #1c1c1e; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0 auto; padding: 20px; max-width: 500px; line-height: 1.6; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0 auto; padding: 0 0 50px 0; max-width: 500px; line-height: 1.6; }
+        .global-nav { display: flex; justify-content: center; gap: 20px; padding: 15px; background: #fff; border-bottom: 1px solid #ddd; position: sticky; top: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .global-nav a { color: #555; text-decoration: none; font-size: 14px; font-weight: bold; }
+        .global-nav a.active { color: var(--primary); }
+        .content-area { padding: 20px; }
         .card { background: #fff; border-radius: 15px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         h1 { font-size: 20px; color: var(--primary); border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; }
         h2 { font-size: 16px; margin-top: 20px; color: #333; border-left: 4px solid var(--primary); padding-left: 10px; }
         p { font-size: 14px; color: #444; }
-        a { color: var(--primary); text-decoration: underline; }
-        .back-btn { display: inline-block; margin-top: 20px; padding: 12px 20px; background: var(--primary); color: #fff; border-radius: 10px; text-align: center; text-decoration: none; font-weight: bold; }
+        a.link-text { color: var(--primary); text-decoration: underline; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1>プライバシーポリシー</h1>
-        
-        <h2>アクセス解析ツールについて</h2>
-        <p>当アプリでは、Googleによるアクセス解析ツール「Googleアナリティクス」を利用しています。このGoogleアナリティクスはトラフィックデータの収集のためにクッキー（Cookie）を使用しております。トラフィックデータは匿名で収集されており、個人を特定するものではありません。</p>
+    <!-- ロボット審査用ナビゲーション -->
+    <nav class="global-nav">
+        <a href="index.html">ホーム</a>
+        <a href="index.html#about-pfc">PFCとは</a>
+        <a href="privacy.html" class="active">プライバシーポリシー</a>
+    </nav>
 
-        <h2>広告の配信について</h2>
-        <p>当アプリでは、第三者配信の広告サービス「Google AdSense」を利用しております。広告配信事業者は、ユーザーの興味に応じた広告を表示するためにクッキー（Cookie）を使用することがあります。<br>
-        クッキー（Cookie）を無効にする設定、およびGoogleアドセンスに関する詳細は「<a href="https://policies.google.com/technologies/ads?hl=ja" target="_blank" rel="noopener">広告 – ポリシーと規約 – Google</a>」をご覧ください。</p>
+    <div class="content-area">
+        <div class="card">
+            <h1>プライバシーポリシー</h1>
+            
+            <h2>アクセス解析ツールについて</h2>
+            <p>当アプリでは、Googleによるアクセス解析ツール「Googleアナリティクス」を利用しています。このGoogleアナリティクスはトラフィックデータの収集のためにクッキー（Cookie）を使用しております。トラフィックデータは匿名で収集されており、個人を特定するものではありません。</p>
 
-        <h2>お問い合わせ窓口</h2>
-        <p>本アプリに関するお問い合わせや不具合の報告は、以下の管理者メールアドレスまでお願いいたします。<br>
-        taiyo.fish000419@gmail.com</p>
+            <h2>広告の配信について</h2>
+            <p>当アプリでは、第三者配信の広告サービス「Google AdSense」を利用しております。広告配信事業者は、ユーザーの興味に応じた広告を表示するためにクッキー（Cookie）を使用することがあります。<br>
+            クッキー（Cookie）を無効にする設定、およびGoogleアドセンスに関する詳細は「<a href="https://policies.google.com/technologies/ads?hl=ja" target="_blank" rel="noopener" class="link-text">広告 – ポリシーと規約 – Google</a>」をご覧ください。</p>
 
-        <a href="index.html" class="back-btn">← アプリに戻る</a>
+            <h2>免責事項（健康・医療に関する注意事項）</h2>
+            <p>本アプリが提供するカロリー計算およびPFCバランスの数値は、一般的な計算式（ミフリン・サンジオール方程式など）に基づいた目安であり、医学的なアドバイスや診断を提供するものではありません。<br>
+            持病のある方、妊娠中の方、または極端なダイエットを行う場合は、必ず医師や管理栄養士などの専門家にご相談の上、ご自身の責任においてご利用ください。本アプリの利用によって生じたトラブルや健康被害について、運営者は一切の責任を負いません。</p>
+
+            <h2>お問い合わせ窓口</h2>
+            <p>本アプリに関するお問い合わせや不具合の報告は、以下の管理者メールアドレスまでお願いいたします。<br>
+            taiyo.fish000419@gmail.com</p>
+        </div>
     </div>
 </body>
 </html>
