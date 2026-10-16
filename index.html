@@ -24,12 +24,11 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-535TETD22K'); // ※取得した測定IDが入ります
+      gtag('config', 'G-535TETD22K');
     </script>
 
     <!-- Google AdSense 広告表示・審査用コード -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9352585638973205" crossorigin="anonymous"></script>
-    <!-- ※取得したパブリッシャーIDが入ります -->
 
     <script>
         (function() {
@@ -93,11 +92,17 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { --primary: #007AFF; --accent: #deff9a; --bg: #f2f2f7; --card-bg: #ffffff; --text: #1c1c1e; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0 auto; padding: calc(env(safe-area-inset-top) + 15px) 15px 120px 15px; max-width: 500px; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0 auto; padding: 0 0 120px 0; max-width: 500px; }
+        .app-container { padding: 15px; }
+        
+        /* ロボット用グローバルナビゲーション */
+        .global-nav { display: flex; justify-content: center; gap: 20px; padding: 15px; background: #fff; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .global-nav a { color: #555; text-decoration: none; font-size: 14px; font-weight: bold; }
+        .global-nav a.active { color: var(--primary); }
+
         .card { background: var(--card-bg); border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .target-card { background: #1c1c1e; color: #fff; }
-        
-        .total-card { border: 2px solid var(--primary); position: sticky; top: 10px; z-index: 100; }
+        .total-card { border: 2px solid var(--primary); position: sticky; top: 60px; z-index: 100; }
         
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 16px; box-sizing: border-box; background: #f9f9f9; margin-bottom: 10px; }
         button { width: 100%; padding: 14px; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; }
@@ -140,7 +145,7 @@
         .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         .profile-grid input, .profile-grid select { margin-bottom: 0; }
         
-        #monthlyOverlay, #customFoodOverlay, #manualOverlay, #specOverlay, #cloudOverlay, #settingsOverlay, #noticeOverlay, #privacyOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index:2000; padding:20px; box-sizing:border-box; overflow-y:auto; }
+        #monthlyOverlay, #customFoodOverlay, #manualOverlay, #specOverlay, #cloudOverlay, #settingsOverlay, #noticeOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index:2000; padding:20px; box-sizing:border-box; overflow-y:auto; }
 
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 10px; }
         .calendar-header-day { text-align: center; font-size: 12px; font-weight: bold; color: #666; padding: 5px 0; border-bottom: 1px solid #ddd; }
@@ -169,7 +174,6 @@
         .type-btn { padding: 12px 15px; border: 1px solid #444; border-radius: 8px; font-size: 14px; cursor: pointer; background: #2c2c2e; color: #ccc; transition: 0.2s; margin-bottom: 8px;}
         .type-btn.active { border-color: #007AFF; background: rgba(0,122,255,0.15); color: #fff; font-weight: bold; }
         
-        /* v83 SEO用コンテンツスタイル */
         .seo-content-block { background: #fff; border-radius: 15px; padding: 20px; margin-top: 30px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .seo-content-block h2 { color: var(--primary); font-size: 20px; margin-top: 0; margin-bottom: 15px; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; }
         .seo-content-block h3 { color: #333; font-size: 16px; margin-top: 20px; margin-bottom: 10px; border-left: 4px solid var(--primary); padding-left: 10px; }
@@ -180,128 +184,136 @@
 </head>
 <body>
 
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-top:10px;">
-        <h2 style="margin: 0;">💪 PFCろぐ</h2>
-        <div onclick="openOverlay('settingsOverlay')" style="font-size:24px; cursor:pointer; background:#fff; border-radius:50%; width:44px; height:44px; display:flex; justify-content:center; align-items:center; box-shadow:0 2px 6px rgba(0,0,0,0.1);">⚙️</div>
-    </div>
+    <!-- ロボット審査用ナビゲーション -->
+    <nav class="global-nav">
+        <a href="index.html" class="active">ホーム</a>
+        <a href="#about-pfc">PFCとは</a>
+        <a href="privacy.html">プライバシーポリシー</a>
+    </nav>
 
-    <div class="header-menu">
-        <div class="btn-header" onclick="openMonthlyView()" style="background: #e3f2fd; color: #007AFF; border: 1px solid #90caf9; grid-column: 1 / -1;">📅 月履歴</div>
-        <div class="btn-header" onclick="openOverlay('customFoodOverlay')" style="background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; grid-column: 1 / -1;">🛠 食材・セット管理</div>
-    </div>
-
-    <div id="guestWarningBanner" style="display:none; background:#fff3e0; border:1px solid #ffcc80; padding:12px; margin-bottom:15px; border-radius:10px; font-size:13px; color:#e65100;">
-        <b>⚠️ データの消失にご注意ください</b><br>
-        現在ローカル保存モードです。ブラウザの履歴消去や機種変更でデータが消えてしまいます。<br>
-        <span onclick="openOverlay('cloudOverlay')" style="color:var(--primary); text-decoration:underline; font-weight:bold; cursor:pointer;">こちらからアカウント登録（無料）</span>すると、クラウドに自動保存されます。
-    </div>
-
-    <div class="card" style="padding: 10px 20px;">
-        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
-            <button onclick="changeDate(-1)" style="margin:0; padding:12px; flex:1; background:#eee; color:#333;">◀</button>
-            <input type="date" id="datePicker" onchange="onDateChanged()" style="margin:0; text-align:center; flex:2;">
-            <button onclick="changeDate(1)" style="margin:0; padding:12px; flex:1; background:#eee; color:#333;">▶</button>
-        </div>
-    </div>
-
-    <div class="card target-card">
-        <h3>🎯 目標自動計算 (精密版)</h3>
-        <div class="profile-grid">
-            <select id="genderSelect" onchange="updateGoalOptions()"><option value="male">男性</option><option value="female">女性</option></select>
-            <input type="number" id="ageInput" placeholder="年齢">
-            <input type="number" id="heightInput" placeholder="身長(cm)" oninput="calculateSimulation()">
-            <input type="number" id="weightInput" placeholder="体重(kg)" oninput="calculateSimulation()">
-        </div>
-        <label class="input-label" style="color:#aaa; font-size:12px;">仕事・日常生活の強度</label>
-        <select id="jobIntensity">
-            <option value="1.2">デスクワーク中心 (生活活動係数1.2)</option>
-            <option value="1.4">立ち仕事・営業 (生活活動係数1.4)</option>
-            <option value="1.6">肉体労働・現場層 (生活活動係数1.6)</option>
-        </select>
-        <label class="input-label" style="color:#aaa; margin-top:10px; font-size:12px;">運動（筋トレ等）の頻度</label>
-        <select id="exerciseFrequency">
-            <option value="0">運動はほぼしない (+0.0)</option>
-            <option value="0.15">週1〜2回 (+0.15)</option>
-            <option value="0.3">週3〜5回・しっかり (+0.3)</option>
-            <option value="0.45">毎日・ハードに (+0.45)</option>
-        </select>
-        <label class="input-label" style="color:#aaa; margin-top:10px; font-size:12px;">現在の目的</label>
-        <select id="goalSelect"></select>
-        
-        <div id="warningMessage"></div>
-
-        <button onclick="calculatePrecisionTDEE()" style="background:var(--accent); color:#000; margin-top:15px;">精密計算して保存</button>
-        
-        <div id="currentGoalsDisplay" style="margin-top:15px; background:rgba(255,255,255,0.1); padding:15px; border-radius:8px; font-size:14px; display:none;">
-            <div style="text-align:center; font-size:12px; color:#ddd; margin-bottom:5px;" id="displayMetabolism"></div>
-            <div style="text-align:center; font-weight:bold; margin-bottom:8px; color:var(--accent);">現在の設定目標</div>
-            <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>目標総カロリー</span><b id="displayTargetCal">0 kcal</b></div>
-            <hr style="border-color:rgba(255,255,255,0.2);">
-            <div style="display:flex; justify-content:space-between; margin-top:5px;"><span style="color:#ff9500;" id="displayPLabel">P</span><b id="displayTargetP">0 g</b></div>
-            <div style="display:flex; justify-content:space-between; margin-top:5px;"><span style="color:#ff3b30;" id="displayFLabel">F</span><b id="displayTargetF">0 g</b></div>
-            <div style="display:flex; justify-content:space-between; margin-top:5px;"><span style="color:#34c759;">C (残り全カロリー)</span><b id="displayTargetC">0 g</b></div>
+    <div class="app-container">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h1 style="margin: 0; font-size: 24px;">💪 PFCろぐ</h1>
+            <div onclick="openOverlay('settingsOverlay')" style="font-size:24px; cursor:pointer; background:#fff; border-radius:50%; width:44px; height:44px; display:flex; justify-content:center; align-items:center; box-shadow:0 2px 6px rgba(0,0,0,0.1);">⚙️</div>
         </div>
 
-        <div id="adviceMessage"></div>
+        <div class="header-menu">
+            <div class="btn-header" onclick="openMonthlyView()" style="background: #e3f2fd; color: #007AFF; border: 1px solid #90caf9; grid-column: 1 / -1;">📅 月履歴</div>
+            <div class="btn-header" onclick="openOverlay('customFoodOverlay')" style="background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; grid-column: 1 / -1;">🛠 食材・セット管理</div>
+        </div>
 
-        <div id="simulationSection" style="display:none; margin-top:20px; background:rgba(255,255,255,0.05); padding:15px; border-radius:8px; border:1px solid rgba(255,255,255,0.1);">
-            <h4 style="margin:0 0 12px 0; color:var(--accent); font-size:14px; text-align:center;">🏁 目標達成シミュレーション</h4>
-            <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:15px;">
-                <span style="font-size:13px; color:#ddd;">目標体重:</span>
-                <input type="number" id="targetWeightInput" placeholder="例: 65" step="0.1" style="width:100px; margin:0; padding:8px; text-align:center; background:#2c2c2e; border:1px solid #555; color:#fff;" oninput="calculateSimulation()">
-                <span style="font-size:13px; color:#ddd;">kg</span>
-            </div>
-            <div id="simulationResult" style="font-size:13px; color:#ccc; line-height:1.6; display:none;">
+        <div id="guestWarningBanner" style="display:none; background:#fff3e0; border:1px solid #ffcc80; padding:12px; margin-bottom:15px; border-radius:10px; font-size:13px; color:#e65100;">
+            <b>⚠️ データの消失にご注意ください</b><br>
+            現在ローカル保存モードです。ブラウザの履歴消去や機種変更でデータが消えてしまいます。<br>
+            <span onclick="openOverlay('cloudOverlay')" style="color:var(--primary); text-decoration:underline; font-weight:bold; cursor:pointer;">こちらからアカウント登録（無料）</span>すると、クラウドに自動保存されます。
+        </div>
+
+        <div class="card" style="padding: 10px 20px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+                <button onclick="changeDate(-1)" style="margin:0; padding:12px; flex:1; background:#eee; color:#333;">◀</button>
+                <input type="date" id="datePicker" onchange="onDateChanged()" style="margin:0; text-align:center; flex:2;">
+                <button onclick="changeDate(1)" style="margin:0; padding:12px; flex:1; background:#eee; color:#333;">▶</button>
             </div>
         </div>
-    </div>
 
-    <div class="card total-card">
-        <div style="text-align:center; font-size:12px; margin-bottom:5px; opacity:0.7;" id="selectedDateLabel"></div>
-        <div class="calorie-big"><span id="dailyCal">0</span> / <span id="goalCal">0</span> <small>kcal</small></div>
-        <div class="pfc-bars">
-            <div class="pfc-bar-row"><div class="pfc-bar-label" style="color:#ff9500;">P</div><div class="pfc-bar-value"><span id="pSum">0</span> / <span id="pGoal">0</span>g</div><div class="bar-bg"><div class="bar-fill bar-p" id="pBar" style="width:0%;"></div></div></div>
-            <div class="pfc-bar-row"><div class="pfc-bar-label" style="color:#ff3b30;">F</div><div class="pfc-bar-value"><span id="fSum">0</span> / <span id="fGoal">0</span>g</div><div class="bar-bg"><div class="bar-fill bar-f" id="fBar" style="width:0%;"></div></div></div>
-            <div class="pfc-bar-row"><div class="pfc-bar-label" style="color:#34c759;">C</div><div class="pfc-bar-value"><span id="cSum">0</span> / <span id="cGoal">0</span>g</div><div class="bar-bg"><div class="bar-fill bar-c" id="cBar" style="width:0%;"></div></div></div>
+        <div class="card target-card">
+            <h3>🎯 目標自動計算 (精密版)</h3>
+            <div class="profile-grid">
+                <select id="genderSelect" onchange="updateGoalOptions()"><option value="male">男性</option><option value="female">女性</option></select>
+                <input type="number" id="ageInput" placeholder="年齢">
+                <input type="number" id="heightInput" placeholder="身長(cm)" oninput="calculateSimulation()">
+                <input type="number" id="weightInput" placeholder="体重(kg)" oninput="calculateSimulation()">
+            </div>
+            <label class="input-label" style="color:#aaa; font-size:12px;">仕事・日常生活の強度</label>
+            <select id="jobIntensity">
+                <option value="1.2">デスクワーク中心 (生活活動係数1.2)</option>
+                <option value="1.4">立ち仕事・営業 (生活活動係数1.4)</option>
+                <option value="1.6">肉体労働・現場層 (生活活動係数1.6)</option>
+            </select>
+            <label class="input-label" style="color:#aaa; margin-top:10px; font-size:12px;">運動（筋トレ等）の頻度</label>
+            <select id="exerciseFrequency">
+                <option value="0">運動はほぼしない (+0.0)</option>
+                <option value="0.15">週1〜2回 (+0.15)</option>
+                <option value="0.3">週3〜5回・しっかり (+0.3)</option>
+                <option value="0.45">毎日・ハードに (+0.45)</option>
+            </select>
+            <label class="input-label" style="color:#aaa; margin-top:10px; font-size:12px;">現在の目的</label>
+            <select id="goalSelect"></select>
+            
+            <div id="warningMessage"></div>
+
+            <button onclick="calculatePrecisionTDEE()" style="background:var(--accent); color:#000; margin-top:15px;">精密計算して保存</button>
+            
+            <div id="currentGoalsDisplay" style="margin-top:15px; background:rgba(255,255,255,0.1); padding:15px; border-radius:8px; font-size:14px; display:none;">
+                <div style="text-align:center; font-size:12px; color:#ddd; margin-bottom:5px;" id="displayMetabolism"></div>
+                <div style="text-align:center; font-weight:bold; margin-bottom:8px; color:var(--accent);">現在の設定目標</div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>目標総カロリー</span><b id="displayTargetCal">0 kcal</b></div>
+                <hr style="border-color:rgba(255,255,255,0.2);">
+                <div style="display:flex; justify-content:space-between; margin-top:5px;"><span style="color:#ff9500;" id="displayPLabel">P</span><b id="displayTargetP">0 g</b></div>
+                <div style="display:flex; justify-content:space-between; margin-top:5px;"><span style="color:#ff3b30;" id="displayFLabel">F</span><b id="displayTargetF">0 g</b></div>
+                <div style="display:flex; justify-content:space-between; margin-top:5px;"><span style="color:#34c759;">C (残り全カロリー)</span><b id="displayTargetC">0 g</b></div>
+            </div>
+
+            <div id="adviceMessage"></div>
+
+            <div id="simulationSection" style="display:none; margin-top:20px; background:rgba(255,255,255,0.05); padding:15px; border-radius:8px; border:1px solid rgba(255,255,255,0.1);">
+                <h4 style="margin:0 0 12px 0; color:var(--accent); font-size:14px; text-align:center;">🏁 目標達成シミュレーション</h4>
+                <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:15px;">
+                    <span style="font-size:13px; color:#ddd;">目標体重:</span>
+                    <input type="number" id="targetWeightInput" placeholder="例: 65" step="0.1" style="width:100px; margin:0; padding:8px; text-align:center; background:#2c2c2e; border:1px solid #555; color:#fff;" oninput="calculateSimulation()">
+                    <span style="font-size:13px; color:#ddd;">kg</span>
+                </div>
+                <div id="simulationResult" style="font-size:13px; color:#ccc; line-height:1.6; display:none;"></div>
+            </div>
         </div>
-        <div class="action-row">
-            <button class="btn-action" onclick="shareDay()" style="background:#007AFF;">📤 共有</button>
-            <button class="btn-action" onclick="copyDay()" style="background:#5856d6;">📋 コピー</button>
-            <button class="btn-action" onclick="pasteDay()" id="btnPaste" style="background:#ff9500; display:none;">📥 貼付</button>
+
+        <div class="card total-card">
+            <div style="text-align:center; font-size:12px; margin-bottom:5px; opacity:0.7;" id="selectedDateLabel"></div>
+            <div class="calorie-big"><span id="dailyCal">0</span> / <span id="goalCal">0</span> <small>kcal</small></div>
+            <div class="pfc-bars">
+                <div class="pfc-bar-row"><div class="pfc-bar-label" style="color:#ff9500;">P</div><div class="pfc-bar-value"><span id="pSum">0</span> / <span id="pGoal">0</span>g</div><div class="bar-bg"><div class="bar-fill bar-p" id="pBar" style="width:0%;"></div></div></div>
+                <div class="pfc-bar-row"><div class="pfc-bar-label" style="color:#ff3b30;">F</div><div class="pfc-bar-value"><span id="fSum">0</span> / <span id="fGoal">0</span>g</div><div class="bar-bg"><div class="bar-fill bar-f" id="fBar" style="width:0%;"></div></div></div>
+                <div class="pfc-bar-row"><div class="pfc-bar-label" style="color:#34c759;">C</div><div class="pfc-bar-value"><span id="cSum">0</span> / <span id="cGoal">0</span>g</div><div class="bar-bg"><div class="bar-fill bar-c" id="cBar" style="width:0%;"></div></div></div>
+            </div>
+            <div class="action-row">
+                <button class="btn-action" onclick="shareDay()" style="background:#007AFF;">📤 共有</button>
+                <button class="btn-action" onclick="copyDay()" style="background:#5856d6;">📋 コピー</button>
+                <button class="btn-action" onclick="pasteDay()" id="btnPaste" style="background:#ff9500; display:none;">📥 貼付</button>
+            </div>
+            <div id="cloudStatusLabel" style="text-align:center; font-size:11px; margin-top:8px; color:#4caf50; font-weight:bold; display:none;">📳 ローカル保存モード</div>
+            <button onclick="resetDayAll()" style="background:transparent; color:#ff3b30; border:1px solid #ff3b30; padding:8px; font-size:12px; margin-top:10px;">この日の記録をリセット</button>
         </div>
-        <div id="cloudStatusLabel" style="text-align:center; font-size:11px; margin-top:8px; color:#4caf50; font-weight:bold; display:none;">📳 ローカル保存モード</div>
-        <button onclick="resetDayAll()" style="background:transparent; color:#ff3b30; border:1px solid #ff3b30; padding:8px; font-size:12px; margin-top:10px;">この日の記録をリセット</button>
-    </div>
 
-    <div id="mealContainer"></div>
-    
-    <!-- 追加コンテンツ: AdSense審査突破用SEOテキスト -->
-    <div class="seo-content-block">
-        <h2>ダイエットを成功に導くPFCバランスとカロリー計算の重要性</h2>
-        <p>「PFCろぐ」は、日々の食事記録を通じてダイエットやボディメイクを成功に導くための無料PFC計算・カロリー管理アプリです。健康的な減量や筋力アップを目指すには、ただ闇雲に食事量を減らすのではなく、「何をどれくらい食べるか」というPFCバランス（マクロ栄養素）の最適化が最も重要となります。</p>
+        <div id="mealContainer"></div>
         
-        <h3>TDEE（総消費カロリー）とは？</h3>
-        <p>TDEE（Total Daily Energy Expenditure）とは、基礎代謝に日々の活動量（仕事での動きや運動など）を掛け合わせた「1日の総消費カロリー」を指します。ダイエットの基本原則は「摂取カロリー ＜ 消費カロリー（TDEE）」の状態を作ることです。<br>当アプリでは、世界中のフィットネス現場や医療機関で採用されている高精度な「ミフリン・サンジオール方程式」を採用し、ユーザーの年齢・身長・体重・活動レベルから正確なTDEEを自動算出します。これにより、極端な食事制限による代謝の低下を防ぎ、リバウンドのリスクを最小限に抑えた健全な目標設定が可能となります。</p>
-        
-        <h3>PFCバランス（マクロ栄養素）の役割と理想的な割合</h3>
-        <p>総カロリーの管理だけでなく、以下の3大栄養素（PFC）のバランスを整えることが、筋肉を維持しつつ脂肪を落とす美しいボディライン作りの鍵となります。</p>
-        <ul>
-            <li><b>Protein（タンパク質）:</b> 筋肉、皮膚、髪の毛などの材料となる最も重要な栄養素です。1gあたり4kcalのエネルギーを持ちます。ダイエット中はエネルギー不足により筋肉が分解されやすくなるため、筋肉量の低下を防ぐ目的で、体重1kgあたり1.5g〜2.0g程度の十分な摂取が推奨されます。</li>
-            <li><b>Fat（脂質）:</b> ホルモンバランスの正常な維持や細胞膜の形成、脂溶性ビタミンの吸収に不可欠な栄養素です。1gあたり9kcalとカロリーが高いため過剰摂取には注意が必要ですが、極端に制限すると肌荒れや体調不良の原因となります。総摂取カロリーの20%〜30%は最低限確保する必要があります。</li>
-            <li><b>Carbohydrate（炭水化物）:</b> 脳や体を動かすためのメインエネルギー源です。1gあたり4kcal。タンパク質と脂質の必要量を計算した後の「残りのカロリー」を炭水化物に割り当てるのが一般的な設定方法です。適切な量の炭水化物を摂取することで、トレーニングのパフォーマンスを向上させ、日常生活の疲労を防ぐことができます。</li>
-        </ul>
+        <!-- YMYL対策: SEO用コンテンツ -->
+        <div id="about-pfc" class="seo-content-block">
+            <h2>ダイエットを成功に導くPFCバランスとカロリー計算の重要性</h2>
+            <p>「PFCろぐ」は、日々の食事記録を通じてダイエットやボディメイクを成功に導くための無料PFC計算・カロリー管理アプリです。健康的な減量や筋力アップを目指すには、ただ闇雲に食事量を減らすのではなく、「何をどれくらい食べるか」というPFCバランス（マクロ栄養素）の最適化が最も重要となります。</p>
+            
+            <h3>TDEE（総消費カロリー）とは？</h3>
+            <p>TDEE（Total Daily Energy Expenditure）とは、基礎代謝に日々の活動量（仕事での動きや運動など）を掛け合わせた「1日の総消費カロリー」を指します。ダイエットの基本原則は「摂取カロリー ＜ 消費カロリー（TDEE）」の状態を作ることです。<br>当アプリでは、世界中のフィットネス現場や医療機関で採用されている高精度な「ミフリン・サンジオール方程式」を採用し、ユーザーの年齢・身長・体重・活動レベルから正確なTDEEを自動算出します。これにより、極端な食事制限による代謝の低下を防ぎ、リバウンドのリスクを最小限に抑えた健全な目標設定が可能となります。</p>
+            
+            <h3>PFCバランス（マクロ栄養素）の役割と理想的な割合</h3>
+            <p>総カロリーの管理だけでなく、以下の3大栄養素（PFC）のバランスを整えることが、筋肉を維持しつつ脂肪を落とす美しいボディライン作りの鍵となります。</p>
+            <ul>
+                <li><b>Protein（タンパク質）:</b> 筋肉、皮膚、髪の毛などの材料となる最も重要な栄養素です。1gあたり4kcalのエネルギーを持ちます。ダイエット中はエネルギー不足により筋肉が分解されやすくなるため、筋肉量の低下を防ぐ目的で、体重1kgあたり1.5g〜2.0g程度の十分な摂取が推奨されます。</li>
+                <li><b>Fat（脂質）:</b> ホルモンバランスの正常な維持や細胞膜の形成、脂溶性ビタミンの吸収に不可欠な栄養素です。1gあたり9kcalとカロリーが高いため過剰摂取には注意が必要ですが、極端に制限すると肌荒れや体調不良の原因となります。総摂取カロリーの20%〜30%は最低限確保する必要があります。</li>
+                <li><b>Carbohydrate（炭水化物）:</b> 脳や体を動かすためのメインエネルギー源です。1gあたり4kcal。タンパク質と脂質の必要量を計算した後の「残りのカロリー」を炭水化物に割り当てるのが一般的な設定方法です。適切な量の炭水化物を摂取することで、トレーニングのパフォーマンスを向上させ、日常生活の疲労を防ぐことができます。</li>
+            </ul>
 
-        <h3>PFCろぐを使った効果的なダイエット方法</h3>
-        <p>本アプリは「毎日ストレスなく続けられるシンプルさ」を追求して開発されました。面倒な初期設定は一切不要で、プロフィールを入力するだけで即座にあなた専用の目標PFCが設定されます。よく食べる食事は「マイセット」として登録することで、ワンタップで日々の食事記録が完了します。<br>また、毎日の体重変化や「目標達成シミュレーション機能」を活用することで、目標体重に到達するまでの目安日数が可視化され、モチベーションを高く保ちながら理想の体型を目指すことができます。健康的な食事管理のパートナーとして、ぜひ毎日ご活用ください。</p>
+            <h3>PFCろぐを使った効果的なダイエット方法</h3>
+            <p>本アプリは「毎日ストレスなく続けられるシンプルさ」を追求して開発されました。面倒な初期設定は一切不要で、プロフィールを入力するだけで即座にあなた専用の目標PFCが設定されます。よく食べる食事は「マイセット」として登録することで、ワンタップで日々の食事記録が完了します。<br>また、毎日の体重変化や「目標達成シミュレーション機能」を活用することで、目標体重に到達するまでの目安日数が可視化され、モチベーションを高く保ちながら理想の体型を目指すことができます。健康的な食事管理のパートナーとして、ぜひ毎日ご活用ください。</p>
+        </div>
+
+        <!-- 審査ロボット用のフッター情報（免責事項追加） -->
+        <footer style="margin-top: 40px; padding: 20px 15px; text-align: center; font-size: 11px; color: #888; border-top: 1px solid #ddd; line-height: 1.6; background: #fff;">
+            <p><strong>免責事項</strong><br>本アプリが提供するカロリー計算およびPFCバランスの数値は、一般的な計算式に基づいた目安であり、医学的なアドバイスを提供するものではありません。持病のある方や極端なダイエットを行う場合は、必ず医師や専門家にご相談ください。本アプリの利用によって生じたトラブルや健康被害について、運営者は一切の責任を負いません。</p>
+            <p style="margin-top:15px;"><strong>お問い合わせ・運営者情報</strong><br>taiyo.fish000419@gmail.com</p>
+            <p>当サイトではGoogle AdSenseによる広告配信、およびGoogle Analyticsを利用したアクセス解析を行っております。データの収集にはCookieを使用しています。詳細は<a href="privacy.html" style="color: #007AFF; font-weight:bold;">プライバシーポリシー</a>をご確認ください。</p>
+            <p>© 2026 PFCろぐ</p>
+        </footer>
     </div>
-
-    <!-- 審査ロボット用のフッター情報 -->
-    <footer style="margin-top: 40px; padding: 20px 15px; text-align: center; font-size: 11px; color: #888; border-top: 1px solid #ddd; line-height: 1.6; background: #fff;">
-        <p><strong>お問い合わせ・運営者情報</strong><br>
-        taiyo.fish000419@gmail.com</p>
-        <p>当サイトではGoogle AdSenseによる広告配信、およびGoogle Analyticsを利用したアクセス解析を行っております。データの収集にはCookieを使用しています。詳細は<a href="privacy.html" style="color: #007AFF;">プライバシーポリシー</a>をご確認ください。</p>
-        <p>© 2026 PFCろぐ</p>
-    </footer>
 
     <button class="btn-add-meal" onclick="addNewMeal()">＋ 新しい食事枠を追加</button>
 
@@ -357,31 +369,7 @@
             <button onclick="closeOverlay('settingsOverlay'); openOverlay('cloudOverlay')" style="background:#e8eaf6; color:#3f51b5; border:1px solid #9fa8da; padding:15px; text-align:left;">👤 アカウント・同期設定</button>
             <button onclick="closeOverlay('settingsOverlay'); openOverlay('manualOverlay')" style="background:#f3e5f5; color:#7b1fa2; border:1px solid #ce93d8; padding:15px; text-align:left;">📖 使い方ガイド</button>
             <button onclick="closeOverlay('settingsOverlay'); openOverlay('specOverlay')" style="background:#e1bee7; color:#4a148c; border:1px solid #ba68c8; padding:15px; text-align:left;">ℹ️ アプリ詳細仕様</button>
-            <button onclick="closeOverlay('settingsOverlay'); openOverlay('privacyOverlay')" style="background:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; padding:15px; text-align:left;">📜 プライバシーポリシー</button>
-        </div>
-    </div>
-
-    <!-- プライバシーポリシー -->
-    <div id="privacyOverlay">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h2 style="margin:0;">📜 プライバシーポリシー</h2>
-            <button onclick="closeOverlay('privacyOverlay')" style="width:auto; padding:5px 15px; background:#555; color:white; margin:0;">閉じる</button>
-        </div>
-        <div class="manual-section">
-            <h3>アクセス解析ツールについて</h3>
-            <p>当アプリでは、Googleによるアクセス解析ツール「Googleアナリティクス」を利用しています。<br>
-            このGoogleアナリティクスはトラフィックデータの収集のためにクッキー（Cookie）を使用しております。トラフィックデータは匿名で収集されており、個人を特定するものではありません。</p>
-        </div>
-        <div class="manual-section">
-            <h3>広告の配信について</h3>
-            <p>当アプリでは、第三者配信の広告サービス「Google AdSense」を利用しております。<br>
-            広告配信事業者は、ユーザーの興味に応じた広告を表示するためにクッキー（Cookie）を使用することがあります。<br>
-            クッキー（Cookie）を無効にする設定、およびGoogleアドセンスに関する詳細は「<a href="https://policies.google.com/technologies/ads?hl=ja" target="_blank" rel="noopener">広告 – ポリシーと規約 – Google</a>」をご覧ください。</p>
-        </div>
-        <div class="manual-section">
-            <h3>お問い合わせ窓口</h3>
-            <p>本アプリに関するお問い合わせや不具合の報告は、以下の管理者メールアドレスまでお願いいたします。<br>
-            taiyo.fish000419@gmail.com</p>
+            <button onclick="location.href='privacy.html'" style="background:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; padding:15px; text-align:left;">📜 プライバシーポリシー</button>
         </div>
     </div>
 
