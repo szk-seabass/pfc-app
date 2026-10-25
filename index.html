@@ -18,7 +18,7 @@
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary">
 
-    <!-- Google Analytics (GA4) アクセス計測用コード -->
+    <!-- Google Analytics (GA4) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-535TETD22K"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -27,7 +27,7 @@
       gtag('config', 'G-535TETD22K');
     </script>
 
-    <!-- Google AdSense 広告表示・審査用コード -->
+    <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9352585638973205" crossorigin="anonymous"></script>
 
     <script>
@@ -36,56 +36,20 @@
             canvas.width = 192;
             canvas.height = 192;
             const ctx = canvas.getContext('2d');
-            
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, 192, 192);
-            
+            ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, 192, 192);
             function fillRoundRect(x, y, w, h, r) {
-                ctx.beginPath();
-                ctx.moveTo(x + r, y);
-                ctx.lineTo(x + w - r, y);
-                ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-                ctx.lineTo(x + w, y + h - r);
-                ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-                ctx.lineTo(x + r, y + h);
-                ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-                ctx.lineTo(x + r, y + r);
-                ctx.quadraticCurveTo(x, y, x + r, y);
-                ctx.closePath();
-                ctx.fill();
+                ctx.beginPath(); ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y);
+                ctx.quadraticCurveTo(x + w, y, x + w, y + r); ctx.lineTo(x + w, y + h - r);
+                ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h); ctx.lineTo(x + r, y + h);
+                ctx.quadraticCurveTo(x, y + h, x, y + h - r); ctx.lineTo(x + r, y + r);
+                ctx.quadraticCurveTo(x, y, x + r, y); ctx.closePath(); ctx.fill();
             }
-
             ctx.fillStyle = '#ff9500'; fillRoundRect(29, 48, 115, 24, 12);
             ctx.fillStyle = '#ff3b30'; fillRoundRect(29, 86, 86, 24, 12);
             ctx.fillStyle = '#34c759'; fillRoundRect(29, 124, 134, 24, 12);
-            
             const iconUrl = canvas.toDataURL('image/png');
-            
-            const linkIcon = document.createElement('link');
-            linkIcon.rel = 'icon';
-            linkIcon.type = 'image/png';
-            linkIcon.href = iconUrl;
-            document.head.appendChild(linkIcon);
-            
-            const linkApple = document.createElement('link');
-            linkApple.rel = 'apple-touch-icon';
-            linkApple.href = iconUrl;
-            document.head.appendChild(linkApple);
-
-            const manifest = {
-                name: "PFCろぐ",
-                short_name: "PFCろぐ",
-                display: "standalone",
-                background_color: "#f2f2f7",
-                theme_color: "#007AFF",
-                icons: [{ src: iconUrl, sizes: "192x192", type: "image/png" }]
-            };
-            const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/manifest+json'});
-            const manifestUrl = URL.createObjectURL(manifestBlob);
-            const linkManifest = document.createElement('link');
-            linkManifest.rel = 'manifest';
-            linkManifest.href = manifestUrl;
-            document.head.appendChild(linkManifest);
+            const linkIcon = document.createElement('link'); linkIcon.rel = 'icon'; linkIcon.type = 'image/png'; linkIcon.href = iconUrl; document.head.appendChild(linkIcon);
+            const linkApple = document.createElement('link'); linkApple.rel = 'apple-touch-icon'; linkApple.href = iconUrl; document.head.appendChild(linkApple);
         })();
     </script>
 
@@ -95,14 +59,13 @@
         body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0 auto; padding: 0 0 120px 0; max-width: 500px; }
         .app-container { padding: 15px; }
         
-        /* ロボット用グローバルナビゲーション */
-        .global-nav { display: flex; justify-content: center; gap: 20px; padding: 15px; background: #fff; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .global-nav a { color: #555; text-decoration: none; font-size: 14px; font-weight: bold; }
+        .global-nav { display: flex; justify-content: center; gap: 15px; padding: 15px 5px; background: #fff; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.05); flex-wrap: wrap; }
+        .global-nav a { color: #555; text-decoration: none; font-size: 13px; font-weight: bold; }
         .global-nav a.active { color: var(--primary); }
 
         .card { background: var(--card-bg); border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .target-card { background: #1c1c1e; color: #fff; }
-        .total-card { border: 2px solid var(--primary); position: sticky; top: 60px; z-index: 100; }
+        .total-card { border: 2px solid var(--primary); position: sticky; top: 65px; z-index: 100; }
         
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 16px; box-sizing: border-box; background: #f9f9f9; margin-bottom: 10px; }
         button { width: 100%; padding: 14px; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; }
@@ -140,8 +103,6 @@
         .action-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 15px; }
         .btn-action { padding: 10px 5px; font-size: 12px; border-radius: 8px; color: white; cursor: pointer; }
         
-        .genre-title { font-size: 15px; color: #00796b; border-bottom: 2px solid #b2dfdb; padding-bottom: 5px; margin: 20px 0 10px 0; }
-        
         .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         .profile-grid input, .profile-grid select { margin-bottom: 0; }
         
@@ -159,35 +120,21 @@
         .btn-apply-adv { display:block; width:100%; background:#2e7d32; color:white; padding:12px; margin-top:15px; border-radius:8px; font-weight:bold; font-size:14px; text-align:center; border:none; cursor:pointer; }
         
         #modalBackdrop { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2999; }
-        #inputModal {
-            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 90%; max-width: 400px; background: var(--card-bg); z-index: 3000;
-            border-radius: 15px; padding: 20px; box-sizing: border-box; max-height: 85vh; overflow-y: auto;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-
+        #inputModal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 400px; background: var(--card-bg); z-index: 3000; border-radius: 15px; padding: 20px; box-sizing: border-box; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .notice-list { list-style: none; padding: 0; margin: 0; }
         .notice-item { padding: 15px; background:#fff; border-radius:10px; margin-bottom:10px; box-shadow:0 2px 4px rgba(0,0,0,0.05); }
         .notice-date { font-size: 12px; color: var(--primary); margin-bottom: 6px; display: block; font-weight:bold; }
         .notice-text { font-size: 13px; line-height: 1.6; color:#333;}
-        
         .type-btn { padding: 12px 15px; border: 1px solid #444; border-radius: 8px; font-size: 14px; cursor: pointer; background: #2c2c2e; color: #ccc; transition: 0.2s; margin-bottom: 8px;}
         .type-btn.active { border-color: #007AFF; background: rgba(0,122,255,0.15); color: #fff; font-weight: bold; }
-        
-        .seo-content-block { background: #fff; border-radius: 15px; padding: 20px; margin-top: 30px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .seo-content-block h2 { color: var(--primary); font-size: 20px; margin-top: 0; margin-bottom: 15px; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; }
-        .seo-content-block h3 { color: #333; font-size: 16px; margin-top: 20px; margin-bottom: 10px; border-left: 4px solid var(--primary); padding-left: 10px; }
-        .seo-content-block p { font-size: 14px; line-height: 1.8; color: #444; margin-bottom: 15px; }
-        .seo-content-block ul { padding-left: 20px; margin-bottom: 15px; }
-        .seo-content-block li { font-size: 14px; line-height: 1.6; color: #444; margin-bottom: 8px; }
     </style>
 </head>
 <body>
 
-    <!-- ロボット審査用ナビゲーション -->
     <nav class="global-nav">
         <a href="index.html" class="active">ホーム</a>
-        <a href="#about-pfc">PFCとは</a>
+        <a href="about-pfc.html">PFCとは</a>
+        <a href="diet-guide.html">ダイエットガイド</a>
         <a href="privacy.html">プライバシーポリシー</a>
     </nav>
 
@@ -241,7 +188,6 @@
             <select id="goalSelect"></select>
             
             <div id="warningMessage"></div>
-
             <button onclick="calculatePrecisionTDEE()" style="background:var(--accent); color:#000; margin-top:15px;">精密計算して保存</button>
             
             <div id="currentGoalsDisplay" style="margin-top:15px; background:rgba(255,255,255,0.1); padding:15px; border-radius:8px; font-size:14px; display:none;">
@@ -285,28 +231,7 @@
         </div>
 
         <div id="mealContainer"></div>
-        
-        <!-- YMYL対策: SEO用コンテンツ -->
-        <div id="about-pfc" class="seo-content-block">
-            <h2>ダイエットを成功に導くPFCバランスとカロリー計算の重要性</h2>
-            <p>「PFCろぐ」は、日々の食事記録を通じてダイエットやボディメイクを成功に導くための無料PFC計算・カロリー管理アプリです。健康的な減量や筋力アップを目指すには、ただ闇雲に食事量を減らすのではなく、「何をどれくらい食べるか」というPFCバランス（マクロ栄養素）の最適化が最も重要となります。</p>
-            
-            <h3>TDEE（総消費カロリー）とは？</h3>
-            <p>TDEE（Total Daily Energy Expenditure）とは、基礎代謝に日々の活動量（仕事での動きや運動など）を掛け合わせた「1日の総消費カロリー」を指します。ダイエットの基本原則は「摂取カロリー ＜ 消費カロリー（TDEE）」の状態を作ることです。<br>当アプリでは、世界中のフィットネス現場や医療機関で採用されている高精度な「ミフリン・サンジオール方程式」を採用し、ユーザーの年齢・身長・体重・活動レベルから正確なTDEEを自動算出します。これにより、極端な食事制限による代謝の低下を防ぎ、リバウンドのリスクを最小限に抑えた健全な目標設定が可能となります。</p>
-            
-            <h3>PFCバランス（マクロ栄養素）の役割と理想的な割合</h3>
-            <p>総カロリーの管理だけでなく、以下の3大栄養素（PFC）のバランスを整えることが、筋肉を維持しつつ脂肪を落とす美しいボディライン作りの鍵となります。</p>
-            <ul>
-                <li><b>Protein（タンパク質）:</b> 筋肉、皮膚、髪の毛などの材料となる最も重要な栄養素です。1gあたり4kcalのエネルギーを持ちます。ダイエット中はエネルギー不足により筋肉が分解されやすくなるため、筋肉量の低下を防ぐ目的で、体重1kgあたり1.5g〜2.0g程度の十分な摂取が推奨されます。</li>
-                <li><b>Fat（脂質）:</b> ホルモンバランスの正常な維持や細胞膜の形成、脂溶性ビタミンの吸収に不可欠な栄養素です。1gあたり9kcalとカロリーが高いため過剰摂取には注意が必要ですが、極端に制限すると肌荒れや体調不良の原因となります。総摂取カロリーの20%〜30%は最低限確保する必要があります。</li>
-                <li><b>Carbohydrate（炭水化物）:</b> 脳や体を動かすためのメインエネルギー源です。1gあたり4kcal。タンパク質と脂質の必要量を計算した後の「残りのカロリー」を炭水化物に割り当てるのが一般的な設定方法です。適切な量の炭水化物を摂取することで、トレーニングのパフォーマンスを向上させ、日常生活の疲労を防ぐことができます。</li>
-            </ul>
 
-            <h3>PFCろぐを使った効果的なダイエット方法</h3>
-            <p>本アプリは「毎日ストレスなく続けられるシンプルさ」を追求して開発されました。面倒な初期設定は一切不要で、プロフィールを入力するだけで即座にあなた専用の目標PFCが設定されます。よく食べる食事は「マイセット」として登録することで、ワンタップで日々の食事記録が完了します。<br>また、毎日の体重変化や「目標達成シミュレーション機能」を活用することで、目標体重に到達するまでの目安日数が可視化され、モチベーションを高く保ちながら理想の体型を目指すことができます。健康的な食事管理のパートナーとして、ぜひ毎日ご活用ください。</p>
-        </div>
-
-        <!-- 審査ロボット用のフッター情報（免責事項追加） -->
         <footer style="margin-top: 40px; padding: 20px 15px; text-align: center; font-size: 11px; color: #888; border-top: 1px solid #ddd; line-height: 1.6; background: #fff;">
             <p><strong>免責事項</strong><br>本アプリが提供するカロリー計算およびPFCバランスの数値は、一般的な計算式に基づいた目安であり、医学的なアドバイスを提供するものではありません。持病のある方や極端なダイエットを行う場合は、必ず医師や専門家にご相談ください。本アプリの利用によって生じたトラブルや健康被害について、運営者は一切の責任を負いません。</p>
             <p style="margin-top:15px;"><strong>お問い合わせ・運営者情報</strong><br>taiyo.fish000419@gmail.com</p>
@@ -318,7 +243,6 @@
     <button class="btn-add-meal" onclick="addNewMeal()">＋ 新しい食事枠を追加</button>
 
     <div id="modalBackdrop" onclick="closeModal()"></div>
-
     <div id="inputModal">
         <div class="tab-container">
             <div class="tab-btn active" id="tabBtnDict" onclick="switchTab('dict')">📖 リスト</div>
@@ -406,25 +330,9 @@
 
         <h3 style="font-size:16px; margin-top:30px; color:#333; border-bottom:2px solid #ddd; padding-bottom:5px;">📢 アップデート情報</h3>
         <ul class="notice-list">
-            <li class="notice-item">
-                <span class="notice-date">2026/08/06</span>
-                <div class="notice-text">
-                    ・PFC計算とカロリー管理に関する詳細な解説コラムを追加しました。
-                </div>
-            </li>
-            <li class="notice-item">
-                <span class="notice-date">2026/07/24</span>
-                <div class="notice-text">
-                    ・プライバシーポリシーを更新しました。
-                </div>
-            </li>
-            <li class="notice-item">
-                <span class="notice-date">2026/07/17</span>
-                <div class="notice-text">
-                    ・クラウド同期時のデータ反映速度を改善しました。<br>
-                    ・お問い合わせフォームから開発者へ直接メールが飛ぶように変更しました。<br>
-                </div>
-            </li>
+            <li class="notice-item"><span class="notice-date">2026/08/06</span><div class="notice-text">・PFC計算とカロリー管理に関する詳細な解説コラムを追加しました。</div></li>
+            <li class="notice-item"><span class="notice-date">2026/07/24</span><div class="notice-text">・プライバシーポリシーを更新しました。</div></li>
+            <li class="notice-item"><span class="notice-date">2026/07/17</span><div class="notice-text">・クラウド同期時のデータ反映速度を改善しました。<br>・お問い合わせフォームから開発者へ直接メールが飛ぶように変更しました。</div></li>
         </ul>
     </div>
 
@@ -455,14 +363,10 @@
             <p style="font-size:12px; color:#4caf50; background:#e8f5e9; padding:10px; border-radius:8px; border:1px solid #c8e6c9; font-weight:bold; line-height:1.4;">
                 💡 クラウド自動保存が有効です。<br>アプリ内での食事の追加・削除・設定変更は、自動的にリアルタイムでクラウドへ保存されます。
             </p>
-            
             <hr style="border:0; border-top:1px solid #ccc; margin:20px 0;">
             <button onclick="handleLogout()" style="background:#757575; color:white; margin-bottom:10px;">ログアウト</button>
-            
             <div style="background:#ffebee; padding:15px; border-radius:8px; border:1px solid #ffcdd2; margin-top:20px;">
-                <p style="font-size:12px; color:#c62828; margin:0 0 10px 0; font-weight:bold; line-height:1.4;">
-                    ⚠️ 注意: アカウントを削除すると、クラウド上のすべてのデータ（履歴、目標、マイ食材、マイセット）が完全に消去され、復元できなくなります。
-                </p>
+                <p style="font-size:12px; color:#c62828; margin:0 0 10px 0; font-weight:bold; line-height:1.4;">⚠️ 注意: アカウントを削除すると、クラウド上のすべてのデータが完全に消去され、復元できなくなります。</p>
                 <button onclick="handleAccountDeletion()" style="background:transparent; color:#f44336; border:1px solid #f44336; padding:10px;">🗑️ アカウントを完全に削除</button>
             </div>
         </div>
@@ -568,13 +472,7 @@
         function escapeHTML(str) {
             if (typeof str !== 'string') return str;
             return str.replace(/[&<>'"]/g, function(match) {
-                const escape = {
-                    '&': '&amp;',
-                    '<': '&lt;',
-                    '>': '&gt;',
-                    "'": '&#39;',
-                    '"': '&quot;'
-                };
+                const escape = { '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' };
                 return escape[match];
             });
         }
@@ -625,12 +523,9 @@
         let currentDateStr = ""; 
         let activeMealIndex = null; 
         let currentTabMode = 'dict';
-
         let selectedInquiryType = '✨ 機能のご要望';
 
-        function parseDateSafe(dateString) {
-            return new Date(dateString.replace(/-/g, '/'));
-        }
+        function parseDateSafe(dateString) { return new Date(dateString.replace(/-/g, '/')); }
 
         function renderProfileForm() {
             if(userProfile.weight) {
@@ -638,23 +533,11 @@
                 if(userProfile.age) document.getElementById('ageInput').value = userProfile.age;
                 if(userProfile.height) document.getElementById('heightInput').value = userProfile.height;
                 document.getElementById('weightInput').value = userProfile.weight;
-                
-                if(userProfile.targetWeight) {
-                    document.getElementById('targetWeightInput').value = userProfile.targetWeight;
-                }
-
-                if(userProfile.jobIntensity !== undefined && userProfile.jobIntensity !== null) {
-                    document.getElementById('jobIntensity').value = userProfile.jobIntensity;
-                }
-                if(userProfile.exerciseFrequency !== undefined && userProfile.exerciseFrequency !== null) {
-                    document.getElementById('exerciseFrequency').value = userProfile.exerciseFrequency.toString();
-                }
-                
+                if(userProfile.targetWeight) document.getElementById('targetWeightInput').value = userProfile.targetWeight;
+                if(userProfile.jobIntensity !== undefined && userProfile.jobIntensity !== null) document.getElementById('jobIntensity').value = userProfile.jobIntensity;
+                if(userProfile.exerciseFrequency !== undefined && userProfile.exerciseFrequency !== null) document.getElementById('exerciseFrequency').value = userProfile.exerciseFrequency.toString();
                 updateGoalOptions();
-                
-                if(userProfile.goalOffset !== undefined && userProfile.goalOffset !== null) {
-                    document.getElementById('goalSelect').value = userProfile.goalOffset;
-                }
+                if(userProfile.goalOffset !== undefined && userProfile.goalOffset !== null) document.getElementById('goalSelect').value = userProfile.goalOffset;
             } else {
                 updateGoalOptions();
             }
@@ -664,12 +547,10 @@
             const today = new Date(); 
             currentDateStr = formatDate(today); 
             document.getElementById('datePicker').value = currentDateStr;
-            
             renderProfileForm();
             renderFoodSelect(); 
             render();
             calculateSimulation(true);
-            
             await checkUserSession();
         };
 
@@ -679,62 +560,37 @@
                 if (data && data.session) {
                     currentUser = data.session.user;
                     updateCloudUI();
-                    
-                    const { data: cloudData, error: fetchError } = await supabaseClient
-                        .from('user_data')
-                        .select('id')
-                        .eq('id', currentUser.id)
-                        .single();
-
-                    if (fetchError && fetchError.code === 'PGRST116') {
-                        await saveDataToCloudSilent();
-                    } else {
-                        await loadDataFromCloudSilent();
-                    }
+                    const { data: cloudData, error: fetchError } = await supabaseClient.from('user_data').select('id').eq('id', currentUser.id).single();
+                    if (fetchError && fetchError.code === 'PGRST116') { await saveDataToCloudSilent(); } else { await loadDataFromCloudSilent(); }
                 } else {
-                    currentUser = null;
-                    updateCloudUI(); 
+                    currentUser = null; updateCloudUI(); 
                 }
-                
                 supabaseClient.auth.onAuthStateChange(async (event, session) => {
                     if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
-                        currentUser = session.user;
-                        updateCloudUI();
+                        currentUser = session.user; updateCloudUI();
                         const { data: cData, error: fError } = await supabaseClient.from('user_data').select('id').eq('id', currentUser.id).single();
-                        if (fError && fError.code === 'PGRST116') {
-                            await saveDataToCloudSilent();
-                        } else {
-                            await loadDataFromCloudSilent();
-                        }
+                        if (fError && fError.code === 'PGRST116') { await saveDataToCloudSilent(); } else { await loadDataFromCloudSilent(); }
                     } else if (event === 'SIGNED_OUT') {
-                        currentUser = null;
-                        updateCloudUI();
+                        currentUser = null; updateCloudUI();
                     }
                 });
-            } catch (e) {
-                console.error("Session Check Error:", e);
-            }
+            } catch (e) { console.error("Session Check Error:", e); }
         }
 
         function updateCloudUI() {
             const statusLabel = document.getElementById('cloudStatusLabel');
             const guestBanner = document.getElementById('guestWarningBanner');
-            
             if (currentUser) {
                 document.getElementById('cloudLoginSection').style.display = 'none';
                 document.getElementById('cloudSyncSection').style.display = 'block';
                 document.getElementById('currentUserEmail').innerText = escapeHTML(currentUser.email);
-                statusLabel.innerText = "☁️ クラウド自動同期中";
-                statusLabel.style.color = "#007AFF";
-                statusLabel.style.display = "block";
+                statusLabel.innerText = "☁️ クラウド自動同期中"; statusLabel.style.color = "#007AFF"; statusLabel.style.display = "block";
                 if(guestBanner) guestBanner.style.display = 'none';
             } else {
                 document.getElementById('cloudLoginSection').style.display = 'block';
                 document.getElementById('cloudSyncSection').style.display = 'none';
                 document.getElementById('currentUserEmail').innerText = "";
-                statusLabel.innerText = "📳 ローカル保存モード";
-                statusLabel.style.color = "#757575";
-                statusLabel.style.display = "block";
+                statusLabel.innerText = "📳 ローカル保存モード"; statusLabel.style.color = "#757575"; statusLabel.style.display = "block";
                 if(guestBanner) guestBanner.style.display = 'block';
             }
         }
@@ -742,14 +598,8 @@
         function openNoticeOverlay() {
             document.getElementById('settingsOverlay').style.display = 'none';
             document.getElementById('noticeOverlay').style.display = 'block';
-            
-            if (currentUser) {
-                document.getElementById('inquiryEmail').value = currentUser.email;
-                document.getElementById('emailAutoFill').style.display = 'inline';
-            } else {
-                document.getElementById('inquiryEmail').value = '';
-                document.getElementById('emailAutoFill').style.display = 'none';
-            }
+            if (currentUser) { document.getElementById('inquiryEmail').value = currentUser.email; document.getElementById('emailAutoFill').style.display = 'inline'; } 
+            else { document.getElementById('inquiryEmail').value = ''; document.getElementById('emailAutoFill').style.display = 'none'; }
         }
 
         function selectInquiryType(type, element) {
@@ -768,42 +618,20 @@
             const email = document.getElementById('inquiryEmail').value || '未入力';
             const content = document.getElementById('inquiryContent').value;
             const btn = document.getElementById('submitInquiryBtn');
-            
             if (!content) return alert("お問い合わせ内容を入力してください。");
-            
-            btn.innerText = "送信中...";
-            btn.disabled = true;
-            
+            btn.innerText = "送信中..."; btn.disabled = true;
             try {
-                await supabaseClient.from('inquiries').insert([{ 
-                    user_email: email, 
-                    type: selectedInquiryType, 
-                    content: content 
-                }]);
-                
+                await supabaseClient.from('inquiries').insert([{ user_email: email, type: selectedInquiryType, content: content }]);
                 await fetch('https://formsubmit.co/ajax/taiyo.fish000419@gmail.com', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        _subject: `【PFCろぐ】お問い合わせ (${selectedInquiryType})`,
-                        連絡先メールアドレス: email,
-                        お問い合わせ種類: selectedInquiryType,
-                        お問い合わせ内容: content
-                    })
+                    method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ _subject: `【PFCろぐ】お問い合わせ (${selectedInquiryType})`, 連絡先メールアドレス: email, お問い合わせ種類: selectedInquiryType, お問い合わせ内容: content })
                 });
-
                 alert("お問い合わせを送信しました。\n貴重なご意見ありがとうございます！");
-                document.getElementById('inquiryContent').value = '';
-                updateCharCount();
+                document.getElementById('inquiryContent').value = ''; updateCharCount();
             } catch (e) {
-                console.error(e);
-                alert("送信に失敗しました。\n通信環境をご確認の上、再度お試しください。");
+                console.error(e); alert("送信に失敗しました。\n通信環境をご確認の上、再度お試しください。");
             } finally {
-                btn.innerText = "送信する";
-                btn.disabled = false;
+                btn.innerText = "送信する"; btn.disabled = false;
             }
         }
 
@@ -811,58 +639,26 @@
             const email = document.getElementById('authEmail').value;
             const password = document.getElementById('authPassword').value;
             const msgEl = document.getElementById('authMessage');
-            
-            const hasLetter = /[a-zA-zA-Z]/.test(password);
-            const hasNumber = /\d/.test(password);
-            const hasSymbol = /[^a-zA-Z0-9\s]/.test(password);
+            const hasLetter = /[a-zA-zA-Z]/.test(password); const hasNumber = /\d/.test(password); const hasSymbol = /[^a-zA-Z0-9\s]/.test(password);
             const typesCount = (hasLetter ? 1 : 0) + (hasNumber ? 1 : 0) + (hasSymbol ? 1 : 0);
-            
             if(!email || password.length < 8 || typesCount < 2) {
-                msgEl.innerText = "有効なメールアドレスと、英字・数字・記号から2種類以上を含む8文字以上のパスワードを入力してください。";
-                return;
+                msgEl.innerText = "有効なメールアドレスと、英字・数字・記号から2種類以上を含む8文字以上のパスワードを入力してください。"; return;
             }
-            
-            msgEl.style.color = "blue";
-            msgEl.innerText = "登録処理中...";
-            
-            const { data, error } = await supabaseClient.auth.signUp({
-                email: email,
-                password: password
-            });
-            
-            if (error) {
-                msgEl.style.color = "red";
-                msgEl.innerText = translateAuthError(error.message);
-            } else {
-                msgEl.style.color = "green";
-                msgEl.innerText = "登録成功しました！(自動ログインします)";
-            }
+            msgEl.style.color = "blue"; msgEl.innerText = "登録処理中...";
+            const { data, error } = await supabaseClient.auth.signUp({ email: email, password: password });
+            if (error) { msgEl.style.color = "red"; msgEl.innerText = translateAuthError(error.message); } 
+            else { msgEl.style.color = "green"; msgEl.innerText = "登録成功しました！(自動ログインします)"; }
         }
 
         async function handleLogin() {
             const email = document.getElementById('authEmail').value;
             const password = document.getElementById('authPassword').value;
             const msgEl = document.getElementById('authMessage');
-            
-            if(!email || !password) {
-                msgEl.innerText = "メールアドレスとパスワードを入力してください";
-                return;
-            }
-            
-            msgEl.style.color = "blue";
-            msgEl.innerText = "ログイン中...";
-            
-            const { data, error } = await supabaseClient.auth.signInWithPassword({
-                email: email,
-                password: password
-            });
-            
-            if (error) {
-                msgEl.style.color = "red";
-                msgEl.innerText = translateAuthError(error.message);
-            } else {
-                msgEl.innerText = "";
-            }
+            if(!email || !password) { msgEl.innerText = "メールアドレスとパスワードを入力してください"; return; }
+            msgEl.style.color = "blue"; msgEl.innerText = "ログイン中...";
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email: email, password: password });
+            if (error) { msgEl.style.color = "red"; msgEl.innerText = translateAuthError(error.message); } 
+            else { msgEl.innerText = ""; }
         }
 
         async function handleLogout() {
@@ -874,33 +670,18 @@
 
         async function handleAccountDeletion() {
             if (!currentUser) return;
-            
             const emailConfirm = prompt("⚠️ アカウントを削除するとすべてのデータが消去され、復元できなくなります。\n\n確認のため、登録しているメールアドレスを入力してください:");
-            if (emailConfirm !== currentUser.email) {
-                return alert("メールアドレスが一致しません。削除をキャンセルしました。");
-            }
-
+            if (emailConfirm !== currentUser.email) return alert("メールアドレスが一致しません。削除をキャンセルしました。");
             const statusLabel = document.getElementById('cloudStatusLabel');
-            statusLabel.innerText = "🗑️ アカウント削除中...";
-            statusLabel.style.color = "red";
-
+            statusLabel.innerText = "🗑️ アカウント削除中..."; statusLabel.style.color = "red";
             try {
                 await supabaseClient.from('user_data').delete().eq('id', currentUser.id);
                 const { error: rpcError } = await supabaseClient.rpc('delete_user');
-                
-                if (rpcError) {
-                    throw new Error("Supabaseでの設定(delete_user関数の作成や権限設定)が完了していないか、エラーが発生しました。\n" + rpcError.message);
-                }
-                
-                await supabaseClient.auth.signOut();
-                localStorage.clear();
-                
-                alert("アカウントとデータを完全に削除しました。ご利用ありがとうございました。");
-                location.reload();
+                if (rpcError) throw new Error("Supabaseでの設定が完了していないか、エラーが発生しました。\n" + rpcError.message);
+                await supabaseClient.auth.signOut(); localStorage.clear();
+                alert("アカウントとデータを完全に削除しました。ご利用ありがとうございました。"); location.reload();
             } catch (error) {
-                console.error('Delete error:', error);
-                alert("削除処理に失敗しました:\n" + error.message);
-                statusLabel.innerText = "⚠️ 削除に失敗しました";
+                console.error('Delete error:', error); alert("削除処理に失敗しました:\n" + error.message); statusLabel.innerText = "⚠️ 削除に失敗しました";
             }
         }
 
@@ -908,70 +689,27 @@
             if (!currentUser) return;
             const statusLabel = document.getElementById('cloudStatusLabel');
             try {
-                statusLabel.innerText = "🔄 クラウドに自動保存中...";
-                statusLabel.style.color = "#ff9800";
-                
-                const { error } = await supabaseClient
-                    .from('user_data')
-                    .upsert({ 
-                        id: currentUser.id,
-                        diary_data: diaryData,
-                        goals: goals,
-                        custom_foods: customFoodDict,
-                        my_sets: mySets,
-                        profile: userProfile,
-                        updated_at: new Date().toISOString()
-                    });
-
+                statusLabel.innerText = "🔄 クラウドに自動保存中..."; statusLabel.style.color = "#ff9800";
+                const { error } = await supabaseClient.from('user_data').upsert({ id: currentUser.id, diary_data: diaryData, goals: goals, custom_foods: customFoodDict, my_sets: mySets, profile: userProfile, updated_at: new Date().toISOString() });
                 if (error) throw error;
-                statusLabel.innerText = "☁️ クラウド自動同期中";
-                statusLabel.style.color = "#007AFF";
-            } catch (error) {
-                console.error('Auto save error:', error);
-                statusLabel.innerText = "⚠️ 自動保存に失敗しました";
-                statusLabel.style.color = "#f44336";
-            }
+                statusLabel.innerText = "☁️ クラウド自動同期中"; statusLabel.style.color = "#007AFF";
+            } catch (error) { console.error('Auto save error:', error); statusLabel.innerText = "⚠️ 自動保存に失敗しました"; statusLabel.style.color = "#f44336"; }
         }
 
         async function loadDataFromCloudSilent() {
             if (!currentUser) return;
             try {
-                const { data, error } = await supabaseClient
-                    .from('user_data')
-                    .select('*')
-                    .eq('id', currentUser.id)
-                    .single();
-
+                const { data, error } = await supabaseClient.from('user_data').select('*').eq('id', currentUser.id).single();
                 if (error && error.code !== 'PGRST116') throw error;
-
                 if (data) {
-                    diaryData = data.diary_data || {};
-                    goals = data.goals || { p:0, f:0, c:0, cal:0 };
-                    customFoodDict = data.custom_foods || {};
-                    mySets = data.my_sets || {};
-                    userProfile = data.profile || {};
-
-                    localStorage.setItem(diaryDataKey, JSON.stringify(diaryData));
-                    localStorage.setItem(goalsKey, JSON.stringify(goals));
-                    localStorage.setItem(customFoodsKey, JSON.stringify(customFoodDict));
-                    localStorage.setItem(mySetsKey, JSON.stringify(mySets));
-                    localStorage.setItem(profileKey, JSON.stringify(userProfile));
-                    
-                    renderProfileForm();
-                    renderFoodSelect();
-                    renderCustomFoodList();
-
-                    render();
-                    calculateSimulation(true);
+                    diaryData = data.diary_data || {}; goals = data.goals || { p:0, f:0, c:0, cal:0 }; customFoodDict = data.custom_foods || {}; mySets = data.my_sets || {}; userProfile = data.profile || {};
+                    localStorage.setItem(diaryDataKey, JSON.stringify(diaryData)); localStorage.setItem(goalsKey, JSON.stringify(goals)); localStorage.setItem(customFoodsKey, JSON.stringify(customFoodDict)); localStorage.setItem(mySetsKey, JSON.stringify(mySets)); localStorage.setItem(profileKey, JSON.stringify(userProfile));
+                    renderProfileForm(); renderFoodSelect(); renderCustomFoodList(); render(); calculateSimulation(true);
                 }
-            } catch (error) {
-                console.error('Auto load error:', error);
-            }
+            } catch (error) { console.error('Auto load error:', error); }
         }
 
-        function getCombinedDict() { 
-            return { ...defaultFoodDict, ...customFoodDict }; 
-        }
+        function getCombinedDict() { return { ...defaultFoodDict, ...customFoodDict }; }
 
         function updateGoalOptions() {
             const gender = document.getElementById('genderSelect').value;
@@ -990,13 +728,9 @@
                 select.innerHTML += '<option value="0">維持 (現状をキープ / ±0kcal)</option>';
                 select.innerHTML += '<option value="300">筋肉を増やす増量 (+300kcal)</option>';
             }
-            
             if (currentVal) {
-                if (gender === 'female' && currentVal === '-300') {
-                    select.value = '-200';
-                } else {
-                    select.value = currentVal;
-                }
+                if (gender === 'female' && currentVal === '-300') select.value = '-200';
+                else select.value = currentVal;
             }
         }
 
@@ -1047,68 +781,26 @@
 
             if (goalOffset < 0) {
                 if (gender === 'female' && targetCal < 1500) {
-                    let advCal = 1500;
-                    let advP = Math.round(weight * 1.5);
-                    let advF = Math.round((advCal * 0.30) / 9);
-                    let advC = Math.max(0, Math.round((advCal - (advP * 4 + advF * 9)) / 4));
-                    let advPLabel = "P (推奨: 体重×1.5g)";
-                    let advFLabel = "F (推奨: 総カロリーの30%)";
-
-                    adviceDiv.innerHTML = `💡 <b>アドバイス</b><br>
-                        上記の計算結果（${targetCal}kcal）でも痩せますが、食事制限としてはかなりハード（危険）な数値です。停滞やリバウンドのリスクが高まります。<br><br>
-                        無理なく綺麗に痩せるためには、運動頻度を上げて消費カロリーを増やし、<b>1日約${advCal}kcal</b>を食べながら除脂肪することをおすすめします。<br>
-                        <div class="adv-pfc">
-                            <span style="color:#ff9500;">P: ${advP}g</span>
-                            <span style="color:#ff3b30;">F: ${advF}g</span>
-                            <span style="color:#34c759;">C: ${advC}g</span>
-                        </div>
-                        <button class="btn-apply-adv" onclick="applyRecommendedPlan(${advCal}, ${advP}, ${advF}, ${advC}, '${advPLabel}', '${advFLabel}')">✨ この推奨プラン(${advCal}kcal)を適用する</button>`;
+                    let advCal = 1500; let advP = Math.round(weight * 1.5); let advF = Math.round((advCal * 0.30) / 9); let advC = Math.max(0, Math.round((advCal - (advP * 4 + advF * 9)) / 4));
+                    adviceDiv.innerHTML = `💡 <b>アドバイス</b><br>上記の計算結果（${targetCal}kcal）でも痩せますが、食事制限としてはかなりハード（危険）な数値です。<br><br><b>1日約${advCal}kcal</b>を食べながら除脂肪することをおすすめします。<br><div class="adv-pfc"><span style="color:#ff9500;">P: ${advP}g</span><span style="color:#ff3b30;">F: ${advF}g</span><span style="color:#34c759;">C: ${advC}g</span></div><button class="btn-apply-adv" onclick="applyRecommendedPlan(${advCal}, ${advP}, ${advF}, ${advC}, 'P (推奨: 体重×1.5g)', 'F (推奨: 総カロリーの30%)')">✨ この推奨プラン(${advCal}kcal)を適用する</button>`;
                     adviceDiv.style.display = 'block';
-
                 } else if (gender === 'male' && targetCal < 1800) {
-                    let advCal = 1800;
-                    let advP = Math.round(weight * 2.0);
-                    let advF = Math.max(Math.round(weight * 0.8), Math.round((advCal * 0.20) / 9));
-                    let advC = Math.max(0, Math.round((advCal - (advP * 4 + advF * 9)) / 4));
-                    let advPLabel = "P (推奨: 体重×2.0g)";
-                    let advFLabel = "F (推奨: 最低確保20%以上)";
-
-                    adviceDiv.innerHTML = `💡 <b>アドバイス</b><br>
-                        上記の計算結果（${targetCal}kcal）でも痩せますが、食事制限としてはかなりハード（危険）な数値です。テストステロンや筋肉量が落ちるリスクが高まります。<br><br>
-                        筋肉を落とさず健康的に絞るためには、運動頻度を上げて消費カロリーを増やし、<b>1日約${advCal}kcal</b>を食べながら除脂肪することをおすすめします。<br>
-                        <div class="adv-pfc">
-                            <span style="color:#ff9500;">P: ${advP}g</span>
-                            <span style="color:#ff3b30;">F: ${advF}g</span>
-                            <span style="color:#34c759;">C: ${advC}g</span>
-                        </div>
-                        <button class="btn-apply-adv" onclick="applyRecommendedPlan(${advCal}, ${advP}, ${advF}, ${advC}, '${advPLabel}', '${advFLabel}')">✨ この推奨プラン(${advCal}kcal)を適用する</button>`;
+                    let advCal = 1800; let advP = Math.round(weight * 2.0); let advF = Math.max(Math.round(weight * 0.8), Math.round((advCal * 0.20) / 9)); let advC = Math.max(0, Math.round((advCal - (advP * 4 + advF * 9)) / 4));
+                    adviceDiv.innerHTML = `💡 <b>アドバイス</b><br>上記の計算結果（${targetCal}kcal）でも痩せますが、食事制限としてはかなりハード（危険）な数値です。<br><br><b>1日約${advCal}kcal</b>を食べながら除脂肪することをおすすめします。<br><div class="adv-pfc"><span style="color:#ff9500;">P: ${advP}g</span><span style="color:#ff3b30;">F: ${advF}g</span><span style="color:#34c759;">C: ${advC}g</span></div><button class="btn-apply-adv" onclick="applyRecommendedPlan(${advCal}, ${advP}, ${advF}, ${advC}, 'P (推奨: 体重×2.0g)', 'F (推奨: 最低確保20%以上)')">✨ この推奨プラン(${advCal}kcal)を適用する</button>`;
                     adviceDiv.style.display = 'block';
                 }
             }
             
             userProfile = { gender, age, height, weight, jobIntensity, exerciseFrequency, goalOffset, bmr, tdee, activityFactor };
-            localStorage.setItem(profileKey, JSON.stringify(userProfile)); 
-            localStorage.setItem(goalsKey, JSON.stringify(goals));
-            
-            calculateSimulation(false);
-            render(); 
-            alert(`目標を ${targetCal} kcal で計算しました。`);
+            localStorage.setItem(profileKey, JSON.stringify(userProfile)); localStorage.setItem(goalsKey, JSON.stringify(goals));
+            calculateSimulation(false); render(); alert(`目標を ${targetCal} kcal で計算しました。`);
         }
 
         function applyRecommendedPlan(cal, p, f, c, pLabel, fLabel) {
-            goals.cal = cal;
-            goals.p = p;
-            goals.f = f;
-            goals.c = c;
-
-            document.getElementById('displayPLabel').innerText = pLabel;
-            document.getElementById('displayFLabel').innerText = fLabel;
-
+            goals.cal = cal; goals.p = p; goals.f = f; goals.c = c;
+            document.getElementById('displayPLabel').innerText = pLabel; document.getElementById('displayFLabel').innerText = fLabel;
             localStorage.setItem(goalsKey, JSON.stringify(goals));
-            
-            calculateSimulation(false);
-            render();
-
+            calculateSimulation(false); render();
             document.getElementById('adviceMessage').innerHTML = `💡 <b>推奨プラン（${cal}kcal）を適用しました！</b><br>食事はこれ以上減らさず、日常の活動量や運動頻度を増やしてこの目標を目指しましょう。`;
             alert(`安全な推奨プラン（${cal} kcal）に変更しました！`);
         }
@@ -1120,83 +812,37 @@
             const targetCal = goals.cal;
             const resultDiv = document.getElementById('simulationResult');
 
-            if (!currentWeight || !targetWeight || !tdee || !targetCal) {
-                resultDiv.style.display = 'none';
-                return;
-            }
-
+            if (!currentWeight || !targetWeight || !tdee || !targetCal) { resultDiv.style.display = 'none'; return; }
             const weightDiff = targetWeight - currentWeight;
             const dailyDiff = targetCal - tdee;
 
-            if (weightDiff === 0) {
-                resultDiv.innerHTML = `<div style="text-align:center; color:#ff9500; margin-top:10px;">現在の体重と同じです。</div>`;
-                resultDiv.style.display = 'block';
-                return;
-            }
-
+            if (weightDiff === 0) { resultDiv.innerHTML = `<div style="text-align:center; color:#ff9500; margin-top:10px;">現在の体重と同じです。</div>`; resultDiv.style.display = 'block'; return; }
             if (weightDiff < 0 && dailyDiff >= 0) {
-                resultDiv.innerHTML = `
-                    <div style="background:#ffebee; border:1px solid #ffcdd2; padding:12px; border-radius:8px; text-align:center; margin-top:10px;">
-                        <b style="color:#c62828; font-size:13px;">⚠️ 消費カロリーが足りていません</b><br>
-                        <span style="font-size:12px; color:#333; display:block; margin-top:5px; line-height:1.4;">
-                            健康的な最低摂取カロリー（${targetCal}kcal）を下回らない設定になっていますが、現在の消費カロリー（${Math.round(tdee)}kcal）では減量できません。<br>
-                            <b style="color:#007AFF;">上の「運動の頻度」を上げて、消費カロリーを増やしましょう！💪</b>
-                        </span>
-                    </div>`;
-                resultDiv.style.display = 'block';
-                return;
+                resultDiv.innerHTML = `<div style="background:#ffebee; border:1px solid #ffcdd2; padding:12px; border-radius:8px; text-align:center; margin-top:10px;"><b style="color:#c62828; font-size:13px;">⚠️ 消費カロリーが足りていません</b><br><span style="font-size:12px; color:#333; display:block; margin-top:5px; line-height:1.4;">現在の消費カロリー（${Math.round(tdee)}kcal）では減量できません。<b style="color:#007AFF;">運動の頻度を上げて消費カロリーを増やしましょう！</b></span></div>`;
+                resultDiv.style.display = 'block'; return;
             }
-
             if (weightDiff > 0 && dailyDiff <= 0) {
-                resultDiv.innerHTML = `<div style="text-align:center; color:#ff3b30; margin-top:10px;">現在の目的が「減量・維持」になっているため、体重を増やす計算ができません。<br>上の「現在の目的」を増量に変更してください。</div>`;
-                resultDiv.style.display = 'block';
-                return;
+                resultDiv.innerHTML = `<div style="text-align:center; color:#ff3b30; margin-top:10px;">現在の目的が「減量・維持」になっているため、体重を増やす計算ができません。<br>目的を増量に変更してください。</div>`; resultDiv.style.display = 'block'; return;
             }
 
             const totalCalNeeded = Math.abs(weightDiff) * 7200;
             const daysNeeded = Math.ceil(totalCalNeeded / Math.abs(dailyDiff));
-
-            const realToday = new Date();
-            realToday.setDate(realToday.getDate() + daysNeeded);
+            const realToday = new Date(); realToday.setDate(realToday.getDate() + daysNeeded);
             const targetDateStr = `${realToday.getFullYear()}年${realToday.getMonth() + 1}月${realToday.getDate()}日`;
 
-            resultDiv.innerHTML = `
-                <div style="background:#2c2c2e; padding:10px; border-radius:6px; margin-bottom:10px; margin-top:10px;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>現在の体重との差:</span><b>${weightDiff > 0 ? '+' : ''}${weightDiff.toFixed(1)} kg</b></div>
-                    <div style="display:flex; justify-content:space-between;"><span>1日の増減カロリー:</span><b>${dailyDiff > 0 ? '+' : ''}${Math.round(dailyDiff)} kcal</b></div>
-                </div>
-                <div style="text-align:center; font-size:15px; font-weight:bold; color:var(--accent);">
-                    ✨ 目標達成まで 約 <span style="font-size:20px;">${daysNeeded}</span> 日！<br>
-                    <span style="font-size:12px; color:#aaa; font-weight:normal;">（達成目安：${targetDateStr}）</span>
-                </div>
-            `;
+            resultDiv.innerHTML = `<div style="background:#2c2c2e; padding:10px; border-radius:6px; margin-bottom:10px; margin-top:10px;"><div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>現在の体重との差:</span><b>${weightDiff > 0 ? '+' : ''}${weightDiff.toFixed(1)} kg</b></div><div style="display:flex; justify-content:space-between;"><span>1日の増減カロリー:</span><b>${dailyDiff > 0 ? '+' : ''}${Math.round(dailyDiff)} kcal</b></div></div><div style="text-align:center; font-size:15px; font-weight:bold; color:var(--accent);">✨ 目標達成まで 約 <span style="font-size:20px;">${daysNeeded}</span> 日！<br><span style="font-size:12px; color:#aaa; font-weight:normal;">（達成目安：${targetDateStr}）</span></div>`;
             resultDiv.style.display = 'block';
-            
             userProfile.targetWeight = targetWeight;
-            
-            if (!isInit) {
-                localStorage.setItem(profileKey, JSON.stringify(userProfile));
-                saveDataToCloudSilent();
-            }
+            if (!isInit) { localStorage.setItem(profileKey, JSON.stringify(userProfile)); saveDataToCloudSilent(); }
         }
 
         function regCustomFromManual() {
-            const name = document.getElementById('manualNameInput').value;
-            const p = parseFloat(document.getElementById('pManual').value) || 0; 
-            const f = parseFloat(document.getElementById('fManual').value) || 0; 
-            const c = parseFloat(document.getElementById('cManual').value) || 0;
+            const name = document.getElementById('manualNameInput').value; const p = parseFloat(document.getElementById('pManual').value) || 0; const f = parseFloat(document.getElementById('fManual').value) || 0; const c = parseFloat(document.getElementById('cManual').value) || 0;
             if(!name) return alert("品名を入力してください");
             customFoodDict['custom_' + Date.now()] = { name, p, f, c, base: 1 };
-            localStorage.setItem(customFoodsKey, JSON.stringify(customFoodDict)); 
-            renderFoodSelect(); 
-            
-            document.getElementById('manualNameInput').value = "";
-            document.getElementById('pManual').value = "";
-            document.getElementById('fManual').value = "";
-            document.getElementById('cManual').value = "";
-            
-            alert("マイ食材に登録しました！");
-            save(); 
+            localStorage.setItem(customFoodsKey, JSON.stringify(customFoodDict)); renderFoodSelect(); 
+            document.getElementById('manualNameInput').value = ""; document.getElementById('pManual').value = ""; document.getElementById('fManual').value = ""; document.getElementById('cManual').value = "";
+            alert("マイ食材に登録しました！"); save(); 
         }
 
         function formatDate(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
@@ -1204,308 +850,151 @@
         function onDateChanged() { currentDateStr = document.getElementById('datePicker').value; render(); }
         
         function addNewMeal() { 
-            if (!diaryData[currentDateStr] || !Array.isArray(diaryData[currentDateStr])) {
-                diaryData[currentDateStr] = [{ items: [] }]; 
-            } else {
-                diaryData[currentDateStr].push({ items: [] }); 
-            }
+            if (!diaryData[currentDateStr] || !Array.isArray(diaryData[currentDateStr])) { diaryData[currentDateStr] = [{ items: [] }]; } else { diaryData[currentDateStr].push({ items: [] }); }
             save(); render(); 
         }
         
-        function openModal(idx) { 
-            activeMealIndex = idx; 
-            document.getElementById('modalBackdrop').style.display = 'block';
-            document.getElementById('inputModal').style.display = 'block'; 
-            updateGramLabel(); 
-        }
-        function closeModal() { 
-            document.getElementById('modalBackdrop').style.display = 'none';
-            document.getElementById('inputModal').style.display = 'none'; 
-            
-            document.getElementById('gramInput').value = "";
-            document.getElementById('manualNameInput').value = "";
-            document.getElementById('pManual').value = "";
-            document.getElementById('fManual').value = "";
-            document.getElementById('cManual').value = "";
-        }
+        function openModal(idx) { activeMealIndex = idx; document.getElementById('modalBackdrop').style.display = 'block'; document.getElementById('inputModal').style.display = 'block'; updateGramLabel(); }
+        function closeModal() { document.getElementById('modalBackdrop').style.display = 'none'; document.getElementById('inputModal').style.display = 'none'; document.getElementById('gramInput').value = ""; document.getElementById('manualNameInput').value = ""; document.getElementById('pManual').value = ""; document.getElementById('fManual').value = ""; document.getElementById('cManual').value = ""; }
         
         function switchTab(m) { 
             currentTabMode = m; 
-            document.getElementById('tabBtnDict').classList.toggle('active', m==='dict'); 
-            document.getElementById('tabBtnManual').classList.toggle('active', m==='manual'); 
-            document.getElementById('tabBtnSet').classList.toggle('active', m==='set'); 
-            
-            document.getElementById('areaDict').style.display = m==='dict' ? 'block' : 'none'; 
-            document.getElementById('areaManual').style.display = m==='manual' ? 'block' : 'none'; 
-            document.getElementById('areaSet').style.display = m==='set' ? 'block' : 'none'; 
-            
-            if(m === 'set') { 
-                renderSetSelect(); 
-                renderSetPreview(); 
-            }
+            document.getElementById('tabBtnDict').classList.toggle('active', m==='dict'); document.getElementById('tabBtnManual').classList.toggle('active', m==='manual'); document.getElementById('tabBtnSet').classList.toggle('active', m==='set'); 
+            document.getElementById('areaDict').style.display = m==='dict' ? 'block' : 'none'; document.getElementById('areaManual').style.display = m==='manual' ? 'block' : 'none'; document.getElementById('areaSet').style.display = m==='set' ? 'block' : 'none'; 
+            if(m === 'set') { renderSetSelect(); renderSetPreview(); }
         }
 
         function commitItem() {
             try {
                 let itemsToAdd = [];
-
                 if (currentTabMode === 'set') {
-                    const select = document.getElementById('setSelect');
-                    const key = select.value;
+                    const select = document.getElementById('setSelect'); const key = select.value;
                     if(!key || !mySets[key]) return alert("セットが選択されていません");
                     itemsToAdd = JSON.parse(JSON.stringify(mySets[key].items));
-                    
                 } else if(currentTabMode === 'manual') {
-                    let p = parseFloat(document.getElementById('pManual').value) || 0; 
-                    let f = parseFloat(document.getElementById('fManual').value) || 0; 
-                    let c = parseFloat(document.getElementById('cManual').value) || 0;
-                    let name = document.getElementById('manualNameInput').value || "手動入力"; 
-                    let cal = Math.round(p*4 + f*9 + c*4); 
+                    let p = parseFloat(document.getElementById('pManual').value) || 0; let f = parseFloat(document.getElementById('fManual').value) || 0; let c = parseFloat(document.getElementById('cManual').value) || 0;
+                    let name = document.getElementById('manualNameInput').value || "手動入力"; let cal = Math.round(p*4 + f*9 + c*4); 
                     itemsToAdd.push({ name, p, f, c, cal, displayGrams: null });
-                    
                 } else {
-                    const select = document.getElementById('foodSelect');
-                    const key = select.value || (select.options.length > 0 ? select.options[0].value : null);
+                    const select = document.getElementById('foodSelect'); const key = select.value || (select.options.length > 0 ? select.options[0].value : null);
                     if (!key) return alert("食材がありません");
-
-                    const mul = parseFloat(document.getElementById('gramInput').value) || 0;
-                    const food = getCombinedDict()[key]; 
+                    const mul = parseFloat(document.getElementById('gramInput').value) || 0; const food = getCombinedDict()[key]; 
                     if (!food) return alert("食材データが見つかりません");
-
-                    const ratio = mul / (food.base || 100);
-                    let p = food.p * ratio; 
-                    let f = food.f * ratio; 
-                    let c = food.c * ratio; 
-                    let name = food.name; 
-                    let cal = Math.round(p*4 + f*9 + c*4); 
-                    let displayGrams = food.base === 1 ? `${mul}個(食)` : `${mul}g`;
+                    const ratio = mul / (food.base || 100); let p = food.p * ratio; let f = food.f * ratio; let c = food.c * ratio; let name = food.name; let cal = Math.round(p*4 + f*9 + c*4); let displayGrams = food.base === 1 ? `${mul}個(食)` : `${mul}g`;
                     itemsToAdd.push({ name, p, f, c, cal, displayGrams });
                 }
                 
-                if (!diaryData[currentDateStr] || !Array.isArray(diaryData[currentDateStr])) {
-                    diaryData[currentDateStr] = []; 
-                }
-                if (activeMealIndex === null || activeMealIndex === undefined || activeMealIndex < 0) {
-                    activeMealIndex = 0;
-                }
+                if (!diaryData[currentDateStr] || !Array.isArray(diaryData[currentDateStr])) { diaryData[currentDateStr] = []; }
+                if (activeMealIndex === null || activeMealIndex === undefined || activeMealIndex < 0) { activeMealIndex = 0; }
                 let safeguardCount = 0;
-                while (diaryData[currentDateStr].length <= activeMealIndex && safeguardCount < 10) {
-                    diaryData[currentDateStr].push({ items: [] });
-                    safeguardCount++;
-                }
-                if (!diaryData[currentDateStr][activeMealIndex].items || !Array.isArray(diaryData[currentDateStr][activeMealIndex].items)) {
-                    diaryData[currentDateStr][activeMealIndex].items = [];
-                }
+                while (diaryData[currentDateStr].length <= activeMealIndex && safeguardCount < 10) { diaryData[currentDateStr].push({ items: [] }); safeguardCount++; }
+                if (!diaryData[currentDateStr][activeMealIndex].items || !Array.isArray(diaryData[currentDateStr][activeMealIndex].items)) { diaryData[currentDateStr][activeMealIndex].items = []; }
                 
                 diaryData[currentDateStr][activeMealIndex].items.push(...itemsToAdd);
-                
                 save(); render(); closeModal();
-
-            } catch (error) {
-                alert("エラーが発生しました。データをリセットしてお試しください。");
-                console.error(error);
-            }
+            } catch (error) { alert("エラーが発生しました。データをリセットしてお試しください。"); console.error(error); }
         }
 
         function saveMealAsSet(mIdx) {
             const meal = diaryData[currentDateStr][mIdx];
-            if(!meal || !meal.items || meal.items.length === 0) {
-                return alert("保存する食材が登録されていません。");
-            }
+            if(!meal || !meal.items || meal.items.length === 0) return alert("保存する食材が登録されていません。");
             const setName = prompt("この食事を「マイセット」として保存します。\nセット名を入力してください。(例: いつもの朝食、鶏むね定食など)");
             if(!setName) return;
-            
-            const setKey = 'set_' + Date.now();
-            mySets[setKey] = {
-                name: setName,
-                items: JSON.parse(JSON.stringify(meal.items)) 
-            };
+            const setKey = 'set_' + Date.now(); mySets[setKey] = { name: setName, items: JSON.parse(JSON.stringify(meal.items)) };
             localStorage.setItem(mySetsKey, JSON.stringify(mySets));
-            alert(`「${escapeHTML(setName)}」をマイセットに保存しました！\n次回から「＋食材を追加」→「マイセット」タブから一発で呼び出せます。`);
-            save(); 
+            alert(`「${escapeHTML(setName)}」をマイセットに保存しました！\n次回から「＋食材を追加」→「マイセット」タブから一発で呼び出せます。`); save(); 
         }
 
         function renderSetSelect() {
-            const select = document.getElementById('setSelect');
-            select.innerHTML = '';
-            if(Object.keys(mySets).length === 0) {
-                select.innerHTML = '<option value="">(登録されているセットはありません)</option>';
-                return;
-            }
-            for(let key in mySets) {
-                let opt = document.createElement('option');
-                opt.value = key;
-                opt.text = mySets[key].name; 
-                select.appendChild(opt);
-            }
+            const select = document.getElementById('setSelect'); select.innerHTML = '';
+            if(Object.keys(mySets).length === 0) { select.innerHTML = '<option value="">(登録されているセットはありません)</option>'; return; }
+            for(let key in mySets) { let opt = document.createElement('option'); opt.value = key; opt.text = mySets[key].name; select.appendChild(opt); }
         }
 
         function renderSetPreview() {
-            const select = document.getElementById('setSelect');
-            const preview = document.getElementById('setPreview');
-            const btnDel = document.getElementById('btnDeleteSet');
-            const key = select.value;
-            
-            if(!key || !mySets[key]) {
-                preview.innerHTML = "※セット未登録<br>ホーム画面の各食事枠の右上にある「★セット登録」ボタンを押すと、よく食べる食事の組み合わせを保存できます。";
-                btnDel.style.display = 'none';
-                return;
-            }
-            
-            const set = mySets[key];
-            let html = `<b style="color:var(--primary);">${escapeHTML(set.name)}</b> (${set.items.length}品)<ul style="margin:8px 0; padding-left:20px;">`;
-            let totalCal = 0;
-            set.items.forEach(item => {
-                html += `<li>${escapeHTML(item.name)} ${item.displayGrams ? '<small>('+escapeHTML(item.displayGrams)+')</small>' : ''} - ${item.cal}kcal</li>`;
-                totalCal += item.cal;
-            });
+            const select = document.getElementById('setSelect'); const preview = document.getElementById('setPreview'); const btnDel = document.getElementById('btnDeleteSet'); const key = select.value;
+            if(!key || !mySets[key]) { preview.innerHTML = "※セット未登録<br>ホーム画面の各食事枠の右上にある「★セット登録」ボタンを押すと、よく食べる食事の組み合わせを保存できます。"; btnDel.style.display = 'none'; return; }
+            const set = mySets[key]; let html = `<b style="color:var(--primary);">${escapeHTML(set.name)}</b> (${set.items.length}品)<ul style="margin:8px 0; padding-left:20px;">`; let totalCal = 0;
+            set.items.forEach(item => { html += `<li>${escapeHTML(item.name)} ${item.displayGrams ? '<small>('+escapeHTML(item.displayGrams)+')</small>' : ''} - ${item.cal}kcal</li>`; totalCal += item.cal; });
             html += `</ul><b style="color:#d32f2f;">合計: ${totalCal} kcal</b>`;
-            
-            preview.innerHTML = html;
-            btnDel.style.display = 'inline-block';
+            preview.innerHTML = html; btnDel.style.display = 'inline-block';
         }
 
         function deleteSelectedSet() {
-            const select = document.getElementById('setSelect');
-            const key = select.value;
+            const select = document.getElementById('setSelect'); const key = select.value;
             if(!key || !mySets[key]) return;
-            if(confirm(`マイセット「${mySets[key].name}」を削除しますか？`)) {
-                delete mySets[key];
-                localStorage.setItem(mySetsKey, JSON.stringify(mySets));
-                renderSetSelect();
-                renderSetPreview();
-                save(); 
-            }
+            if(confirm(`マイセット「${mySets[key].name}」を削除しますか？`)) { delete mySets[key]; localStorage.setItem(mySetsKey, JSON.stringify(mySets)); renderSetSelect(); renderSetPreview(); save(); }
         }
 
         function removeItem(m, i) { diaryData[currentDateStr][m].items.splice(i, 1); save(); render(); }
         
         function removeMeal(m) { 
             if (!diaryData[currentDateStr] || !diaryData[currentDateStr][m]) return; 
-            
-            if (diaryData[currentDateStr].length <= 1) {
-                return alert("食事枠が残り1個の場合は削除できません。");
-            }
-            
-            if(confirm("削除しますか？")) { 
-                diaryData[currentDateStr].splice(m, 1); 
-                save(); render(); 
-            } 
+            if (diaryData[currentDateStr].length <= 1) return alert("食事枠が残り1個の場合は削除できません。");
+            if(confirm("削除しますか？")) { diaryData[currentDateStr].splice(m, 1); save(); render(); } 
         }
 
         function shareDay() {
             let text = `【${currentDateStr} のPFC記録】\nカロリー: ${document.getElementById('dailyCal').innerText} / ${goals.cal} kcal\nP:${document.getElementById('pSum').innerText}g F:${document.getElementById('fSum').innerText}g C:${document.getElementById('cSum').innerText}g\n\n`;
-            
             let data = diaryData[currentDateStr];
             if (data && data.length > 0) {
                 data.forEach((meal, mIdx) => {
                     if (meal.items && meal.items.length > 0) {
                         text += `[${mIdx + 1}食目]\n`;
-                        meal.items.forEach(it => {
-                            text += `・${it.name} ${it.displayGrams ? '('+it.displayGrams+')' : ''} - ${it.cal}kcal\n`;
-                        });
+                        meal.items.forEach(it => { text += `・${it.name} ${it.displayGrams ? '('+it.displayGrams+')' : ''} - ${it.cal}kcal\n`; });
                     }
                 });
                 text += '\n';
             }
             text += `#PFCろぐ`;
-
-            if (navigator.share) { 
-                navigator.share({ text: text }).catch(console.error); 
-            } else { 
-                navigator.clipboard.writeText(text); 
-                alert("共有用テキストをコピーしました！"); 
-            }
+            if (navigator.share) { navigator.share({ text: text }).catch(console.error); } else { navigator.clipboard.writeText(text); alert("共有用テキストをコピーしました！"); }
         }
 
         function copyDay() { 
             let data = diaryData[currentDateStr];
-            if (!data || data.length === 0 || (data.length === 1 && (!data[0].items || data[0].items.length === 0))) {
-                return alert("コピーする食事記録がありません。");
-            }
-            localStorage.setItem('pfcClipboard', JSON.stringify(data)); 
-            alert("食事データをコピーしました！\nカレンダーで別の日付を開き、「貼付」ボタンを押すと複製できます。"); 
-            render(); 
+            if (!data || data.length === 0 || (data.length === 1 && (!data[0].items || data[0].items.length === 0))) return alert("コピーする食事記録がありません。");
+            localStorage.setItem('pfcClipboard', JSON.stringify(data)); alert("食事データをコピーしました！\nカレンダーで別の日付を開き、「貼付」ボタンを押すと複製できます。"); render(); 
         }
 
         function pasteDay() { 
             let clipData = localStorage.getItem('pfcClipboard');
             if (!clipData || clipData === "undefined") return alert("貼り付けるデータがありません。");
-            if(confirm("コピーした食事データをこの日に上書き貼付しますか？")) { 
-                try {
-                    diaryData[currentDateStr] = JSON.parse(clipData); 
-                    save(); 
-                    render(); 
-                } catch(e) {
-                    alert("貼り付けに失敗しました。");
-                }
-            } 
+            if(confirm("コピーした食事データをこの日に上書き貼付しますか？")) { try { diaryData[currentDateStr] = JSON.parse(clipData); save(); render(); } catch(e) { alert("貼り付けに失敗しました。"); } } 
         }
 
         function render() {
             try {
                 document.getElementById('selectedDateLabel').innerText = `${currentDateStr} の記録`;
-                const container = document.getElementById('mealContainer'); 
-                container.innerHTML = ''; 
-                let total = { p:0, f:0, c:0, cal:0 };
-                
+                const container = document.getElementById('mealContainer'); container.innerHTML = ''; let total = { p:0, f:0, c:0, cal:0 };
                 let meals = diaryData[currentDateStr];
                 if (!meals || !Array.isArray(meals) || meals.length === 0) meals = [{ items: [] }];
-                
                 meals.forEach((meal, mIdx) => {
-                    const card = document.createElement('div'); 
-                    card.className = 'card meal-section';
-                    
-                    let html = `<div class="meal-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <b>${mIdx+1}食目</b>
-                        <div>
-                            <span onclick="saveMealAsSet(${mIdx})" style="color:var(--primary); font-size:12px; font-weight:bold; cursor:pointer; margin-right:15px; padding:4px 8px; background:#e3f2fd; border-radius:4px;">★セット登録</span>
-                            <span onclick="removeMeal(${mIdx})" style="color:red; font-size:12px; cursor:pointer;">枠削除</span>
-                        </div>
-                    </div>`;
-                    
+                    const card = document.createElement('div'); card.className = 'card meal-section';
+                    let html = `<div class="meal-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;"><b>${mIdx+1}食目</b><div><span onclick="saveMealAsSet(${mIdx})" style="color:var(--primary); font-size:12px; font-weight:bold; cursor:pointer; margin-right:15px; padding:4px 8px; background:#e3f2fd; border-radius:4px;">★セット登録</span><span onclick="removeMeal(${mIdx})" style="color:red; font-size:12px; cursor:pointer;">枠削除</span></div></div>`;
                     if (meal && Array.isArray(meal.items)) {
                         meal.items.forEach((item, iIdx) => {
                             html += `<div class="item-row"><span>${escapeHTML(item.name)}${item.displayGrams ? ' ('+escapeHTML(item.displayGrams)+')' : ''}</span><span>${item.cal}kcal <button class="btn-small" onclick="removeItem(${mIdx}, ${iIdx})">✕</button></span></div>`;
                             total.p += (item.p || 0); total.f += (item.f || 0); total.c += (item.c || 0); total.cal += (item.cal || 0);
                         });
                     }
-                    html += `<button onclick="openModal(${mIdx})" style="margin-top:10px;">＋ 食材を追加</button>`; 
-                    card.innerHTML = html; 
-                    container.appendChild(card);
+                    html += `<button onclick="openModal(${mIdx})" style="margin-top:10px;">＋ 食材を追加</button>`; card.innerHTML = html; container.appendChild(card);
                 });
                 
-                document.getElementById('dailyCal').innerText = total.cal; 
-                document.getElementById('goalCal').innerText = (goals.cal || 0).toString();
-                
+                document.getElementById('dailyCal').innerText = total.cal; document.getElementById('goalCal').innerText = (goals.cal || 0).toString();
                 const updateBar = (id, sum, goalId, barId) => {
-                    document.getElementById(id).innerText = sum.toFixed(1); 
-                    const goalVal = goals[id.replace('Sum','')] || 0;
+                    document.getElementById(id).innerText = sum.toFixed(1); const goalVal = goals[id.replace('Sum','')] || 0;
                     document.getElementById(goalId).innerText = goalVal.toString();
-                    const percent = (goalVal && goalVal > 0 && !isNaN(goalVal)) ? Math.min(100, (sum / goalVal) * 100) : 0;
-                    document.getElementById(barId).style.width = percent + '%';
+                    const percent = (goalVal && goalVal > 0 && !isNaN(goalVal)) ? Math.min(100, (sum / goalVal) * 100) : 0; document.getElementById(barId).style.width = percent + '%';
                 };
-                
                 updateBar('pSum', total.p, 'pGoal', 'pBar'); updateBar('fSum', total.f, 'fGoal', 'fBar'); updateBar('cSum', total.c, 'cGoal', 'cBar');
                 
                 if(goals.cal > 0) {
-                    document.getElementById('currentGoalsDisplay').style.display = 'block';
-                    document.getElementById('simulationSection').style.display = 'block';
+                    document.getElementById('currentGoalsDisplay').style.display = 'block'; document.getElementById('simulationSection').style.display = 'block';
                     if(userProfile.bmr) document.getElementById('displayMetabolism').innerText = `基礎代謝: 約${Math.round(userProfile.bmr)}kcal / 活動係数: ${userProfile.activityFactor.toFixed(2)}`;
-                    document.getElementById('displayTargetCal').innerText = `${goals.cal} kcal`;
-                    document.getElementById('displayTargetP').innerText = `${goals.p} g`;
-                    document.getElementById('displayTargetF').innerText = `${goals.f} g`;
-                    document.getElementById('displayTargetC').innerText = `${goals.c} g`;
-                } else {
-                    document.getElementById('currentGoalsDisplay').style.display = 'none';
-                    document.getElementById('simulationSection').style.display = 'none';
-                }
-
-                let clipData = localStorage.getItem('pfcClipboard');
-                document.getElementById('btnPaste').style.display = (clipData && clipData !== "undefined") ? 'block' : 'none';
-            } catch (e) {
-                console.error("Render Error:", e);
-            }
+                    document.getElementById('displayTargetCal').innerText = `${goals.cal} kcal`; document.getElementById('displayTargetP').innerText = `${goals.p} g`; document.getElementById('displayTargetF').innerText = `${goals.f} g`; document.getElementById('displayTargetC').innerText = `${goals.c} g`;
+                } else { document.getElementById('currentGoalsDisplay').style.display = 'none'; document.getElementById('simulationSection').style.display = 'none'; }
+                let clipData = localStorage.getItem('pfcClipboard'); document.getElementById('btnPaste').style.display = (clipData && clipData !== "undefined") ? 'block' : 'none';
+            } catch (e) { console.error("Render Error:", e); }
         }
 
         function resetDayAll() { if(confirm("リセットしますか？")) { diaryData[currentDateStr] = [{ items: [] }]; save(); render(); } }
@@ -1513,129 +1002,62 @@
         function closeOverlay(id) { document.getElementById(id).style.display = 'none'; }
         
         function saveCustomFood() {
-            const name = document.getElementById('regName').value; 
-            const p = parseFloat(document.getElementById('regP').value) || 0; 
-            const f = parseFloat(document.getElementById('regF').value) || 0; 
-            const c = parseFloat(document.getElementById('regC').value) || 0;
-            const base = parseInt(document.getElementById('regBase').value); 
+            const name = document.getElementById('regName').value; const p = parseFloat(document.getElementById('regP').value) || 0; const f = parseFloat(document.getElementById('regF').value) || 0; const c = parseFloat(document.getElementById('regC').value) || 0; const base = parseInt(document.getElementById('regBase').value); 
             if(!name) return alert("品名入力");
-            
-            customFoodDict['custom_' + Date.now()] = { name, p, f, c, base }; 
-            localStorage.setItem(customFoodsKey, JSON.stringify(customFoodDict));
-            document.getElementById('regName').value = ""; 
-            renderFoodSelect(); 
-            renderCustomFoodList();
-            save(); 
+            customFoodDict['custom_' + Date.now()] = { name, p, f, c, base }; localStorage.setItem(customFoodsKey, JSON.stringify(customFoodDict)); document.getElementById('regName').value = ""; 
+            renderFoodSelect(); renderCustomFoodList(); save(); 
         }
         
         function renderCustomFoodList() {
-            const container = document.getElementById('customFoodListContainer'); 
-            container.innerHTML = '';
-            for(let key in customFoodDict) { 
-                const food = customFoodDict[key]; 
-                container.innerHTML += `<div class="custom-food-item"><div><b>${escapeHTML(food.name)}</b><br><small>P:${food.p} F:${food.f} C:${food.c}</small></div><button onclick="deleteCustomFood('${key}')" style="background:red; color:white;">削除</button></div>`; 
-            }
+            const container = document.getElementById('customFoodListContainer'); container.innerHTML = '';
+            for(let key in customFoodDict) { const food = customFoodDict[key]; container.innerHTML += `<div class="custom-food-item"><div><b>${escapeHTML(food.name)}</b><br><small>P:${food.p} F:${food.f} C:${food.c}</small></div><button onclick="deleteCustomFood('${key}')" style="background:red; color:white;">削除</button></div>`; }
         }
         
-        function deleteCustomFood(k) { 
-            delete customFoodDict[k]; 
-            localStorage.setItem(customFoodsKey, JSON.stringify(customFoodDict)); 
-            renderCustomFoodList(); 
-            renderFoodSelect(); 
-            save(); 
-        }
+        function deleteCustomFood(k) { delete customFoodDict[k]; localStorage.setItem(customFoodsKey, JSON.stringify(customFoodDict)); renderCustomFoodList(); renderFoodSelect(); save(); }
 
         function renderFoodSelect() {
-            const select = document.getElementById('foodSelect'); 
-            select.innerHTML = '';
-            const g1 = document.createElement('optgroup'); 
-            g1.label = "デフォルト食材";
-            for(let key in defaultFoodDict) { 
-                let opt = document.createElement('option'); 
-                opt.value = key; 
-                opt.text = defaultFoodDict[key].name; 
-                g1.appendChild(opt); 
-            } 
+            const select = document.getElementById('foodSelect'); select.innerHTML = '';
+            const g1 = document.createElement('optgroup'); g1.label = "デフォルト食材";
+            for(let key in defaultFoodDict) { let opt = document.createElement('option'); opt.value = key; opt.text = defaultFoodDict[key].name; g1.appendChild(opt); } 
             select.appendChild(g1);
-            
             if(Object.keys(customFoodDict).length > 0) {
-                const g2 = document.createElement('optgroup'); 
-                g2.label = "マイ食材";
-                for(let key in customFoodDict) { 
-                    let opt = document.createElement('option'); 
-                    opt.value = key; 
-                    opt.text = customFoodDict[key].name; 
-                    g2.appendChild(opt); 
-                } 
+                const g2 = document.createElement('optgroup'); g2.label = "マイ食材";
+                for(let key in customFoodDict) { let opt = document.createElement('option'); opt.value = key; opt.text = customFoodDict[key].name; g2.appendChild(opt); } 
                 select.appendChild(g2);
             }
-            
-            if (select.options.length > 0) {
-                select.value = select.options[0].value;
-            }
+            if (select.options.length > 0) select.value = select.options[0].value;
             select.onchange = updateGramLabel;
         }
         
         function updateGramLabel() { 
-            const select = document.getElementById('foodSelect');
-            const val = select.value || (select.options.length > 0 ? select.options[0].value : null);
+            const select = document.getElementById('foodSelect'); const val = select.value || (select.options.length > 0 ? select.options[0].value : null);
             if(!val) return;
-            const f = getCombinedDict()[val]; 
-            if(f) document.getElementById('dictGramLabel').innerText = f.base === 1 ? "2. 食べる個数" : "2. グラム数(g)"; 
+            const f = getCombinedDict()[val]; if(f) document.getElementById('dictGramLabel').innerText = f.base === 1 ? "2. 食べる個数" : "2. グラム数(g)"; 
         }
 
         function openMonthlyView() {
-            const grid = document.getElementById('calendarGrid'); 
-            grid.innerHTML = ''; 
-            const now = parseDateSafe(currentDateStr); 
-            const year = now.getFullYear(); 
-            const month = now.getMonth();
+            const grid = document.getElementById('calendarGrid'); grid.innerHTML = ''; 
+            const now = parseDateSafe(currentDateStr); const year = now.getFullYear(); const month = now.getMonth();
             document.getElementById('monthlyTitle').innerText = `${year}年${month+1}月`;
-            
-            ['日','月','火','水','木','金','土'].forEach(d => { 
-                const h = document.createElement('div'); 
-                h.className = 'calendar-header-day'; 
-                h.innerText = d; 
-                grid.appendChild(h); 
-            });
-            const first = new Date(year, month, 1); 
-            const last = new Date(year, month + 1, 0);
-            for(let i=0; i<first.getDay(); i++) { 
-                const em = document.createElement('div'); 
-                em.className = 'calendar-cell'; 
-                em.style.opacity = "0"; 
-                grid.appendChild(em); 
-            }
+            ['日','月','火','水','木','金','土'].forEach(d => { const h = document.createElement('div'); h.className = 'calendar-header-day'; h.innerText = d; grid.appendChild(h); });
+            const first = new Date(year, month, 1); const last = new Date(year, month + 1, 0);
+            for(let i=0; i<first.getDay(); i++) { const em = document.createElement('div'); em.className = 'calendar-cell'; em.style.opacity = "0"; grid.appendChild(em); }
             for(let d=1; d<=last.getDate(); d++) {
-                const cell = document.createElement('div'); 
-                cell.className = 'calendar-cell'; 
+                const cell = document.createElement('div'); cell.className = 'calendar-cell'; 
                 const dateKey = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
                 let cal = 0; 
-                if(diaryData[dateKey] && Array.isArray(diaryData[dateKey])) { 
-                    diaryData[dateKey].forEach(m => { 
-                        if(m && Array.isArray(m.items)) m.items.forEach(it => cal += (it.cal || 0)); 
-                    }); 
-                }
+                if(diaryData[dateKey] && Array.isArray(diaryData[dateKey])) { diaryData[dateKey].forEach(m => { if(m && Array.isArray(m.items)) m.items.forEach(it => cal += (it.cal || 0)); }); }
                 cell.innerHTML = `<div>${d}</div><div class="cal-cal-val">${cal > 0 ? cal : ''}</div>`;
-                cell.onclick = () => { 
-                    currentDateStr = dateKey; 
-                    document.getElementById('datePicker').value = dateKey; 
-                    render(); 
-                    closeOverlay('monthlyOverlay'); 
-                }; 
+                cell.onclick = () => { currentDateStr = dateKey; document.getElementById('datePicker').value = dateKey; render(); closeOverlay('monthlyOverlay'); }; 
                 grid.appendChild(cell);
             }
             document.getElementById('monthlyOverlay').style.display = 'block';
         }
         
         function save() { 
-            localStorage.setItem(diaryDataKey, JSON.stringify(diaryData)); 
-            localStorage.setItem(goalsKey, JSON.stringify(goals));
-            localStorage.setItem(customFoodsKey, JSON.stringify(customFoodDict));
-            localStorage.setItem(mySetsKey, JSON.stringify(mySets));
-            localStorage.setItem(profileKey, JSON.stringify(userProfile));
-            
-            saveDataToCloudSilent();
+            localStorage.setItem(diaryDataKey, JSON.stringify(diaryData)); localStorage.setItem(goalsKey, JSON.stringify(goals));
+            localStorage.setItem(customFoodsKey, JSON.stringify(customFoodDict)); localStorage.setItem(mySetsKey, JSON.stringify(mySets));
+            localStorage.setItem(profileKey, JSON.stringify(userProfile)); saveDataToCloudSilent();
         }
     </script>
 </body>
