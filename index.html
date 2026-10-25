@@ -18,7 +18,7 @@
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary">
 
-    <!-- Google Analytics (GA4) -->
+    <!-- Google Analytics (GA4) V2 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-535TETD22K"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -234,7 +234,7 @@
 
         <footer style="margin-top: 40px; padding: 20px 15px; text-align: center; font-size: 11px; color: #888; border-top: 1px solid #ddd; line-height: 1.6; background: #fff;">
             <p><strong>免責事項</strong><br>本アプリが提供するカロリー計算およびPFCバランスの数値は、一般的な計算式に基づいた目安であり、医学的なアドバイスを提供するものではありません。持病のある方や極端なダイエットを行う場合は、必ず医師や専門家にご相談ください。本アプリの利用によって生じたトラブルや健康被害について、運営者は一切の責任を負いません。</p>
-            <p style="margin-top:15px;"><strong>お問い合わせ・運営者情報</strong><br>taiyo.fish000419@gmail.com</p>
+            <p style="margin-top:15px;"><strong>お問い合わせ・運営者情報</strong><br>contact.support0011@gmail.com</p>
             <p>当サイトではGoogle AdSenseによる広告配信、およびGoogle Analyticsを利用したアクセス解析を行っております。データの収集にはCookieを使用しています。詳細は<a href="privacy.html" style="color: #007AFF; font-weight:bold;">プライバシーポリシー</a>をご確認ください。</p>
             <p>© 2026 PFCろぐ</p>
         </footer>
@@ -308,7 +308,7 @@
             <div style="text-align:center; margin-bottom:20px;">
                 <h3 style="margin:0; font-size:18px;">📫 お問い合わせ</h3>
                 <p style="font-size:12px; color:#aaa; margin-top:5px;">機能のご要望・不具合の報告などお気軽にどうぞ。<br>
-                管理者メールアドレス: taiyo.fish000419@gmail.com</p>
+                管理者メールアドレス: contact.support0011@gmail.com</p>
             </div>
             
             <label class="input-label" style="color:#ddd; margin-bottom:8px;">お問い合わせの種類 <span style="color:#ff3b30;">*</span></label>
@@ -622,7 +622,7 @@
             btn.innerText = "送信中..."; btn.disabled = true;
             try {
                 await supabaseClient.from('inquiries').insert([{ user_email: email, type: selectedInquiryType, content: content }]);
-                await fetch('https://formsubmit.co/ajax/taiyo.fish000419@gmail.com', {
+                await fetch('https://formsubmit.co/ajax/contact.support0011@gmail.com', {
                     method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     body: JSON.stringify({ _subject: `【PFCろぐ】お問い合わせ (${selectedInquiryType})`, 連絡先メールアドレス: email, お問い合わせ種類: selectedInquiryType, お問い合わせ内容: content })
                 });
