@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PFCろぐの使い方ガイド｜目標設定から記録・振り返りまで - PFCろぐ</title>
+    <meta name="description" content="PFCろぐの使い方を、目標値の設定、食事の記録、マイ食材・マイセットの登録、カレンダーでの振り返り、データの同期まで順番に解説します。">
+    <style>
+        :root { --primary: #007AFF; --bg: #f2f2f7; --text: #1c1c1e; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0 auto; padding: 0 0 50px 0; max-width: 500px; line-height: 1.6; }
+        .global-nav { display: flex; justify-content: center; gap: 15px; padding: 15px 5px; background: #fff; border-bottom: 1px solid #ddd; position: sticky; top: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); flex-wrap: wrap; }
+        .global-nav a { color: #555; text-decoration: none; font-size: 13px; font-weight: bold; }
+        .global-nav a.active { color: var(--primary); }
+        .content-area { padding: 20px; }
+        .card { background: #fff; border-radius: 15px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        h1 { font-size: 20px; color: var(--primary); border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; }
+        h2 { font-size: 16px; margin-top: 28px; color: #333; border-left: 4px solid var(--primary); padding-left: 10px; }
+        h3 { font-size: 15px; margin-top: 20px; color: #333; }
+        p, li { font-size: 14px; color: #444; line-height: 1.8; margin-bottom: 15px; }
+        .meta { font-size: 12px; color: #888; margin-top: -5px; }
+        .calc { background: #f7f9fc; border-radius: 10px; padding: 12px 15px; font-size: 13px; color: #333; line-height: 1.9; margin-bottom: 15px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 15px; }
+        th, td { border: 1px solid #e0e0e0; padding: 8px; text-align: center; }
+        th { background: #f2f2f7; }
+        .cta { display: block; text-align: center; background: var(--primary); color: #fff; text-decoration: none; font-weight: bold; padding: 12px; border-radius: 10px; margin: 20px 0; }
+        .related a { color: var(--primary); }
+        footer { margin-top: 30px; padding: 20px 15px; text-align: center; font-size: 11px; color: #888; border-top: 1px solid #ddd; line-height: 1.6; background: #fff; }
+        footer p { font-size: 11px; color: #888; }
+    </style>
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-535TETD22K"></script>
+    <script>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-535TETD22K');</script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9352585638973205" crossorigin="anonymous"></script>
+</head>
+<body>
+    <nav class="global-nav">
+        <a href="index.html">ホーム</a>
+        <a href="about-pfc.html">PFCとは</a>
+        <a href="diet-guide.html">ダイエットガイド</a>
+        <a href="column.html" class="active">コラム</a>
+        <a href="about.html">運営者情報</a>
+        <a href="privacy.html">プライバシーポリシー</a>
+    </nav>
+
+    <div class="content-area">
+        <article class="card">
+            <h1>PFCろぐの使い方ガイド｜目標設定から記録・振り返りまで</h1>
+            <p class="meta">執筆：Suzuki（PFCろぐ運営者）</p>
+            <p>PFCろぐは、毎日の食事のカロリーとPFC（タンパク質・脂質・炭水化物）を記録して、目標に対してどれくらい食べたかをひと目で確認できる無料のアプリです。会員登録をしなくても、ブラウザを開くだけですぐに使い始められます。</p>
+            <p>この記事では、初めて使う方に向けて、目標値の設定から毎日の記録、便利な機能、データの保存方法まで、順番に使い方を解説します。</p>
+
+            <h2>ステップ1：目標値を自動計算する</h2>
+            <p>最初に、ホーム画面の「目標自動計算」のカードで、自分の目標カロリーとPFCを設定します。</p>
+            <ol>
+                <li>性別を選び、年齢・身長・体重を入力します。</li>
+                <li>「仕事・日常生活の強度」を、デスクワーク中心・立ち仕事・肉体労働の中から選びます。</li>
+                <li>「運動（筋トレ等）の頻度」を選びます。</li>
+                <li>「現在の目的」を、短期集中ダイエット・緩やかに体重を減らす・維持・増量の中から選びます。</li>
+                <li>「精密計算して保存」を押すと、目標総カロリーとP・F・Cの目標値が表示されます。</li>
+            </ol>
+            <p>計算には、広く使われている「ミフリン・セントジョー式」で求めた基礎代謝に、仕事と運動の活動係数を掛けた値を使っています。計算の詳しい仕組みは「<a href="column-pfc-calculation.html">PFCバランスの計算方法を具体例で解説</a>」で紹介しています。</p>
+            <h3>無理な目標には警告が出ます</h3>
+            <p>選んだ目標のカロリーが基礎代謝を下回る場合は、健康上のリスクがあるため警告が表示されます。また、減量の目標カロリーがかなり低くなる場合は、もう少し食べながら体脂肪を落とせる「推奨プラン」を提案し、ボタンひとつで適用できるようになっています。</p>
+
+            <h2>ステップ2：目標体重までの日数を確認する</h2>
+            <p>目標設定のカードにある「目標達成シミュレーション」に目標体重を入力すると、今の目標カロリーで続けた場合に、目標体重に届くまでのおおよその日数が表示されます。計算では、体脂肪1kgを約7,200kcalとして、1日のカロリーの差から日数を出しています。</p>
+            <p>あくまで目安ですが、ゴールまでの見通しが立つと、日々の記録を続ける励みになります。</p>
+
+            <h2>ステップ3：食事を記録する</h2>
+            <p>ホーム画面には、朝食・昼食・夕食などの「食事枠」が並んでいます。食べたものを記録したい枠を開いて、食材を追加していきます。食事枠が足りない場合は、画面下の「＋ 新しい食事枠を追加」から増やせます。</p>
+            <p>食材の追加方法は3種類あります。</p>
+            <h3>リストから選ぶ</h3>
+            <p>「リスト」タブでは、登録済みの食材から選び、食べる量を入力するだけで記録できます。よく使う食材は、あとで紹介する「マイ食材」として登録しておくと、ここから選べるようになります。</p>
+            <h3>手動で入力する</h3>
+            <p>「手動入力」タブでは、品名とP・F・Cの数値を直接入力して記録できます。コンビニ商品のように、パッケージに栄養成分が書いてあるものはこの方法が便利です。入力した内容は「この内容をマイ食材に登録」から、そのまま登録することもできます。</p>
+            <h3>マイセットから呼び出す</h3>
+            <p>「マイセット」タブでは、保存しておいた食事の組み合わせを一度に記録できます。</p>
+            <p>記録するたびに、ホーム画面上部のカロリーとP・F・Cのバーが伸びていき、目標に対して今どれくらい食べたかを確認できます。</p>
+
+            <h2>ステップ4：マイ食材・マイセットで入力を楽にする</h2>
+            <h3>マイ食材</h3>
+            <p>リストにない食材や、よく食べる商品は、「設定」→「マイ食材」から登録できます。数値は「1個（1食）あたり」と「100gあたり」のどちらでも登録できるので、パッケージの表示に合わせて選んでください。行きつけのお店のメニューなどを登録しておくのもおすすめです。</p>
+            <h3>マイセット</h3>
+            <p>毎朝同じものを食べている人や、決まった組み合わせが多い人は、マイセットを使うと記録の手間が大きく減ります。ホーム画面の食事枠の右上にある「★セット登録」を押すと、その枠に入っている食事をまとめてセットとして保存できます。次からは、食材追加画面の「マイセット」タブで呼び出すだけです。</p>
+            <p>記録を習慣にするには、手間を減らすことが大切です。続けるコツは「<a href="column-habit.html">ダイエットを続けるための習慣づくり</a>」でも紹介しています。</p>
+
+            <h2>ステップ5：月履歴で振り返る</h2>
+            <p>画面上部の「月履歴」を開くと、日ごとの摂取カロリーを月単位で確認できます。目標どおりに食べられた日が多いか、週末に食べすぎる傾向がないかなど、記録を振り返ることで、自分の食事のクセが見えてきます。体重が減らなくなったときの見直しにも役立ちます。</p>
+
+            <h2>その他の便利な機能</h2>
+            <ul>
+                <li><b>共有・コピー・貼り付け：</b>その日の記録を共有したり、コピーして別の日に貼り付けたりできます。前日と同じような食事の日に便利です。</li>
+                <li><b>この日の記録をリセット：</b>入力をやり直したいときに、その日の記録をまとめて消せます。</li>
+                <li><b>日付の切り替え：</b>画面上部の矢印で日付を切り替えて、過去の記録を確認・修正できます。</li>
+            </ul>
+
+            <h2>データの保存について（アカウント登録のすすめ）</h2>
+            <p>PFCろぐは、登録しなくても使える「ローカル保存モード」で始まります。このモードでは、データはお使いのブラウザの中だけに保存されます。そのため、ブラウザの履歴を消したり、機種変更をしたりすると、記録が消えてしまうことがあります。</p>
+            <p>無料のアカウントを登録してログインすると、記録したデータが自動でクラウドに保存されるようになります。スマホとパソコンなど、複数の端末から同じデータを見ることもできます。長く使う予定の方は、アカウント登録をおすすめします。</p>
+            <p>アカウントは「設定」→「アカウント・同期設定」から作成できます。不要になった場合は、同じ画面からアカウントとクラウド上のデータを完全に削除することもできます。</p>
+
+            <h2>ご意見・不具合の報告</h2>
+            <p>「設定」→「お知らせ / お問い合わせ」から、機能のご要望や不具合の報告を送ることができます。いただいたご意見は、今後のアップデートの参考にさせていただきます。</p>
+            <a class="cta" href="index.html">PFCろぐを使ってみる</a>
+
+            <h2>まとめ</h2>
+            <p>PFCろぐは、目標値の計算から毎日の記録、振り返りまでを1つの画面で完結できるように作っています。まずは目標値を設定して、今日の食事を1つ記録してみてください。慣れてきたら、マイ食材やマイセットを活用して、記録の手間を減らしていきましょう。</p>
+
+            <div class="related">
+                <h2>関連する記事</h2>
+                <ul>
+                    <li><a href="column-pfc-calculation.html">PFCバランスの計算方法を具体例で解説｜自分の目標値を3ステップで出す</a></li>
+                    <li><a href="column-habit.html">ダイエットを続けるための習慣づくり｜記録が三日坊主で終わらない方法</a></li>
+                    <li><a href="column-convenience-store.html">コンビニでPFCバランスを整える組み合わせ方｜目的別の選び方</a></li>
+                </ul>
+            </div>
+            <p class="meta">※本記事の内容は一般的な情報に基づく目安です。持病のある方、妊娠・授乳中の方、成長期の方は、医師や管理栄養士にご相談ください。</p>
+        </article>
+    </div>
+    <footer style="margin-top: 30px; padding: 20px 15px; text-align: center; font-size: 11px; color: #888; border-top: 1px solid #ddd; line-height: 1.6; background: #fff;">
+        <p style="font-size:11px;color:#888;"><strong>免責事項</strong><br>本サイトが提供するカロリー計算およびPFCバランスの数値は、一般的な計算式に基づいた目安であり、医学的なアドバイスを提供するものではありません。持病のある方や極端なダイエットを行う場合は、必ず医師や専門家にご相談ください。</p>
+        <p style="font-size:11px;color:#888;"><strong>運営者</strong>：Suzuki ／ お問い合わせ：contact.support0011@gmail.com</p>
+        <p style="font-size:11px;color:#888;"><a href="about.html" style="color: #007AFF;">運営者情報</a> ／ <a href="privacy.html" style="color: #007AFF;">プライバシーポリシー</a></p>
+        <p style="font-size:11px;color:#888;">© 2026 PFCろぐ</p>
+    </footer>
+</body>
+</html>

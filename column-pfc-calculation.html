@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PFCバランスの計算方法を具体例で解説｜自分の目標値を3ステップで出す - PFCろぐ</title>
+    <meta name="description" content="PFCバランスの計算方法を、30代男性・女性の具体例で解説。基礎代謝→総消費カロリー→PFCの順に、電卓ひとつで自分の目標値を出せる手順をまとめました。">
+    <style>
+        :root { --primary: #007AFF; --bg: #f2f2f7; --text: #1c1c1e; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0 auto; padding: 0 0 50px 0; max-width: 500px; line-height: 1.6; }
+        .global-nav { display: flex; justify-content: center; gap: 15px; padding: 15px 5px; background: #fff; border-bottom: 1px solid #ddd; position: sticky; top: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); flex-wrap: wrap; }
+        .global-nav a { color: #555; text-decoration: none; font-size: 13px; font-weight: bold; }
+        .global-nav a.active { color: var(--primary); }
+        .content-area { padding: 20px; }
+        .card { background: #fff; border-radius: 15px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        h1 { font-size: 20px; color: var(--primary); border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; }
+        h2 { font-size: 16px; margin-top: 28px; color: #333; border-left: 4px solid var(--primary); padding-left: 10px; }
+        h3 { font-size: 15px; margin-top: 20px; color: #333; }
+        p, li { font-size: 14px; color: #444; line-height: 1.8; margin-bottom: 15px; }
+        .meta { font-size: 12px; color: #888; margin-top: -5px; }
+        .calc { background: #f7f9fc; border-radius: 10px; padding: 12px 15px; font-size: 13px; color: #333; line-height: 1.9; margin-bottom: 15px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 15px; }
+        th, td { border: 1px solid #e0e0e0; padding: 8px; text-align: center; }
+        th { background: #f2f2f7; }
+        .cta { display: block; text-align: center; background: var(--primary); color: #fff; text-decoration: none; font-weight: bold; padding: 12px; border-radius: 10px; margin: 20px 0; }
+        .related a { color: var(--primary); }
+        footer { margin-top: 30px; padding: 20px 15px; text-align: center; font-size: 11px; color: #888; border-top: 1px solid #ddd; line-height: 1.6; background: #fff; }
+        footer p { font-size: 11px; color: #888; }
+    </style>
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-535TETD22K"></script>
+    <script>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-535TETD22K');</script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9352585638973205" crossorigin="anonymous"></script>
+</head>
+<body>
+    <nav class="global-nav">
+        <a href="index.html">ホーム</a>
+        <a href="about-pfc.html">PFCとは</a>
+        <a href="diet-guide.html">ダイエットガイド</a>
+        <a href="column.html" class="active">コラム</a>
+        <a href="about.html">運営者情報</a>
+        <a href="privacy.html">プライバシーポリシー</a>
+    </nav>
+
+    <div class="content-area">
+        <article class="card">
+            <h1>PFCバランスの計算方法を具体例で解説｜自分の目標値を3ステップで出す</h1>
+            <p class="meta">執筆：Suzuki（PFCろぐ運営者）</p>
+
+            <p>「PFCバランスが大事」とはよく聞くものの、実際に自分は1日に何gのタンパク質を食べればいいのか、すぐに答えられる人は多くありません。比率の話ばかりで、具体的な数字に落とし込む方法が書かれていないことが多いからです。</p>
+            <p>この記事では、PFCろぐの中で実際に使っている計算式をそのまま公開し、30代の男性・女性をモデルにして、電卓ひとつで目標値を出す手順を解説します。流れは「基礎代謝 → 1日の総消費カロリー → PFCの割り振り」の3ステップです。</p>
+
+            <h2>ステップ1：基礎代謝（BMR）を計算する</h2>
+            <p>基礎代謝とは、何もせず横になっているだけでも消費されるエネルギーのことです。PFCろぐでは、現在広く使われている「ミフリン・セントジョー式（ミフリン・サンジオール式）」を採用しています。</p>
+            <div class="calc">
+                男性：10 × 体重(kg) ＋ 6.25 × 身長(cm) − 5 × 年齢 ＋ 5<br>
+                女性：10 × 体重(kg) ＋ 6.25 × 身長(cm) − 5 × 年齢 − 161
+            </div>
+            <p>この式は、体重・身長・年齢の3つだけで計算できるのが利点です。ただし体脂肪率は考慮しないため、筋肉量が特に多い人や少ない人では、実際の値と多少ずれることがあります。あくまで「スタート地点の目安」と考えてください。</p>
+
+            <h2>ステップ2：1日の総消費カロリー（TDEE）を出す</h2>
+            <p>実際の生活では、仕事や家事、運動でもエネルギーを使います。基礎代謝に「活動係数」を掛けたものが、1日の総消費カロリー（TDEE）です。PFCろぐでは、仕事の強度と運動頻度を分けて選べるようにしています。</p>
+            <table>
+                <tr><th>仕事・日常の強度</th><th>係数</th></tr>
+                <tr><td>デスクワーク中心</td><td>1.2</td></tr>
+                <tr><td>立ち仕事・営業</td><td>1.4</td></tr>
+                <tr><td>肉体労働</td><td>1.6</td></tr>
+            </table>
+            <table>
+                <tr><th>運動（筋トレ等）の頻度</th><th>加算</th></tr>
+                <tr><td>ほぼしない</td><td>＋0</td></tr>
+                <tr><td>週1〜2回</td><td>＋0.15</td></tr>
+                <tr><td>週3〜5回</td><td>＋0.3</td></tr>
+                <tr><td>毎日ハードに</td><td>＋0.45</td></tr>
+            </table>
+            <p>2つを分けているのは、「デスクワークだけど週4回ジムに通う」「立ち仕事だけど運動はしない」といった人の差を表しやすくするためです。TDEEから、減量なら一定量を引き、増量なら足したものが1日の目標カロリーになります。</p>
+
+            <h2>ステップ3：PFCを割り振る</h2>
+            <p>目標カロリーが決まったら、P（タンパク質）→ F（脂質）→ C（炭水化物）の順に決めていきます。先に体の材料になるタンパク質と、体調維持に欠かせない脂質を確保し、残りを炭水化物に回すという考え方です。</p>
+            <ul>
+                <li><b>タンパク質：</b>体重1kgあたりのg数で決める（1gあたり4kcal）</li>
+                <li><b>脂質：</b>体重1kgあたり0.8gを基本に、総カロリーの20%を下回らないようにする（1gあたり9kcal）</li>
+                <li><b>炭水化物：</b>目標カロリーから、タンパク質と脂質の分を引いた残り（1gあたり4kcal）</li>
+            </ul>
+
+            <h2>具体例①：30歳男性・170cm・70kg・立ち仕事・週1〜2回筋トレ</h2>
+            <div class="calc">
+                基礎代謝：10×70 ＋ 6.25×170 − 5×30 ＋ 5 ＝ 約1,618kcal<br>
+                活動係数：1.4 ＋ 0.15 ＝ 1.55<br>
+                TDEE：1,618 × 1.55 ＝ 約2,507kcal<br>
+                目標（短期集中 −500kcal）：約2,007kcal
+            </div>
+            <div class="calc">
+                P：70kg × 2.0g ＝ 140g（560kcal）<br>
+                F：70kg × 0.8g ＝ 56g（504kcal）<br>
+                C：(2,007 − 560 − 504) ÷ 4 ＝ 約236g
+            </div>
+            <p>比率にするとおよそP28%・F25%・C47%です。「炭水化物を236gも食べていいの？」と驚く人もいますが、ご飯なら茶碗に軽く1杯（150g）で炭水化物は約55gなので、3食しっかり主食をとっても収まる量です。</p>
+
+            <h2>具体例②：30歳女性・158cm・55kg・デスクワーク・週3〜5回運動</h2>
+            <div class="calc">
+                基礎代謝：10×55 ＋ 6.25×158 − 5×30 − 161 ＝ 約1,227kcal<br>
+                活動係数：1.2 ＋ 0.3 ＝ 1.5<br>
+                TDEE：1,227 × 1.5 ＝ 約1,840kcal<br>
+                目標（緩やかに −200kcal）：約1,640kcal
+            </div>
+            <div class="calc">
+                P：55kg × 1.5g ＝ 約83g（332kcal）<br>
+                F：55kg × 0.8g ＝ 44g（396kcal）※総カロリーの20%（約36g）を上回るのでOK<br>
+                C：(1,640 − 332 − 396) ÷ 4 ＝ 約228g
+            </div>
+            <p>PFCろぐでは、女性のタンパク質は運動頻度に応じて体重×1.3〜1.5gで設定しています。女性は目標カロリーが低めになりやすく、タンパク質を増やしすぎるとカロリーの調整が難しくなるためです（筋肉を積極的につけたい場合は、もう少し多めにしても構いません）。</p>
+
+            <h2>計算するときに気をつけたい3つのこと</h2>
+            <h3>1. 目標カロリーが基礎代謝を下回らないようにする</h3>
+            <p>早く痩せたいからと摂取カロリーを削りすぎると、筋肉が落ちて代謝が下がり、かえってリバウンドしやすくなります。PFCろぐでは、目標が基礎代謝を下回る設定になると警告を出すようにしています。</p>
+            <h3>2. 数字は「2週間ごとに見直す」前提で使う</h3>
+            <p>計算式はあくまで平均的な人を想定したものです。2週間ほど記録を続けても体重がまったく動かない、逆に減りすぎるといった場合は、目標カロリーを100〜200kcal単位で調整してください。</p>
+            <h3>3. 毎日ぴったり合わせなくていい</h3>
+            <p>PFCを1gの狂いもなく合わせるのは現実的ではありません。まずは「タンパク質を目標の8割以上とる」「カロリーを大きく超えない」の2点を意識するだけでも、食事の質は大きく変わります。</p>
+
+            <h2>まとめ</h2>
+            <p>PFCバランスの計算は、「基礎代謝 → TDEE → P・F・Cの割り振り」の3ステップで、誰でも手計算できます。ただ、毎回電卓をたたくのは手間なので、PFCろぐではプロフィールを入力するだけで、ここで紹介した計算を自動で行い、目標値を設定できるようにしています。</p>
+            <a class="cta" href="index.html">PFCろぐで自分の目標値を計算する</a>
+
+            <div class="related">
+                <h2>関連する記事</h2>
+                <ul>
+                    <li><a href="about-pfc.html">PFCバランスとTDEEの基礎知識</a></li>
+                    <li><a href="diet-guide.html">PFCろぐを使った効果的なダイエット方法</a></li>
+                </ul>
+            </div>
+            <p class="meta">※本記事の数値は一般的な計算式に基づく目安です。持病のある方、妊娠・授乳中の方、成長期の方は、医師や管理栄養士にご相談ください。</p>
+        </article>
+    </div>
+    <footer style="margin-top: 30px; padding: 20px 15px; text-align: center; font-size: 11px; color: #888; border-top: 1px solid #ddd; line-height: 1.6; background: #fff;">
+        <p style="font-size:11px;color:#888;"><strong>免責事項</strong><br>本サイトが提供するカロリー計算およびPFCバランスの数値は、一般的な計算式に基づいた目安であり、医学的なアドバイスを提供するものではありません。持病のある方や極端なダイエットを行う場合は、必ず医師や専門家にご相談ください。</p>
+        <p style="font-size:11px;color:#888;"><strong>運営者</strong>：Suzuki ／ お問い合わせ：contact.support0011@gmail.com</p>
+        <p style="font-size:11px;color:#888;"><a href="about.html" style="color: #007AFF;">運営者情報</a> ／ <a href="privacy.html" style="color: #007AFF;">プライバシーポリシー</a></p>
+        <p style="font-size:11px;color:#888;">© 2026 PFCろぐ</p>
+    </footer>
+</body>
+</html>
